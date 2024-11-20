@@ -3,7 +3,7 @@
 ########################################################################################################################
 
 SRCS		:=	irc.cpp			\
-#				.cpp		\
+				Socket.cpp		\
 
 SRCS_D		:=	sources/
 
@@ -11,13 +11,14 @@ OBJS_D		:=	objs/
 
 OBJS		=	$(SRCS:%.cpp=$(OBJS_D)%.o)
 
-HEAD		:=	irc.hpp		\
+HEAD		:=	irc.hpp			\
+				Socket.hpp		\
 
 HEAD_D		:=	includes/
 
 CFLAGS		:=	c++ -Wall -Wextra -Werror -std=c++98
 
-BIN			:=	irc
+BIN			:=	ircserv
 
 ########################################################################################################################
 #                                                        RULES                                                         #
