@@ -4,9 +4,10 @@ Communication by channels in group or in private
 On utilisera comme client de référence hexchat
 
   -DOCUMENTATION-
-  
-https://github.com/ngircd/ngircd/tree/master
 
+github of IRC by someone :
+https://github.com/ngircd/ngircd/tree/master
+The self-hosted web IRC client:
 https://thelounge.chat/
 
 https://celeo.github.io/2021/06/18/Implementing-an-IRC-server-from-scratch-part-1/
