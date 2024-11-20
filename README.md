@@ -1,6 +1,7 @@
 # Internet-Relay-Chat
 Communication by channels in group or in private
 
+On utilisera comme client de référence hexchat
 
   -DOCUMENTATION-
   
