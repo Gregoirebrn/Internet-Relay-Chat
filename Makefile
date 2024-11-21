@@ -2,8 +2,8 @@
 #                                                       VARIABLE                                                       #
 ########################################################################################################################
 
-SRCS		:=	irc.cpp			\
-				Socket.cpp		\
+SRCS		:=	Signal.cpp		\
+				Server.cpp		\
 
 SRCS_D		:=	sources/
 
@@ -11,8 +11,7 @@ OBJS_D		:=	objs/
 
 OBJS		=	$(SRCS:%.cpp=$(OBJS_D)%.o)
 
-HEAD		:=	irc.hpp			\
-				Socket.hpp		\
+HEAD		:=	Server.hpp		\
 
 HEAD_D		:=	includes/
 

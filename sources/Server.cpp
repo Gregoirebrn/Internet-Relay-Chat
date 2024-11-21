@@ -2,24 +2,24 @@
 // Created by grebrune on 11/20/24.
 //
 
-#include "Socket.hpp"
+#include "Server.hpp"
 
 // Constructors & destructor
-Socket::Socket() : _socketfd(0), _addr(), _nfds(0) {
+Server::Server(char *port, std::string pw) : _port(static_cast <uint16_t>(std::strtod(port, NULL))), _password(pw), _socketfd(0), _addr(), _nfds(0) {
 	//Init sock_addr struct for bind
 	_addr.sin_family = AF_INET; // IPv4
-	_addr.sin_port = htons(8080); // Port number, convert host to network byte order
+	_addr.sin_port = htons(_port); // Port number, convert host to network byte order
 	_addr.sin_addr.s_addr = INADDR_ANY; // Bind to all available interfaces (0.0.0.0)
 
-	std::cout << "Socket default constructor called!" << std::endl;
+	std::cout << "Server default constructor called!" << std::endl;
 }
 
-Socket::~Socket() {
-	std::cout << "Socket default destructor called!" << std::endl;
+Server::~Server() {
+	std::cout << "Server default destructor called!" << std::endl;
 }
 
 // Public methods
-int Socket::CreatSocket()
+int Server::CreatSocket()
 {
 	int opt = 1;
 	
@@ -28,7 +28,7 @@ int Socket::CreatSocket()
 	//valeur de champs generalement 0 ou 3
 	_socketfd = socket(AF_INET, SOCK_STREAM, 0);
 	if (_socketfd < 0) {
-		std::cerr << "Socket creation failed: " << strerror(errno) << std::endl;
+		std::cerr << "Server creation failed: " << strerror(errno) << std::endl;
 		exit(EXIT_FAILURE);
 	}
 
@@ -62,8 +62,7 @@ int Socket::CreatSocket()
 	_fds[_nfds] = server_pollfd;
 	//wait for connections to the server
 	//change true to the global that is false if a ctrl D or a sigaction ocured
-	//while (g_signal)
-	while (true) {
+	while (g_signal) {
 		//wait to have a action from one of the fds
 		if (poll(_fds, _nfds, 1000) < 0)
 			exit(EXIT_FAILURE);
@@ -71,17 +70,23 @@ int Socket::CreatSocket()
 //		if (g_signal)
 //			return ;
 		//find the fd that had an event by iterating the list of vector
-		for(size_t i = 0; i < _pollfds.size(); i++) {
-			if (_pollfds[i].revents && _pollfds[i].events == POLLIN) {
+		for(std::vector<pollfd>::iterator it = _pollfds.begin(); it < _pollfds.end(); it++) {
+			if (it->revents == POLLIN) {
 				//handle the message of the event
 			}
 		}
 	}
-	std::cout << "Socket successfully bound to port 8080." << std::endl;
+	std::cout << "Server successfully bound to port 8080." << std::endl;
 	return 0;
 }
 
-
+int	main(int ac, char **av) {
+	if (ac < 3)
+		return (std::cout << "Error: Missing arguments." << std::endl, 210);
+	signal_handler();
+	Server serv(av[1], av[2]);
+	serv.CreatSocket();
+}
 //	if (accept(_socketfd, (struct sockaddr *)&_addr, sizeof(_addr) ) ) < 0) {
 //		std::cerr << "Listen creation failed: " << strerror(errno) << std::endl;
 //		close(_socketfd);
