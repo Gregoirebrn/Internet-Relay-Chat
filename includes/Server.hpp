@@ -17,7 +17,6 @@
 #include <csignal>
 //inner lib
 #include "Server.hpp"
-#include "Server.hpp"
 //global variable
 
 bool	g_signal = true;
@@ -30,13 +29,13 @@ private :
 	struct sockaddr_in		_addr;
 	std::vector<pollfd>		_pollfds;
 	nfds_t					_nfds;
-	struct pollfd			_fds[];
 public :
 	// Constructors & destructor
 	Server(char *port, std::string pw);
 	~Server();
 	// Public methods
-	int CreatSocket();
-};
+	int		CreatSocket();
+	void	messag_handle(std::vector<pollfd>::iterator &it);
+	};
 
 int signal_handler();

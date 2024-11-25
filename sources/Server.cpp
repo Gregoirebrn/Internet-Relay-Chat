@@ -31,53 +31,75 @@ int Server::CreatSocket()
 		std::cerr << "Server creation failed: " << strerror(errno) << std::endl;
 		exit(EXIT_FAILURE);
 	}
-
-	//config _socketfd with setsockopt
-	//on declare quel type
 	if (setsockopt(_socketfd, SOL_SOCKET, SO_REUSEADDR, &opt, sizeof(opt)) < 0) {
 		std::cerr << "Setsockopt creation failed: " << strerror(errno) << std::endl;
 		close(_socketfd);
 		exit(EXIT_FAILURE);
 	}
-	
-	//size of addr struct for addrlen the last parameter
-	if (bind(_socketfd, (struct sockaddr *)&_addr, sizeof(_addr))) {
+	if (bind(_socketfd, (struct sockaddr *)&_addr, sizeof(_addr))) { //size of addr struct for addrlen the last parameter
 		std::cerr << "Bind creation failed: " << strerror(errno) << std::endl;
 		close(_socketfd);
 		exit(EXIT_FAILURE);
 	}
-	//backlog set to 5 because it is the reasonable default number for small server
-	if (listen(_socketfd, 5) < 0) {
+	if (listen(_socketfd, 5) < 0) { //backlog set to 5 because it is the reasonable default number for small server
 		std::cerr << "Listen creation failed: " << strerror(errno) << std::endl;
 		close(_socketfd);
 		exit(EXIT_FAILURE);
 	}
-	//add the socket to the poll fds
-	pollfd server_pollfd;
-	server_pollfd.fd = _socketfd;
-	server_pollfd.events = POLLIN; // Monitor for incoming connections
-	server_pollfd.revents = 0;     // No events yet
-	_pollfds.push_back(server_pollfd);
-	//add fd to array of _fds
-	_fds[_nfds] = server_pollfd;
-	//wait for connections to the server
+	_pollfds.push_back((struct pollfd){.fd = _socketfd, .events = POLLIN, .revents = 0}); //add the socket to the poll fds
+	_nfds++;
 	//change true to the global that is false if a ctrl D or a sigaction ocured
 	while (g_signal) {
-		//wait to have a action from one of the fds
-		if (poll(_fds, _nfds, 1000) < 0)
+//		std::cout << "WAITING ..." << std::endl;
+		if (poll(_pollfds.data(), _nfds, -1) < 0) //wait to have a action from one of the fds
 			exit(EXIT_FAILURE);
-		//check if the global value of signal have changed with a if
-//		if (g_signal)
-//			return ;
-		//find the fd that had an event by iterating the list of vector
-		for(std::vector<pollfd>::iterator it = _pollfds.begin(); it < _pollfds.end(); it++) {
-			if (it->revents == POLLIN) {
-				//handle the message of the event
+		if (!g_signal) //check if the global value of signal have changed with a if
+			return (300);
+		for(std::vector<pollfd>::iterator it = _pollfds.begin(); it < _pollfds.end(); it++) { //find the fd that had an event by iterating the list of vector
+			if (it->revents & POLLIN) {
+				if (it->fd == _socketfd) {
+					struct sockaddr *addr_cli = NULL;
+					int fd_cli = accept(_socketfd, addr_cli, reinterpret_cast<socklen_t *>(sizeof(&addr_cli)));
+					_pollfds.push_back((struct pollfd){.fd = fd_cli, .events = POLLIN, .revents = 0});
+					_nfds++;
+					it = _pollfds.begin();
+					std::cout << "ACCEPTED NEW CLIENT | FD " << fd_cli << std::endl;
+				}
+				else //handle the message of the event
+					messag_handle(it);
 			}
 		}
 	}
 	std::cout << "Server successfully bound to port 8080." << std::endl;
 	return 0;
+}
+
+void	Server::messag_handle(std::vector<pollfd>::iterator &it) {
+	int	n = 254;
+	char buff[n + 1];
+	ssize_t ret = recv(it->fd, buff, n, MSG_DONTWAIT);
+	if (!ret) { // client gone suppress it
+		std::cout << "!ret " << it->fd << std::endl;
+		it = _pollfds.erase(it);
+	}
+	else if (ret < 0) // error occured
+		std::cerr << "Recv failed: " << strerror(errno) << std::endl;
+	else { //message
+		buff[ret] = '\0';
+		std::cout << buff;
+	}
+}
+
+void	handler(int sig) {
+	(void)sig;
+	g_signal = false;
+	write(1, "\nSignal: quit program.\n", 23);
+	exit(69);
+}
+
+int signal_handler() {
+	signal(SIGINT, &handler);
+	return (100);
 }
 
 int	main(int ac, char **av) {
