@@ -3,7 +3,34 @@ Communication by channels in group or in private
 
 On utilisera comme client de référence hexchat
 
-  -DOCUMENTATION-
+## -PROCESSUS- 
+
+
+#### Mise en place de la Socket
+
+- [x] Declarations des protocols
+
+- [x] Mettre a l'ecoute
+
+- [x] Lien entre la socket et le setup reseaux
+
+#### Gestion de nouveaux clients
+
+ - [x] Accepter le nouveau client
+
+ - [ ] Authentification de nickname, password & username 
+
+#### Operateurs de Canaux
+
+- [ ] Parsing de reception des messages
+
+- [ ] Gestion de kick, invite, topic & mode avec les flags i, t, k, o & l
+
+- [ ] Ajouter part pour quitter un channel
+
+#### Numeriques Reply
+
+##     -DOCUMENTATION-
 
 github of IRC by someone :
 https://github.com/ngircd/ngircd/tree/master
