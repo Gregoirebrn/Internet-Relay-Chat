@@ -6,24 +6,16 @@
 
 // Constructors & destructor
 Client::Client(void) {
-    std::cout << "Client default constructor called!" << std::endl;
-}
-
-Client::Client(const Client &copy) {
-    std::cout << "Client copy constructor called!" << std::endl;
-    *this = copy;
+	std::cout << "Client default constructor called!" << std::endl;
 }
 
 Client::~Client(void) {
-    std::cout << "Client default destructor called!" << std::endl;
+	std::cout << "Client default destructor called!" << std::endl;
 }
 
-// Overloaded operators
-Client &Client::operator=(const Client &src) {
-    if (this != &src)
-    {
-    }
-    return (*this);
+int Client::CreateClient(int fd_cli) {
+	send(fd_cli, );
+	return 0;
 }
 
 // Public methods

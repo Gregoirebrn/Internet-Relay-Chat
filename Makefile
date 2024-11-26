@@ -2,7 +2,9 @@
 #                                                       VARIABLE                                                       #
 ########################################################################################################################
 
-SRCS		:=	Server.cpp		\
+SRCS		:=	Server.cpp			\
+				Client.cpp			\
+				Canal_Operators.cpp	\
 
 SRCS_D		:=	sources/
 
@@ -11,10 +13,11 @@ OBJS_D		:=	objs/
 OBJS		=	$(SRCS:%.cpp=$(OBJS_D)%.o)
 
 HEAD		:=	Server.hpp		\
+				Client.hpp		\
 
 HEAD_D		:=	includes/
 
-CFLAGS		:=	c++ -Wall -Wextra -Werror -std=c++98
+CFLAGS		:=	c++ -Wall -Wextra -Werror -std=c++98 -g3
 
 BIN			:=	ircserv
 

@@ -2,21 +2,25 @@
 // Created by grebrune on 11/26/24.
 //
 
-#ifndef INTERNET_RELAY_CHAT_CLIENT_HPP
-# define INTERNET_RELAY_CHAT_CLIENT_HPP
+#pragma once
+
 # include <iostream>
+# include <map>
+# include <sys/
+class Server;
+
+typedef struct info_s {
+	std::string nickname;
+	std::string pseudo;
+} info_t;
+
 class Client {
-private :    
+private :
+	std::map<info_t, int> _map;
 public :
-    // Constructors & destructor
-    Client();
-    Client(const Client &copy);
-    ~Client();
-
-    // Overloaded operators
-    Client &operator=(const Client &src);
-    
-    // Public methods
+	// Constructors & destructor
+	Client();
+	~Client();
+	// Public methods
+	static int CreateClient(int fd_cli);
 };
-
-#endif //INTERNET_RELAY_CHAT_CLIENT_HPP

@@ -52,15 +52,16 @@ int Server::CreatSocket()
 	while (g_signal) {
 //		std::cout << "WAITING ..." << std::endl;
 		if (poll(_pollfds.data(), _nfds, -1) < 0) //wait to have a action from one of the fds
-			exit(EXIT_FAILURE);
+			break ;
 		if (!g_signal) //check if the global value of signal have changed with a if
-			return (300);
+			break ;
 		for(std::vector<pollfd>::iterator it = _pollfds.begin(); it < _pollfds.end(); it++) { //find the fd that had an event by iterating the list of vector
 			if (it->revents & POLLIN) {
 				if (it->fd == _socketfd) {
 					struct sockaddr *addr_cli = NULL;
 					int fd_cli = accept(_socketfd, addr_cli, reinterpret_cast<socklen_t *>(sizeof(&addr_cli)));
 					_pollfds.push_back((struct pollfd){.fd = fd_cli, .events = POLLIN, .revents = 0});
+					Client::CreateClient(fd_cli);
 					_nfds++;
 					it = _pollfds.begin();
 					std::cout << "ACCEPTED NEW CLIENT | FD " << fd_cli << std::endl;
@@ -71,12 +72,13 @@ int Server::CreatSocket()
 		}
 	}
 	std::cout << "Server successfully bound to port 8080." << std::endl;
+	_pollfds.clear();
 	return 0;
 }
 
 void	Server::messag_handle(std::vector<pollfd>::iterator &it) {
-	int	n = 254;
-	char buff[n + 1];
+	int	n = 512;
+	char buff[512 + 1];
 	ssize_t ret = recv(it->fd, buff, n, MSG_DONTWAIT);
 	if (!ret) { // client gone suppress it
 		std::cout << "!ret " << it->fd << std::endl;
@@ -86,6 +88,8 @@ void	Server::messag_handle(std::vector<pollfd>::iterator &it) {
 		std::cerr << "Recv failed: " << strerror(errno) << std::endl;
 	else { //message
 		buff[ret] = '\0';
+//		if (buff[0] == '\\') Gestion des cannaux operateurs
+//			co_handler(buff);
 		std::cout << buff;
 	}
 }
@@ -94,18 +98,18 @@ void	handler(int sig) {
 	(void)sig;
 	g_signal = false;
 	write(1, "\nSignal: quit program.\n", 23);
-	exit(69);
 }
 
-int signal_handler() {
+int Server::signal_handler() {
 	signal(SIGINT, &handler);
+	signal(SIGQUIT, &handler);
 	return (100);
 }
 
 int	main(int ac, char **av) {
 	if (ac < 3)
 		return (std::cout << "Error: Missing arguments." << std::endl, 210);
-	signal_handler();
+	Server::signal_handler();
 	Server serv(av[1], av[2]);
 	serv.CreatSocket();
 }
@@ -114,3 +118,5 @@ int	main(int ac, char **av) {
 //		close(_socketfd);
 //		exit(EXIT_FAILURE);
 //	}
+
+

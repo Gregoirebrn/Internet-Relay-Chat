@@ -16,8 +16,10 @@
 #include <cstring>
 #include <csignal>
 //inner lib
-#include "Server.hpp"
+#include "Client.hpp"
 //global variable
+
+
 
 bool	g_signal = true;
 
@@ -34,8 +36,16 @@ public :
 	Server(char *port, std::string pw);
 	~Server();
 	// Public methods
-	int		CreatSocket();
-	void	messag_handle(std::vector<pollfd>::iterator &it);
+	int				CreatSocket();
+	void			messag_handle(std::vector<pollfd>::iterator &it);
+	static int		signal_handler();
+	// Canal Operators
+//	void	co_handler(std::string buff);
+//	int		co_kick(std::string buff);
+//	void	co_invite(std::string buff);
+//	void	co_topic(std::string buff);
+//	void	co_mode(std::string buff);
+
 	};
 
 int signal_handler();
