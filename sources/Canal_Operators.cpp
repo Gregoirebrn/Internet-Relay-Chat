@@ -5,7 +5,7 @@
 #include "Server.hpp"
 
 //void	Server::co_handler(std::string buff) {
-//	void	(Server::*fptr[])() = {&co_kick(buff), Server::co_invite, &Server::co_topic, &Server::co_mode};
+//	void	(Server::*fptr[])() = {&Server::co_kick(buff), &Server::co_invite, &Server::co_topic, &Server::co_mode};
 //	std::string tab_com[] = {"DEBUG", "ERROR", "INFO", "WARNING"};
 //}
 //

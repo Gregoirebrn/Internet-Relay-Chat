@@ -24,6 +24,9 @@ public :
 	Client();
 	~Client();
 	// Public methods
-	static int CreateClient(int fd_cli);
-	static int CommandClient(std::string buff);
+	int CreateClient(int fd_cli);
+	int CommandClient(const std::string& buff);
+	void register_nick(const std::string& buff);
+	void register_user(const std::string& buff);
+	void register_pass(const std::string& buff);
 };

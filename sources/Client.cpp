@@ -18,10 +18,35 @@ int Client::CreateClient(int fd_cli) {
 	return 0;
 }
 
-int Client::CommandClient(std::string buff) {
-		void	(Server::*fptr[])() = {&co_kick(buff), Server::co_invite, &Server::co_topic, &Server::co_mode};
-	std::string tab_com[] = {"DEBUG", "ERROR", "INFO", "WARNING"};
+void Client::register_nick(const std::string& buff) {
+
+}
+
+void Client::register_user(const std::string& buff) {
+
+}
+
+void Client::register_pass(const std::string& buff) {
+
+}
+
+int Client::CommandClient(const std::string& buff) {
+	void (Client::*fptr[3])(const std::string&) = {&Client::register_nick, &Client::register_user, &Client::register_pass};
+	std::string tab_com[] = {"NICK", "USER", "PASS"};
+
+	try {
+		std::string command = buff.substr(0, buff.find(' '));
+		for (int i = 0; i < 3; ++i) {
+			if (command == tab_com[i])
+				(this->*fptr[i])(buff);
+		}
+	}
+	catch (const std::out_of_range& ex) {
+		std::cout << "Client :" << ex.what() << std::endl;
+	}
+
 	return 0;
 }
+
 
 // Public methods

@@ -22,7 +22,6 @@ Server::~Server() {
 int Server::CreatSocket()
 {
 	int opt = 1;
-	
 	//Communication domaine en IPv4 ou IPv6 protocol, on choisi IPv4 donc AF_INET pour le domain
 	//type de communication en TCP pour le type donc SOCK_STREAM
 	//valeur de champs generalement 0 ou 3
@@ -61,7 +60,7 @@ int Server::CreatSocket()
 					struct sockaddr *addr_cli = NULL;
 					int fd_cli = accept(_socketfd, addr_cli, reinterpret_cast<socklen_t *>(sizeof(&addr_cli)));
 					_pollfds.push_back((struct pollfd){.fd = fd_cli, .events = POLLIN, .revents = 0});
-					Client::CreateClient(fd_cli);
+					_init_cli.CreateClient(fd_cli);
 					_nfds++;
 					it = _pollfds.begin();
 					std::cout << "ACCEPTED NEW CLIENT | FD " << fd_cli << std::endl;
@@ -89,7 +88,7 @@ void	Server::messag_handle(std::vector<pollfd>::iterator &it) {
 	else { //message
 		buff[ret] = '\0';
 //		if (buff[0] == '\\') Gestion des cannaux operateurs
-		Client::CommandClient(buff);
+		_init_cli.CommandClient(buff);
 		std::cout << buff;
 	}
 }
