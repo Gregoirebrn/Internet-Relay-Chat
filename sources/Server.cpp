@@ -89,7 +89,7 @@ void	Server::messag_handle(std::vector<pollfd>::iterator &it) {
 	else { //message
 		buff[ret] = '\0';
 //		if (buff[0] == '\\') Gestion des cannaux operateurs
-//			co_handler(buff);
+		Client::CommandClient(buff);
 		std::cout << buff;
 	}
 }

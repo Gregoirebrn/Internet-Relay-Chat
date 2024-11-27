@@ -6,12 +6,14 @@
 
 # include <iostream>
 # include <map>
-# include <sys/
+# include <sys/socket.h>
+
 class Server;
 
 typedef struct info_s {
-	std::string nickname;
-	std::string pseudo;
+	bool			_register;
+	std::string		_nickname;
+	std::string		_pseudo;
 } info_t;
 
 class Client {
@@ -23,4 +25,5 @@ public :
 	~Client();
 	// Public methods
 	static int CreateClient(int fd_cli);
+	static int CommandClient(std::string buff);
 };
