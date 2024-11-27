@@ -18,9 +18,6 @@
 //inner lib
 #include "Client.hpp"
 //global variable
-
-
-
 bool	g_signal = true;
 
 class Server {

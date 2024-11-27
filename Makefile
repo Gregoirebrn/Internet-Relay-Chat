@@ -4,7 +4,7 @@
 
 SRCS		:=	Server.cpp			\
 				Client.cpp			\
-				Canal_Operators.cpp	\
+#				Canal_Operators.cpp	\
 
 SRCS_D		:=	sources/
 

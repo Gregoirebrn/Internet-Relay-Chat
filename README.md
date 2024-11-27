@@ -3,6 +3,10 @@ Communication by channels in group or in private
 
 On utilisera comme client de référence hexchat
 
+## -Guidelines
+
+We Will use the RFC 1459, the full name is Request for comments and it is used to handle the errors in differents informatique material like an IRC chat.
+
 ## -PROCESSUS- 
 
 
