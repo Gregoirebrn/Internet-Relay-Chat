@@ -7,6 +7,8 @@
 # include <iostream>
 # include <map>
 # include <sys/socket.h>
+# include <csignal>
+# include <cstring>
 
 //RFC
 # include "rfc_1459.hpp"
@@ -36,4 +38,6 @@ public :
 	int register_nick(std::string buff, int fd_cli);
 	int register_user(std::string buff, int fd_cli);
 	int register_pass(std::string buff, int fd_cli);
+	//error handle
+	static void	send_error(int fd, const char *error)
 };

@@ -5,16 +5,17 @@
 #include "Server.hpp"
 
 // Constructors & destructor
-Server::Server(char *port, std::string pw) : _port(static_cast <uint16_t>(std::strtod(port, NULL))), _password(pw), _socketfd(0), _addr(), _nfds(0), _init_cli(pw) {
+Server::Server(char *port, std::string pw) : _port(static_cast <uint16_t>(std::strtod(port, NULL))), _password(pw), _addr(), _nfds(0), _init_cli(pw) {
 	//Init sock_addr struct for bind
 	_addr.sin_family = AF_INET; // IPv4
 	_addr.sin_port = htons(_port); // Port number, convert host to network byte order
 	_addr.sin_addr.s_addr = INADDR_ANY; // Bind to all available interfaces (0.0.0.0)
-
+	signal_handler();
 	std::cout << "Server default constructor called!" << std::endl;
 }
 
 Server::~Server() {
+	close(_socketfd);
 	std::cout << "Server default destructor called!" << std::endl;
 }
 
@@ -50,7 +51,7 @@ int Server::CreatSocket()
 	//change true to the global that is false if a ctrl D or a sigaction ocured
 	while (g_signal) {
 //		std::cout << "WAITING ..." << std::endl;
-		if (poll(_pollfds.data(), _nfds, -1) < 0) //wait to have a action from one of the fds
+		if (poll(_pollfds.data(), _nfds, -1) < 0 && !g_signal) //wait to have a action from one of the fds
 			break ;
 		if (!g_signal) //check if the global value of signal have changed with a if
 			break ;
@@ -71,7 +72,6 @@ int Server::CreatSocket()
 		}
 	}
 	std::cout << "Server successfully bound to port 8080." << std::endl;
-	_pollfds.clear();
 	return 0;
 }
 
@@ -86,29 +86,29 @@ void	Server::messag_handle(std::vector<pollfd>::iterator &it) {
 	else if (ret < 0) // error occured
 		std::cerr << "Recv failed: " << strerror(errno) << std::endl;
 	else { //message
-		buff[ret] = '\0';
+		buff[ret - 2] = '\0';
 //		if (buff[0] == '\\') Gestion des cannaux operateurs
 		_init_cli.CommandClient(buff, it->fd);
 		std::cout << buff;
 	}
 }
 
-void	handler(int sig) {
+void	Server::handler(int sig) {
 	(void)sig;
 	g_signal = false;
-	write(1, "\nSignal: quit program.\n", 23);
+	std::cout << "\rSignal: quit program." << std::endl;
 }
 
 int Server::signal_handler() {
-	signal(SIGINT, &handler);
-	signal(SIGQUIT, &handler);
+	std::signal(SIGINT, &Server::handler);
+	std::signal(SIGQUIT, &Server::handler);
+	std::signal(SIGPIPE, SIG_IGN);
 	return (100);
 }
 
 int	main(int ac, char **av) {
 	if (ac < 3)
 		return (std::cout << "Error: Missing arguments." << std::endl, 210);
-	Server::signal_handler();
 	Server serv(av[1], av[2]);
 	serv.CreatSocket();
 }

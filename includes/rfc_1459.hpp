@@ -4,8 +4,10 @@
 
 #pragma once
 
-#define ERR_NEEDMOREPARAMS(command) ("461 : " + std::string(command) + " :Not enough parameters")
-#define ERR_ALREADYREGISTRED "462 :You may not reregister"
+//pass
+#define ERR_NEEDMOREPARAMS(command) "461 :" command " :Not enough parameters\n"
+#define ERR_ALREADYREGISTRED "462 :You may not reregister\n"
+#define ERR_NEEDPASS "808 :You must send PASS before any SERVER command\n"
 
 //nickname
 //#define ERR_NONICKNAMEGIVEN

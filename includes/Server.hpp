@@ -36,7 +36,8 @@ public :
 	// Public methods
 	int				CreatSocket();
 	void			messag_handle(std::vector<pollfd>::iterator &it);
-	static int		signal_handler();
+	int		signal_handler();
+	static void	handler(int sig);
 	// Canal Operators
 //	void	co_handler(std::string buff);
 //	int		co_kick(std::string buff);
