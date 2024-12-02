@@ -9,6 +9,7 @@
 # include <sys/socket.h>
 # include <csignal>
 # include <cstring>
+# 	include <algorithm>
 
 //RFC
 # include "rfc_1459.hpp"
@@ -25,8 +26,8 @@ typedef struct info_s {
 
 class Client {
 private :
-	std::string		_password;
-	std::map<int , info_t> _map;
+	std::string				_password;
+	std::map<int , info_t>	_map;
 public :
 	// Constructors & destructor
 	Client();
@@ -39,5 +40,5 @@ public :
 	int register_user(std::string buff, int fd_cli);
 	int register_pass(std::string buff, int fd_cli);
 	//error handle
-	static void	send_error(int fd, const char *error)
+	static void	send_error(int fd, std::string error);
 };

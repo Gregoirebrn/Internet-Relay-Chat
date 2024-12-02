@@ -4,7 +4,7 @@
 
 SRCS		:=	Server.cpp			\
 				Client.cpp			\
-#				Canal_Operators.cpp	\
+				Channel.cpp			\
 
 SRCS_D		:=	sources/
 
@@ -14,6 +14,7 @@ OBJS		=	$(SRCS:%.cpp=$(OBJS_D)%.o)
 
 HEAD		:=	Server.hpp		\
 				Client.hpp		\
+				Channel.hpp		\
 
 HEAD_D		:=	includes/
 

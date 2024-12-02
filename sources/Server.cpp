@@ -64,7 +64,7 @@ int Server::CreatSocket()
 					_init_cli.CreateClient(fd_cli, addr_cli);
 					_nfds++;
 					it = _pollfds.begin();
-					std::cout << "ACCEPTED NEW CLIENT | FD " << fd_cli << std::endl;
+//					std::cout << "ACCEPTED NEW CLIENT | FD " << fd_cli << std::endl;
 				}
 				else //handle the message of the event
 					messag_handle(it);
@@ -78,18 +78,21 @@ int Server::CreatSocket()
 void	Server::messag_handle(std::vector<pollfd>::iterator &it) {
 	int	n = 512;
 	char buff[512 + 1];
+	bzero(buff, 513);
 	ssize_t ret = recv(it->fd, buff, n, MSG_DONTWAIT);
 	if (!ret) { // client gone suppress it
-		std::cout << "!ret " << it->fd << std::endl;
+		std::cout << "CLient : " << it->fd << "disconnected." << std::endl;
 		it = _pollfds.erase(it);
 	}
 	else if (ret < 0) // error occured
 		std::cerr << "Recv failed: " << strerror(errno) << std::endl;
 	else { //message
-		buff[ret - 2] = '\0';
-//		if (buff[0] == '\\') Gestion des cannaux operateurs
-		_init_cli.CommandClient(buff, it->fd);
+		buff[ret] = '\0';
+		std::string trim = buff;
+		_init_cli.CommandClient(trim, it->fd);
+		 Gestion des cannaux operateurs
 		std::cout << buff;
+
 	}
 }
 

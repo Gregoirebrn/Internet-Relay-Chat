@@ -22,28 +22,40 @@ Client::~Client(void) {
 
 int Client::CreateClient(int fd_cli, sockaddr *pSockaddr) {
 	_map[fd_cli] = (info_t){._register = false, ._pw_verified = false, ._addr_cli = pSockaddr};
-	std::cout << "LOG CLIENT PSEUDO :" << _map[fd_cli]._pseudo << std::endl;
+//	std::cout << "LOG CLIENT PSEUDO :" << _map[fd_cli]._pseudo << std::endl;
 	return 0;
 }
 
 int Client::register_nick(std::string buff, int fd_cli) {
+	if (buff.empty())
+			return (send_error(fd_cli, ERR_NONICKNAMEGIVEN), 431);
 	if (!_map[fd_cli]._pw_verified)
-		return (send(fd_cli, ERR_NEEDPASS, sizeof(ERR_NEEDPASS), 0), 808);
-	_map[fd_cli]._nickname = buff.substr(5, buff.find(' '));
+		return (send(fd_cli, ERR_NOTREGISTRED, sizeof(ERR_NOTREGISTRED), 0), 808);
+	std::string charset = "=#&:";
+	for (int i = 0; buff[i]; ++i) {
+		if (std::string::npos != charset.find(buff[i]) || iswspace(buff[i]) || (i == 0 && isdigit(buff[i])))
+			return (send_error(fd_cli, ERR_ERRONEUSNICKNAME(buff)), 432);
+	}
+	for (std::map<int, info_t>::iterator it = _map.begin() ; it != _map.end(); ++it) {
+		if (it->second._nickname == buff)
+			return (send_error(fd_cli, ERR_NICKNAMEINUSE(buff)), 432);
+	}
+	_map[fd_cli]._nickname = buff;
 	std::cout << "CLIENT :" << fd_cli << " NICK :" << _map[fd_cli]._nickname << std::endl;
 	return (0);
 }
 
 int Client::register_user(std::string buff, int fd_cli) {
 	if (!_map[fd_cli]._pw_verified)
-		return (send(fd_cli, ERR_NEEDPASS, sizeof(ERR_NEEDPASS), 0), 808);
-	_map[fd_cli]._pseudo = buff.substr(5, buff.find(' '));
+		return (send(fd_cli, ERR_NOTREGISTRED, sizeof(ERR_NOTREGISTRED), 0), 808);
+	if (!_map[fd_cli]._pseudo.empty())
+		return(send_error(fd_cli, ERR_ALREADYREGISTRED), 462);
+	_map[fd_cli]._pseudo = buff;
 	std::cout << "CLIENT :" << fd_cli << " PSEUDO :" << _map[fd_cli]._pseudo << std::endl;
 	return (0);
 }
 
-int Client::register_pass(const std::string arg, int fd_cli) {
-	std::cout << arg << std::endl;
+int Client::register_pass(std::string arg, int fd_cli) {
 	if (_map[fd_cli]._pw_verified)
 		return (send(fd_cli, ERR_ALREADYREGISTRED, sizeof(ERR_ALREADYREGISTRED), 0), 462);
 	if (arg.empty() || arg.size() <= 1) {
@@ -52,9 +64,8 @@ int Client::register_pass(const std::string arg, int fd_cli) {
 	}
 	if (_password == arg)
 		_map[fd_cli]._pw_verified = true;
-	std::cout << "CLIENT :" << fd_cli << " Password :" << _map[fd_cli]._pw_verified << std::endl;
 	if (!_map[fd_cli]._pw_verified)
-		return (send_error(fd_cli, ERR_NEEDMOREPARAMS("PASS")), 462);
+		return (send_error(fd_cli, ERR_PASSWDMISMATCH), 464);
 	return (0);
 }
 
@@ -63,16 +74,22 @@ int Client::CommandClient(std::string buff, int fd_cli)
 	static int (Client::*fptr[3])(std::string, int fd_cli) = {&Client::register_nick, &Client::register_user, &Client::register_pass};
 	static std::string tab_com[] = {"NICK", "USER", "PASS"};
 
-	(void)fd_cli;
 	try {
-//		std::cout << "COMMAND :" << ":" << buff << " " << buff.size() << std::endl;
+//		std::cout << "COMMAND :" << buff << " " << buff.size();
 		for (int i = 0; i < 3; ++i) {
 			if (buff.compare(0, 4, tab_com[i]) == 0) {
 				std::size_t pos = buff.find(' ');
-				if (pos == std::string::npos)
-					return (send_error(fd_cli, ERR_NEEDMOREPARAMS((char *)tab_com[i])), 462);
+				if (pos == std::string::npos) {
+					std::string ret = tab_com[i];
+					return (send_error(fd_cli, ERR_NEEDMOREPARAMS(ret)), 462);
+				}
 				std::string arg = buff.substr(pos + 1);
-//				std::cout << "ARGGGG :" << arg << std::endl;
+				if (arg.find('\r') != std::string::npos) {
+					std::cout << "BEFORE: " << arg << std::endl;
+					std::string mod = arg.substr(0, arg.size() - 2);
+					arg = mod;
+					std::cout << "AFTER : " << mod << std::endl;
+				}
 				(this->*fptr[i])(arg, fd_cli);
 				return (0);
 			}
@@ -85,8 +102,9 @@ int Client::CommandClient(std::string buff, int fd_cli)
 }
 
 // error handler
-void Client::send_error(int fd, const char *error) {
-	send(fd, error, strlen(error), 0);
+	void Client::send_error(int fd, std::string error) {
+	const char *err = error.c_str();
+	send(fd, err, strlen(err), 0);
 }
 
 //send error to client

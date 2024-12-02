@@ -17,6 +17,7 @@
 #include <csignal>
 //inner lib
 #include "Client.hpp"
+#include "Channel.hpp"
 //global variable
 bool	g_signal = true;
 
@@ -29,6 +30,7 @@ private :
 	std::vector<pollfd>		_pollfds;
 	nfds_t					_nfds;
 	Client					_init_cli;
+	Channel					_chan;
 public :
 	// Constructors & destructor
 	Server(char *port, std::string pw);
