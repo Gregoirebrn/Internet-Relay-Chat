@@ -29,7 +29,7 @@ private :
 	struct sockaddr_in		_addr;
 	std::vector<pollfd>		_pollfds;
 	nfds_t					_nfds;
-	Client					_init_cli;
+	Client					_cli;
 	Channel					_chan;
 public :
 	// Constructors & destructor

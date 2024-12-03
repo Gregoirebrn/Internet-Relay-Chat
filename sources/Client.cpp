@@ -102,7 +102,7 @@ int Client::CommandClient(std::string buff, int fd_cli)
 }
 
 // error handler
-	void Client::send_error(int fd, std::string error) {
+void	send_error(int fd, std::string error) {
 	const char *err = error.c_str();
 	send(fd, err, strlen(err), 0);
 }

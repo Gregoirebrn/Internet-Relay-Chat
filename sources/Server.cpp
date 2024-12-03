@@ -5,7 +5,7 @@
 #include "Server.hpp"
 
 // Constructors & destructor
-Server::Server(char *port, std::string pw) : _port(static_cast <uint16_t>(std::strtod(port, NULL))), _password(pw), _addr(), _nfds(0), _init_cli(pw) {
+Server::Server(char *port, std::string pw) : _port(static_cast <uint16_t>(std::strtod(port, NULL))), _password(pw), _addr(), _nfds(0), _cli(pw) {
 	//Init sock_addr struct for bind
 	_addr.sin_family = AF_INET; // IPv4
 	_addr.sin_port = htons(_port); // Port number, convert host to network byte order
@@ -61,7 +61,7 @@ int Server::CreatSocket()
 					struct sockaddr *addr_cli = NULL;
 					int fd_cli = accept(_socketfd, addr_cli, reinterpret_cast<socklen_t *>(sizeof(&addr_cli)));
 					_pollfds.push_back((struct pollfd){.fd = fd_cli, .events = POLLIN, .revents = 0});
-					_init_cli.CreateClient(fd_cli, addr_cli);
+					_cli.CreateClient(fd_cli, addr_cli);
 					_nfds++;
 					it = _pollfds.begin();
 //					std::cout << "ACCEPTED NEW CLIENT | FD " << fd_cli << std::endl;
@@ -89,8 +89,9 @@ void	Server::messag_handle(std::vector<pollfd>::iterator &it) {
 	else { //message
 		buff[ret] = '\0';
 		std::string trim = buff;
-		_init_cli.CommandClient(trim, it->fd);
-		 Gestion des cannaux operateurs
+		_cli.CommandClient(trim, it->fd);
+		_chan.Canal_Operators(trim, it->fd);
+		//		Gestion des cannaux operateurs
 		std::cout << buff;
 
 	}

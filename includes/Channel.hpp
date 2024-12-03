@@ -13,12 +13,16 @@ class Server;
 
 class Channel {
 private :
-	std::map<std::string , std::vector<int> > _all_chan;
+	std::map<std::string , std::vector<std::string> > _all_chan;
 public :
 	// Constructors & destructor
 	Channel();
 	~Channel();
 	// Public methods
-	void	Canal_Operators(std::string buff);
+	int		Canal_Operators(std::string buff, int fd_cli);
+	int		Kick(std::string buff, int fd_cli);
+	int		Invite(std::string buff, int fd_cli);
+	int		Topic(std::string buff, int fd_cli);
+	int		Mode(std::string buff, int fd_cli);
 	};
 

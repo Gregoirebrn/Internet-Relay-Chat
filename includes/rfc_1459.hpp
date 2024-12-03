@@ -34,9 +34,11 @@
 //#define ERR_UMODEUNKNOWNFLAG
 
 //invite
-//#define ERR_USERONCHANNEL
-//#define RPL_INVITING
-//#define RPL_AWAY
+#define RPL_INVITING(client, nick, channel) ("341 " + (client) + " " + (nick) + " " + (channel) + "\r\n")
+#define ERR_NOSUCHCHANNEL(channel) ("403 " + (channel) + " :No such channel\r\n")
+#define ERR_NOTONCHANNEL(channel) ("442 " + (channel) + " :You're not on that channel\r\n")
+#define ERR_CHANOPRIVSNEEDED(channel) ("482 " + (channel) + " :You're not channel operator\r\n")
+#define ERR_USERONCHANNEL(nick, channel) ("443 " + (nick) + (channel) + " :is already on channel\r\n")
 
 //topic
 //#define RPL_NOTOPIC
