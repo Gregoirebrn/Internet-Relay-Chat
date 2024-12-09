@@ -21,8 +21,11 @@
 //global variable
 bool	g_signal = true;
 
+
+//class Channel;
+
 class Server {
-private :
+protected:
 	uint16_t				_port;
 	std::string				_password;
 	int						_socketfd;

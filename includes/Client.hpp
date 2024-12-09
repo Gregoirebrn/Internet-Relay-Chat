@@ -32,6 +32,8 @@ public :
 	// Constructors & destructor
 	Client();
 	~Client();
+	//getter
+	std::string Get_Client_Name(int fd_cli);
 	Client(const std::string& password);
 	// Public methods
 	int CreateClient(int fd_cli, sockaddr *pSockaddr);

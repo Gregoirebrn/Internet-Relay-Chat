@@ -110,6 +110,12 @@ int Server::signal_handler() {
 	return (100);
 }
 
+std::string Client::Get_Client_Name(int fd_cli) {
+	if (_map[fd_cli]._nickname.empty())
+		return ("default");
+	return _map[fd_cli]._nickname;
+}
+
 int	main(int ac, char **av) {
 	if (ac < 3)
 		return (std::cout << "Error: Missing arguments." << std::endl, 210);

@@ -20,7 +20,8 @@
 //#define ERR_NOSUCHCHANNEL
 //#define ERR_BADCHANMASK
 //#define ERR_CHANOPRIVSNEEDED
-//#define ERR_NOTONCHANNEL
+#define ERR_USERNOTINCHANNEL(client, nick, channel) ("441" + (client) + (nick) + (channel) + " :They aren't on that channel\r\n")
+#define RPL_SUCCESKICK(nick, channel, comment) ("Command to kick " + (nick) + " from " + (channel) + " \r\n")
 
 //mode
 //#define RPL_CHANNELMODEIS
@@ -41,5 +42,6 @@
 #define ERR_USERONCHANNEL(nick, channel) ("443 " + (nick) + (channel) + " :is already on channel\r\n")
 
 //topic
-//#define RPL_NOTOPIC
-//#define RPL_TOPIC
+#define RPL_NOTOPIC(client, channel) ("331" + (client) + (channel) + " :No topic is set\r\n")
+#define RPL_TOPIC(client, channel, topic) ("332" + (client) + (channel) + " :" + (topic))
+#define RPL_TOPICWHOTIME(client, channel, nick, setat) ("333" + (client) + " " + (channel) + " " + (nick) + " " + (setat))
