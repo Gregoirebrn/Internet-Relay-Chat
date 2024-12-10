@@ -89,11 +89,8 @@ void	Server::messag_handle(std::vector<pollfd>::iterator &it) {
 	else { //message
 		buff[ret] = '\0';
 		std::string trim = buff;
-		_cli.CommandClient(trim, it->fd);
-		_chan.Canal_Operators(trim, it->fd);
-		//		Gestion des cannaux operateurs
-		std::cout << buff;
-
+		_cli.CommandClient(trim, it->fd); //user nick pass
+		_chan.Canal_Operators(trim, it->fd); //join mode kick topic invite
 	}
 }
 

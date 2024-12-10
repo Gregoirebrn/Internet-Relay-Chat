@@ -5,7 +5,6 @@
 #include "Channel.hpp"
 
 int Channel::Invite(std::string buff, int fd_cli) {
-	std::cout << "BUFF:" << buff << std::endl;
 	size_t space = buff.find(' ');
 	if (std::string::npos == space)
 		return (send_error(fd_cli, ERR_NEEDMOREPARAMS(buff)), 462);//missing params

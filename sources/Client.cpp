@@ -26,49 +26,6 @@ int Client::CreateClient(int fd_cli, sockaddr *pSockaddr) {
 	return 0;
 }
 
-int Client::register_nick(std::string buff, int fd_cli) {
-	if (buff.empty())
-			return (send_error(fd_cli, ERR_NONICKNAMEGIVEN), 431);
-	if (!_map[fd_cli]._pw_verified)
-		return (send(fd_cli, ERR_NOTREGISTRED, sizeof(ERR_NOTREGISTRED), 0), 808);
-	std::string charset = "=#&:";
-	for (int i = 0; buff[i]; ++i) {
-		if (std::string::npos != charset.find(buff[i]) || iswspace(buff[i]) || (i == 0 && isdigit(buff[i])))
-			return (send_error(fd_cli, ERR_ERRONEUSNICKNAME(buff)), 432);
-	}
-	for (std::map<int, info_t>::iterator it = _map.begin() ; it != _map.end(); ++it) {
-		if (it->second._nickname == buff)
-			return (send_error(fd_cli, ERR_NICKNAMEINUSE(buff)), 432);
-	}
-	_map[fd_cli]._nickname = buff;
-	std::cout << "CLIENT :" << fd_cli << " NICK :" << _map[fd_cli]._nickname << std::endl;
-	return (0);
-}
-
-int Client::register_user(std::string buff, int fd_cli) {
-	if (!_map[fd_cli]._pw_verified)
-		return (send(fd_cli, ERR_NOTREGISTRED, sizeof(ERR_NOTREGISTRED), 0), 808);
-	if (!_map[fd_cli]._pseudo.empty())
-		return(send_error(fd_cli, ERR_ALREADYREGISTRED), 462);
-	_map[fd_cli]._pseudo = buff;
-	std::cout << "CLIENT :" << fd_cli << " PSEUDO :" << _map[fd_cli]._pseudo << std::endl;
-	return (0);
-}
-
-int Client::register_pass(std::string arg, int fd_cli) {
-	if (_map[fd_cli]._pw_verified)
-		return (send(fd_cli, ERR_ALREADYREGISTRED, sizeof(ERR_ALREADYREGISTRED), 0), 462);
-	if (arg.empty() || arg.size() <= 1) {
-		send(fd_cli, ERR_ALREADYREGISTRED, sizeof(ERR_ALREADYREGISTRED), 0);
-		return (462); // handle error
-	}
-	if (_password == arg)
-		_map[fd_cli]._pw_verified = true;
-	if (!_map[fd_cli]._pw_verified)
-		return (send_error(fd_cli, ERR_PASSWDMISMATCH), 464);
-	return (0);
-}
-
 int Client::CommandClient(std::string buff, int fd_cli)
 {
 	static int (Client::*fptr[3])(std::string, int fd_cli) = {&Client::register_nick, &Client::register_user, &Client::register_pass};
