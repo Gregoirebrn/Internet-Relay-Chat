@@ -2,9 +2,21 @@
 #                                                       VARIABLE                                                       #
 ########################################################################################################################
 
+CM			:=	Connection_Messages/
+
+CO			:=	Channel_Operations/
+
 SRCS		:=	Server.cpp			\
 				Client.cpp			\
 				Channel.cpp			\
+				$(CO)Invite.cpp		\
+				$(CO)Join.cpp		\
+				$(CO)Kick.cpp		\
+				$(CO)Mode.cpp		\
+				$(CO)Topic.cpp		\
+				$(CM)Nick.cpp		\
+				$(CM)Pass.cpp		\
+				$(CM)User.cpp		\
 
 SRCS_D		:=	sources/
 
@@ -35,7 +47,7 @@ $(OBJS)		:	$(OBJS_D)%.o: $(SRCS_D)%.cpp $(HEAD_D)/*.hpp Makefile
 				$(CFLAGS) -I$(HEAD_D) -c $< -o $@
 
 $(OBJS_D)	:
-				@mkdir -p $(OBJS_D)
+				@mkdir -p $(OBJS_D) $(OBJS_D)$(CM) $(OBJS_D)$(CO)
 ########################################################################################################################
 #                                                        COMMANDS                                                      #
 ########################################################################################################################
