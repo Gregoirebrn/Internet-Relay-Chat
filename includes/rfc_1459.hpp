@@ -43,10 +43,11 @@
 
 //topic
 #define RPL_NOTOPIC(client, channel) ("331" + (client) + (channel) + " :No topic is set\r\n")
-#define RPL_TOPIC(client, channel, topic) ("332" + (client) + (channel) + " :" + (topic))
-#define RPL_TOPICWHOTIME(client, channel, nick, setat) ("333" + (client) + " " + (channel) + " " + (nick) + " " + (setat))
+#define RPL_TOPIC(client, channel, topic) ("332" + (client) + (channel) + " :" + (topic) + "\r\n")
+#define RPL_TOPICWHOTIME(client, channel, nick, setat) ("333" + (client) + " " + (channel) + " " + (nick) + " " + (setat) + "\r\n")
 
 //join
-#define RPL_NAMREPLY(client, symbol, channel, prenick) ("353 " + (client) + (symbol) + (channel) + " :" + (prenick) + "\r\n")
-#define ERR_TOOMANYCHANNELS(client, channel) ("405 " + (client) + " " + (channel) + " :You have joined too many channels")
-#define ERR_BADCHANNELKEY(client, channel) ("475 " + (client) + " " + (channel) + " :Cannot join channel (+k)")
+#define RPL_NAMREPLY(client, channel, prenick) ("353 " + (client) + " = " + (channel) + " :" + (prenick) + "\r\n")
+#define ERR_TOOMANYCHANNELS(client, channel) ("405 " + (client) + " " + (channel) + " :You have joined too many channels\r\n")
+#define ERR_BADCHANNELKEY(client, channel) ("475 " + (client) + " " + (channel) + " :Cannot join channel (+k)\r\n")
+#define RPL_ENDOFNAMES(client, channel) ("366 " + (client) + (channel) + " :End of /NAMES list\r\n")
