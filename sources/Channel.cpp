@@ -37,9 +37,9 @@ int	Channel::Canal_Operators(std::string buff, int fd_cli) {
 bool Channel::get_rights(std::string name, std::string channel, int fd_cli) {
 	if (_all_chan.end() == _all_chan.find(channel))
 		return (send_error(fd_cli, ERR_NOSUCHCHANNEL(channel)), false);
-	for (iter_chan_user_t it = _chan_user.begin(); it != _chan_user.end(); ++it) {
+	for (chan_user_t it = _chan_user.begin(); it != _chan_user.end(); ++it) {
 		if (it->first == channel) {
-			iter_chan_t i = it->second.begin();
+			chan_t i = it->second.begin();
 			while (i != it->second.end() && i->first != name)
 				i++;
 			if (i == it->second.end())

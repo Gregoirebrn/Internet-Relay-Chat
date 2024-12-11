@@ -33,7 +33,7 @@ int	Channel::get_join_arg(std::string buff, int fd_cli, std::vector<std::string>
 	return (0);
 }
 
-int	Channel::check_max_joined(int fd_cli, std::vector<std::string> channel_v) {
+int	Channel::check_max_joined(int fd_cli, std::vector<std::string> channel_v) { // check with the macro MAX_CHAN if he would be in too many channel
 	size_t chan_joined = 0;
 	for (chan_user_t it = _chan_user.begin(); it != _chan_user.end() ; ++it) {
 		if (it->second.find(Get_Client_Name(fd_cli)) != it->second.end())
@@ -44,7 +44,7 @@ int	Channel::check_max_joined(int fd_cli, std::vector<std::string> channel_v) {
 	return (0);
 }
 
-void	Channel::send_rpl_name(std::string channel, std::string topic, int fd_cli) {
+void	Channel::send_rpl_name(std::string channel, std::string topic, int fd_cli) { //get all names of the channel and send them to client
 	std::string all_names;
 	for (chan_t it = _chan_user[channel].begin(); it != _chan_user[channel].end(); ++it) {
 		all_names += it->first + " ";
@@ -55,22 +55,22 @@ void	Channel::send_rpl_name(std::string channel, std::string topic, int fd_cli) 
 int	Channel::Join(std::string buff, int fd_cli) {
 	std::vector<std::string> channel_v;
 	std::vector<std::string> key_v;
-	if (get_join_arg(buff, fd_cli, channel_v, key_v))
+	if (get_join_arg(buff, fd_cli, channel_v, key_v)) // trim the buff in a vector of channels and keys
 		return (404);
 	std::vector<std::string>::iterator key_it = key_v.begin();
 	for (std::vector<std::string>::iterator it = channel_v.begin(); it != channel_v.end(); ++it) {
 		if (check_max_joined(fd_cli, channel_v))
 			return (404);
-		if (key_it == key_v.end())
+		if (key_it == key_v.end()) // if their is no keys to the channel
 			send_error(fd_cli, ERR_BADCHANNELKEY(Get_Client_Name(fd_cli), *it));
-		if (_all_chan.find(*it) == _all_chan.end())
+		if (_all_chan.find(*it) == _all_chan.end()) // not a channel
 			send_error(fd_cli, ERR_NOSUCHCHANNEL(*it));
 		else {
-			if (_all_chan[*it].chan_key != *key_it)
+			if (_all_chan[*it].chan_key != *key_it) // check the value of the key
 				send_error(fd_cli, ERR_BADCHANNELKEY(Get_Client_Name(fd_cli), *it));
-			else {
+			else { // add the client to the channel
 				_chan_user[*it][Get_Client_Name(fd_cli)] = false;
-				send_error(fd_cli, RPL_TOPIC(Get_Client_Name(fd_cli), *it, _all_chan[*it].topic)); // the topic needs to be set accordingly
+				send_error(fd_cli, RPL_TOPIC(Get_Client_Name(fd_cli), *it, _all_chan[*it].topic)); // ! the topic needs to be set accordingly !
 				send_rpl_name(*it, _all_chan[*it].topic, fd_cli);
 				send_error(fd_cli, RPL_ENDOFNAMES(Get_Client_Name(fd_cli), *it));
 			}

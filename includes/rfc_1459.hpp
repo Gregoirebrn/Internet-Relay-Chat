@@ -17,9 +17,6 @@
 //for multiple server #define ERR_NICKCOLLISION(nick) ("436 " + (nick) + ":Nickname collision KILL from <user>@<host>\r\n")
 
 //kick
-//#define ERR_NOSUCHCHANNEL
-//#define ERR_BADCHANMASK
-//#define ERR_CHANOPRIVSNEEDED
 #define ERR_USERNOTINCHANNEL(client, nick, channel) ("441" + (client) + (nick) + (channel) + " :They aren't on that channel\r\n")
 #define RPL_SUCCESKICK(nick, channel, comment) ("Command to kick " + (nick) + " from " + (channel) + " \r\n")
 
@@ -37,8 +34,7 @@
 //invite
 #define RPL_INVITING(client, nick, channel) ("341 " + (client) + " " + (nick) + " " + (channel) + "\r\n")
 #define ERR_NOSUCHCHANNEL(channel) ("403 " + (channel) + " :No such channel\r\n")
-#define ERR_NOTONCHANNEL(channel) ("442 " + (channel) + " :You're not on that channel\r\n")
-#define ERR_CHANOPRIVSNEEDED(channel) ("482 " + (channel) + " :You're not channel operator\r\n")
+#define ERR_NOTONCHANNEL(channel) ("442 " + (channel) + " :You're not on that channel\r\n")(channel) ("482 " + (channel) + " :You're not channel operator\r\n")
 #define ERR_USERONCHANNEL(nick, channel) ("443 " + (nick) + (channel) + " :is already on channel\r\n")
 
 //topic
