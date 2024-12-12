@@ -37,16 +37,16 @@ int	Channel::Canal_Operators(std::string buff, int fd_cli) {
 bool Channel::get_rights(std::string name, std::string channel, int fd_cli) {
 	if (_all_chan.end() == _all_chan.find(channel))
 		return (send_error(fd_cli, ERR_NOSUCHCHANNEL(channel)), false);
-	for (chan_user_t it = _chan_user.begin(); it != _chan_user.end(); ++it) {
+	for (chan_t it = _channel.begin(); it != _channel.end(); ++it) {
 		if (it->first == channel) {
-			chan_t i = it->second.begin();
+			user_t i = it->second.begin();
 			while (i != it->second.end() && i->first != name)
 				i++;
 			if (i == it->second.end())
 				return (send_error(fd_cli, ERR_NOTONCHANNEL(channel)), false);
 			if (i->second)
 				return true;
-			return (send_error(fd_cli, ERR_CHANOPRIVSNEEDED(channel)), false);
+			return (send_error(fd_cli, ERR_CHANOPRIVSNEEDED(Get_Client_Name(fd_cli), channel)), false);
 		}
 	}
 	return false;

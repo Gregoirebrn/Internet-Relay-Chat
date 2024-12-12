@@ -38,7 +38,13 @@ BIN			:=	ircserv
 #                                                        RULES                                                         #
 ########################################################################################################################
 
-all			:	$(BIN)
+.SILENT:
+
+all			:	msg_compil $(BIN)
+				echo "Success !"
+
+msg_compil	:
+				echo "Making..."
 
 $(BIN)		:	$(OBJS_D) $(OBJS)
 				$(CFLAGS) -o $(BIN) $(OBJS)

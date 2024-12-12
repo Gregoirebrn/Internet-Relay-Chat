@@ -5,7 +5,7 @@
 #include "Channel.hpp"
 
 void	Channel::send_rpl_topic(std::string channel, std::string topic, int fd_cli) {
-	for (chan_t it = _chan_user[channel].begin(); it != _chan_user[channel].end() ; ++it) {
+	for (user_t it = _channel[channel].begin(); it != _channel[channel].end() ; ++it) {
 
 	}
 	send_error(fd_cli, RPL_TOPIC(Get_Client_Name(fd_cli), channel, topic));

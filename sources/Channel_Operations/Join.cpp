@@ -35,7 +35,7 @@ int	Channel::get_join_arg(std::string buff, int fd_cli, std::vector<std::string>
 
 int	Channel::check_max_joined(int fd_cli, std::vector<std::string> channel_v) { // check with the macro MAX_CHAN if he would be in too many channel
 	size_t chan_joined = 0;
-	for (chan_user_t it = _chan_user.begin(); it != _chan_user.end() ; ++it) {
+	for (chan_t it = _channel.begin(); it != _channel.end() ; ++it) {
 		if (it->second.find(Get_Client_Name(fd_cli)) != it->second.end())
 			chan_joined++;
 	}
@@ -44,9 +44,9 @@ int	Channel::check_max_joined(int fd_cli, std::vector<std::string> channel_v) { 
 	return (0);
 }
 
-void	Channel::send_rpl_name(std::string channel, std::string topic, int fd_cli) { //get all names of the channel and send them to client
+void	Channel::send_rpl_name(std::string channel, int fd_cli) { //get all names of the channel and send them to client
 	std::string all_names;
-	for (chan_t it = _chan_user[channel].begin(); it != _chan_user[channel].end(); ++it) {
+	for (user_t it = _channel[channel].begin(); it != _channel[channel].end(); ++it) {
 		all_names += it->first + " ";
 	}
 	send_error(fd_cli, RPL_NAMREPLY(Get_Client_Name(fd_cli), channel, all_names));
@@ -69,9 +69,9 @@ int	Channel::Join(std::string buff, int fd_cli) {
 			if (_all_chan[*it].chan_key != *key_it) // check the value of the key
 				send_error(fd_cli, ERR_BADCHANNELKEY(Get_Client_Name(fd_cli), *it));
 			else { // add the client to the channel
-				_chan_user[*it][Get_Client_Name(fd_cli)] = false;
+				_channel[*it][Get_Client_Name(fd_cli)] = false;
 				send_error(fd_cli, RPL_TOPIC(Get_Client_Name(fd_cli), *it, _all_chan[*it].topic)); // ! the topic needs to be set accordingly !
-				send_rpl_name(*it, _all_chan[*it].topic, fd_cli);
+				send_rpl_name(*it, fd_cli);
 				send_error(fd_cli, RPL_ENDOFNAMES(Get_Client_Name(fd_cli), *it));
 			}
 		}

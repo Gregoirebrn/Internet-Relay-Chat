@@ -34,8 +34,9 @@
 //invite
 #define RPL_INVITING(client, nick, channel) ("341 " + (client) + " " + (nick) + " " + (channel) + "\r\n")
 #define ERR_NOSUCHCHANNEL(channel) ("403 " + (channel) + " :No such channel\r\n")
-#define ERR_NOTONCHANNEL(channel) ("442 " + (channel) + " :You're not on that channel\r\n")(channel) ("482 " + (channel) + " :You're not channel operator\r\n")
+#define ERR_NOTONCHANNEL(channel) ("442 " + (channel) + " :You're not on that channel\r\n")
 #define ERR_USERONCHANNEL(nick, channel) ("443 " + (nick) + (channel) + " :is already on channel\r\n")
+#define ERR_CHANOPRIVSNEEDED(client, channel) ("482 " + (client) + (channel) + " :You're not channel operator\r\n")
 
 //topic
 #define RPL_NOTOPIC(client, channel) ("331" + (client) + (channel) + " :No topic is set\r\n")
@@ -47,3 +48,4 @@
 #define ERR_TOOMANYCHANNELS(client, channel) ("405 " + (client) + " " + (channel) + " :You have joined too many channels\r\n")
 #define ERR_BADCHANNELKEY(client, channel) ("475 " + (client) + " " + (channel) + " :Cannot join channel (+k)\r\n")
 #define RPL_ENDOFNAMES(client, channel) ("366 " + (client) + (channel) + " :End of /NAMES list\r\n")
+

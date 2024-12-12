@@ -20,21 +20,37 @@ We Will use the RFC 1459, the full name is Request for comments and it is used t
 
 #### Gestion de nouveaux clients
 
+- [ ]  Parsing de reception des messages
+    - Utilisation de recv()
+    - Traiter le "CAP LS" de la part de Hexchat (ou non)
+
  - [x] Accepter le nouveau client
 
- - [ ] Authentification de nickname, password & username 
+ - [ ] Authentification de nickname, password & username
+   - Attention au repetitions de check comme des arguments manquants
+
 
 #### Operateurs de Canaux
 
-- [ ] Parsing de reception des messages
 
-- [ ] Gestion de kick, invite, topic & mode avec les flags i, t, k, o & l
+- [ ] Channels operateurs a traiter :
+  - INVITE
+  - JOIN
+    - KICK
+      - TOPIC
+
+- [ ] Ajouter MODE avec les flags i, t, k, o & l
+
+- [ ] Ajouter la commande PRIVMSG qui gere les messages envoye au channel ou au autre client.
 
 - [ ] Ajouter part pour quitter un channel
 
 #### Numeriques Reply
 
 ##     -DOCUMENTATION-
+
+MODERN IRC DOCUMENTATION
+https://modern.ircdocs.horse/#topic-message
 
 github of IRC by someone :
 https://github.com/ngircd/ngircd/tree/master

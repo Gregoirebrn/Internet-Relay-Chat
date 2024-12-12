@@ -44,7 +44,7 @@ public :
 	bool	get_rights(std::string name, std::string chan, int fd_cli);
 	int		get_join_arg(std::string buff, int fd_cli, std::vector<std::string> &channel_v, std::vector<std::string> &key_v);
 	int		check_max_joined(int fd_cli, std::vector<std::string> channel_v);
-	void	send_rpl_name(std::string channel, std::string topic, int fd_cli);
+	void	send_rpl_name(std::string channel, int fd_cli);
 	void	send_rpl_topic(std::string channel, std::string topic, int fd_cli);
 	};
 

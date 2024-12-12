@@ -20,10 +20,10 @@ int Channel::Kick(std::string buff, int fd_cli) {
 	else
 		comm = " using " + buff.substr(comma, buff.size() - 2) + " as the reason (comment).";
 	std::string nick = buff.substr(end_wd, comma);
-	chan_t found = _chan_user[channel].find(nick);//search the nickname in the database of the channel
-	if (_chan_user[channel].end() == found)
+	user_t found = _channel[channel].find(nick);//search the nickname in the database of the channel
+	if (_channel[channel].end() == found)
 		return (send_error(fd_cli, ERR_USERNOTINCHANNEL(Get_Client_Name(fd_cli), nick, channel)), 441);// we didn't find him
-	_chan_user.erase(nick);//we did find him
+	_channel.erase(nick);//we did find him
 	send_error(fd_cli, RPL_SUCCESKICK(nick, channel, comment));
 	return (0);
 }
