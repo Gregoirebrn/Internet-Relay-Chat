@@ -20,6 +20,8 @@
 #define ERR_USERNOTINCHANNEL(client, nick, channel) ("441" + (client) + (nick) + (channel) + " :They aren't on that channel\r\n")
 #define RPL_SUCCESKICK(nick, channel, comment) ("Command to kick " + (nick) + " from " + (channel) + " \r\n")
 
+//
+#define ERR_GONE(nick) ("QUIT :Gone to have lunch " + (nick) + " exiting from the network\r\n")
 //mode
 //#define RPL_CHANNELMODEIS
 //#define ERR_NOSUCHNICK

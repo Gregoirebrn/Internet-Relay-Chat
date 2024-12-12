@@ -83,16 +83,20 @@ void	Server::messag_handle(std::vector<pollfd>::iterator &it) {
 	bzero(buff, 513);
 	ssize_t ret = recv(it->fd, buff, n, MSG_DONTWAIT);
 	if (!ret) { // client gone suppress it
-		std::cout << "CLient : " << it->fd << "disconnected." << std::endl;
+		_chan.Quit(it->fd);
 		it = _pollfds.erase(it);
 	}
 	else if (ret < 0) // error occured
 		std::cerr << "Recv failed: " << strerror(errno) << std::endl;
 	else { //message
-		buff[ret] = '\0';
-		std::string trim = buff;
-		_cli.CommandClient(trim, it->fd); //user nick pass
-		_chan.Canal_Operators(trim, it->fd); //join mode kick topic invite
+		std::istringstream message;
+		message.str(buff);
+		for (std::string line; std::getline(message, line, '\n');) {
+			std::cout << "LINE :" << line << std::endl;
+			_cli.CommandClient(line, it->fd); //user nick pass
+			_chan.Canal_Operators(line, it->fd); //join mode kick topic invite
+		}
+//		std::cout << "GET :" << buff << std::endl;
 	}
 }
 
@@ -110,9 +114,9 @@ int Server::signal_handler() {
 }
 
 std::string Client::Get_Client_Name(int fd_cli) {
-	if (_map[fd_cli]._nickname.empty())
+	if (_clients[fd_cli]._nickname.empty())
 		return ("default");
-	return _map[fd_cli]._nickname;
+	return _clients[fd_cli]._nickname;
 }
 
 int	main(int ac, char **av) {

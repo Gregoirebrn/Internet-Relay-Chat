@@ -9,7 +9,6 @@
 #include <bits/stdc++.h>
 //internal libs
 # include "Client.hpp"
-//# include "Server.hpp"
 
 //define
 #define MAX_CHAN 5
@@ -40,6 +39,7 @@ public :
 	int		Topic(std::string buff, int fd_cli);
 	int		Mode(std::string buff, int fd_cli);
 	int		Join(std::string buff, int fd_cli);
+	void	Quit(int fd_cli);
 	// Utils for commands
 	bool	get_rights(std::string name, std::string chan, int fd_cli);
 	int		get_join_arg(std::string buff, int fd_cli, std::vector<std::string> &channel_v, std::vector<std::string> &key_v);

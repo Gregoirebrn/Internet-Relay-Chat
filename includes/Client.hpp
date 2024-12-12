@@ -27,7 +27,7 @@ typedef struct info_s {
 class Client {
 private :
 	std::string				_password;
-	std::map<int , info_t>	_map;
+	std::map<int , info_t>	_clients;
 public :
 	// Constructors & destructor
 	Client();
@@ -41,7 +41,8 @@ public :
 	int register_nick(std::string buff, int fd_cli);
 	int register_user(std::string buff, int fd_cli);
 	int register_pass(std::string buff, int fd_cli);
-	//error handle
-};
+	//quit handle
+	void	Remove(int fd_cli);
+	};
 
 	void	send_error(int fd, std::string error);

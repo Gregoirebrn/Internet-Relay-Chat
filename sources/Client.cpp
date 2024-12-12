@@ -14,15 +14,15 @@ Client::Client(const std::string& password) : _password(password) {
 }
 
 Client::~Client(void) {
-	for (std::map<int , info_t>::iterator it = _map.begin(); it != _map.end(); it++) {
+	for (std::map<int , info_t>::iterator it = _clients.begin(); it != _clients.end(); it++) {
 		close(it->first); // close all client fd
 	}
 	std::cout << "Client second destructor called!" << std::endl;
 }
 
 int Client::CreateClient(int fd_cli, sockaddr *pSockaddr) {
-	_map[fd_cli] = (info_t){._register = false, ._pw_verified = false, ._addr_cli = pSockaddr};
-//	std::cout << "LOG CLIENT PSEUDO :" << _map[fd_cli]._pseudo << std::endl;
+	_clients[fd_cli] = (info_t){._register = false, ._pw_verified = false, ._addr_cli = pSockaddr};
+//	std::cout << "LOG CLIENT PSEUDO :" << _clients[fd_cli]._pseudo << std::endl;
 	return 0;
 }
 
@@ -43,7 +43,7 @@ int Client::CommandClient(std::string buff, int fd_cli)
 				std::string arg = buff.substr(pos + 1);
 				if (arg.find('\r') != std::string::npos) {
 					std::cout << "BEFORE: " << arg << std::endl;
-					std::string mod = arg.substr(0, arg.size() - 2);
+					std::string mod = arg.substr(0, arg.size() - 1);
 					arg = mod;
 					std::cout << "AFTER : " << mod << std::endl;
 				}
@@ -56,6 +56,10 @@ int Client::CommandClient(std::string buff, int fd_cli)
 		std::cout << "Client :" << ex.what() << std::endl;
 	}
 	return 0;
+}
+
+void	Client::Remove(int fd_cli) {
+	_clients.erase(fd_cli);
 }
 
 // error handler
