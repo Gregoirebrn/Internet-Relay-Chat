@@ -49,11 +49,15 @@ We Will use the RFC 1459, the full name is Request for comments and it is used t
 
 ##     -DOCUMENTATION-
 
-MODERN IRC DOCUMENTATION
+MODERN IRC DOCUMENTATION :
 https://modern.ircdocs.horse/#topic-message
+
+RFC 1459 :
+https://www.rfc-editor.org/rfc/rfc1459.html#section-4.1.2
 
 github of IRC by someone :
 https://github.com/ngircd/ngircd/tree/master
+
 The self-hosted web IRC client:
 https://thelounge.chat/
 
