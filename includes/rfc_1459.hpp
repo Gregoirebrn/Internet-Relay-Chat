@@ -51,3 +51,6 @@
 #define ERR_BADCHANNELKEY(client, channel) ("475 " + (client) + " " + (channel) + " :Cannot join channel (+k)\r\n")
 #define RPL_ENDOFNAMES(client, channel) ("366 " + (client) + (channel) + " :End of /NAMES list\r\n")
 
+
+//privmsg
+#define ERR_NOSUCHNICK(client , nick) ("401 " + (client) + (nick) + " :No such nick/channel\r\n")
