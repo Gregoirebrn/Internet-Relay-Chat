@@ -13,10 +13,11 @@ SRCS		:=	Server.cpp			\
 				$(CO)Join.cpp		\
 				$(CO)Kick.cpp		\
 				$(CO)Mode.cpp		\
+				$(CO)Privmsg.cpp	\
+				$(CO)Quit.cpp		\
 				$(CO)Topic.cpp		\
 				$(CM)Nick.cpp		\
 				$(CM)Pass.cpp		\
-				$(CM)Quit.cpp		\
 				$(CM)User.cpp		\
 
 SRCS_D		:=	sources/
