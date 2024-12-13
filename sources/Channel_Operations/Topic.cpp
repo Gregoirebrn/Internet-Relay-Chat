@@ -8,7 +8,7 @@ void	Channel::send_rpl_topic(std::string channel, std::string topic, int fd_cli)
 	for (user_t it = _channel[channel].begin(); it != _channel[channel].end() ; ++it) {
 
 	}
-	send_error(fd_cli, RPL_TOPIC(Get_Client_Name(fd_cli), channel, topic));
+	send_error(fd_cli, RPL_TOPIC(GetName(fd_cli), channel, topic));
 }
 
 int Channel::Topic(std::string buff, int fd_cli) {
@@ -20,12 +20,12 @@ int Channel::Topic(std::string buff, int fd_cli) {
 		if (_all_chan.find(channel) == _all_chan.end())
 			return (send_error(fd_cli, ERR_NOSUCHCHANNEL(channel)), false);
 		if (_all_chan[channel].topic.empty())
-			return (send_error(fd_cli, RPL_NOTOPIC(Get_Client_Name(fd_cli), channel)), 331);
-		return (send_error(fd_cli, RPL_TOPIC(Get_Client_Name(fd_cli), channel, _all_chan[channel].topic)), 331);
+			return (send_error(fd_cli, RPL_NOTOPIC(GetName(fd_cli), channel)), 331);
+		return (send_error(fd_cli, RPL_TOPIC(GetName(fd_cli), channel, _all_chan[channel].topic)), 331);
 	}
 	std::string channel = buff.substr(0, space);
 	std::string topic = buff.substr(space, buff.size() - 2);
-	if (!get_rights(Get_Client_Name(fd_cli), channel, fd_cli)) //check if the client can mod the topic of the channel
+	if (!get_rights(GetName(fd_cli), channel, fd_cli)) //check if the client can mod the topic of the channel
 		return (404);
 	_all_chan[channel].topic = topic;
 	if (_all_chan[channel].topic.empty())

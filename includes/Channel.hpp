@@ -7,6 +7,9 @@
 # include <iostream>
 # include <vector>
 #include <bits/stdc++.h>
+#include <iostream>
+#include <sstream>
+#include <string>
 //internal libs
 # include "Client.hpp"
 
@@ -21,30 +24,42 @@ typedef struct mod_s {
 	size_t			max_user;
 }	mod_t;
 
-typedef std::map<std::string , std::map<std::string, bool> >::iterator chan_t;
-typedef std::map<std::string, bool>::iterator user_t;
+typedef std::map<std::string , std::map<std::string, bool> >::iterator	chan_t;
+typedef std::map<std::string, bool>::iterator							user_t;
+typedef std::vector<std::string>::iterator								vec_t;
+
+template<typename T, size_t N>
+T * end(T (&ra)[N]) {
+	return ra + N;
+}
 
 class Channel : public Client{
 private :
 	std::map<std::string, std::map<std::string, bool> >	_channel;
 	std::map<std::string, mod_t>						_all_chan;
 public :
-	// Constructors & destructor
+	//Constructors & destructor
 	Channel();
 	~Channel();
-	// Public methods
-	int		Canal_Operators(std::string buff, int fd_cli);
-	int		Kick(std::string buff, int fd_cli);
-	int		Invite(std::string buff, int fd_cli);
-	int		Topic(std::string buff, int fd_cli);
-	int		Mode(std::string buff, int fd_cli);
-	int		Join(std::string buff, int fd_cli);
-	void	Quit(int fd_cli);
-	// Utils for commands
+	//Getters
+	int		cpy_fd(std::string nick);
 	bool	get_rights(std::string name, std::string chan, int fd_cli);
 	int		get_join_arg(std::string buff, int fd_cli, std::vector<std::string> &channel_v, std::vector<std::string> &key_v);
-	int		check_max_joined(int fd_cli, std::vector<std::string> channel_v);
+	//Public methods
+	int		Canal_Operators(std::string buff, int fd_cli);
+	//Channel Operators
+	int		Invite(std::string buff, int fd_cli);
+	int		Join(std::string buff, int fd_cli);
+	int		Kick(std::string buff, int fd_cli);
+	int		Mode(std::string buff, int fd_cli);
+	int		Privmsg(std::string buff, int fd_cli);
+	int		Quit(std::string buff, int fd_cli);
+	int		Topic(std::string buff, int fd_cli);
+	//Sends
+	void	send_chan_msg(std::string channel, std::string msg);
 	void	send_rpl_name(std::string channel, int fd_cli);
 	void	send_rpl_topic(std::string channel, std::string topic, int fd_cli);
+	//Utils
+	int		check_max_joined(int fd_cli, std::vector<std::string> channel_v);
 	};
 

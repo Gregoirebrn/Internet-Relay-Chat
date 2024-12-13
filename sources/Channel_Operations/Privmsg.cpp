@@ -13,25 +13,29 @@ void	Channel::send_chan_msg(std::string channel, std::string msg) {
 int	Channel::Privmsg(std::string buff, int fd_cli) {
 	if (buff.find(' ') == std::string::npos)
 		return (send_error(fd_cli, ERR_NEEDMOREPARAMS(buff)), 461);
+	buff = buff.substr(0 , buff.size() - 1);
 	std::vector<std::string> targets;
 	std::istringstream haystack;
 	haystack.str(buff);
 	for (std::string line; std::getline(haystack, line, ',');) {
+		if (line.find(' ') != std::string::npos) {
+			targets.push_back(line.substr(0, line.find(' ')));
+			break;
+		}
 		targets.push_back(line);
 	}
 	for (vec_t it = targets.begin(); it != targets.end() ; ++it) {
 		std::cout << "TARGETS :" << *it << std::endl;
 	}
-	std::string msg = buff.substr((buff.find(targets.back()) + targets.back().size()), buff.size() - 1);
+	std::string msg = buff.substr((buff.find(targets.back()) + targets.back().size() + 1), buff.size()) + "\r\n";
 	for (vec_t it = targets.begin(); it != targets.end() ; ++it) {
-		if (it->find('#') == std::string::npos) { //its for one user check the nick exist & get the fd
-			int fd_msg = GetFd(*it);
-			if (0 > fd_msg)
-				return (send_error(fd_cli, ERR_NOSUCHNICK(GetName(fd_cli), *it)), 401);
-			send_error(fd_msg, msg);
-		} else { // its a channel send to all user in it
+		if (it->find('#') != std::string::npos) { // its a channel send to all user in it
 			std::string channel = it->substr(1, it->size());
-			send_chan_msg(channel, msg);
+			if (_channel.find(channel) == _channel.end())
+				send_error(fd_cli, ERR_NOSUCHCHANNEL(channel));
+			else
+				send_chan_msg(channel, msg);
 		}
 	}
+	return (0);
 }

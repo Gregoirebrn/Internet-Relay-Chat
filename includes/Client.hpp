@@ -6,10 +6,12 @@
 
 # include <iostream>
 # include <map>
+# include <vector>
 # include <sys/socket.h>
 # include <csignal>
 # include <cstring>
-# 	include <algorithm>
+# include <algorithm>
+# include <sstream>
 
 //RFC
 # include "rfc_1459.hpp"
@@ -24,6 +26,10 @@ typedef struct info_s {
 	sockaddr		*_addr_cli;
 } info_t;
 
+typedef std::map<int , info_t>::iterator	list_t;
+typedef std::vector<std::string>::iterator	vec_t;
+
+
 class Client {
 private :
 	std::string				_password;
@@ -33,7 +39,9 @@ public :
 	Client();
 	~Client();
 	//getter
-	std::string Get_Client_Name(int fd_cli);
+	std::map<int , info_t>	GetClients();
+	int						GetFd(std::string);
+	std::string				GetName(int fd_cli);
 	Client(const std::string& password);
 	// Public methods
 	int CreateClient(int fd_cli, sockaddr *pSockaddr);
@@ -43,6 +51,9 @@ public :
 	int register_pass(std::string buff, int fd_cli);
 	//quit handle
 	void	Remove(int fd_cli);
-	};
+	//send msg
+	int		send_private(std::string buff, int fd_cli);
+	int		send_cli_msg(std::string nick, std::string msg, int fd_sender);
+};
 
 	void	send_error(int fd, std::string error);

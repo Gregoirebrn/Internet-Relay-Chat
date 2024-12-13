@@ -62,6 +62,7 @@ int Server::CreatSocket()
 				if (it->fd == _socketfd) {
 					struct sockaddr *addr_cli = NULL;
 					int fd_cli = accept(_socketfd, addr_cli, reinterpret_cast<socklen_t *>(sizeof(&addr_cli)));
+					std::cout << "NEW CLIENT CONNECT :" << fd_cli << std::endl;
 					_pollfds.push_back((struct pollfd){.fd = fd_cli, .events = POLLIN, .revents = 0});
 					_cli.CreateClient(fd_cli, addr_cli);
 					_nfds++;
@@ -82,9 +83,12 @@ void	Server::messag_handle(std::vector<pollfd>::iterator &it) {
 	char buff[512 + 1];
 	bzero(buff, 513);
 	ssize_t ret = recv(it->fd, buff, n, MSG_DONTWAIT);
+	std::cout << "RECV :" << it->fd << std::endl;
 	if (!ret) { // client gone suppress it
-		_chan.Quit(it->fd);
+		std::cout << "SERVER: clear poll & Quit" << std::endl;
+		_chan.Quit(buff, it->fd);
 		it = _pollfds.erase(it);
+		_nfds--;
 	}
 	else if (ret < 0) // error occured
 		std::cerr << "Recv failed: " << strerror(errno) << std::endl;
@@ -111,12 +115,6 @@ int Server::signal_handler() {
 	std::signal(SIGQUIT, &Server::handler);
 	std::signal(SIGPIPE, SIG_IGN);
 	return (100);
-}
-
-std::string Client::Get_Client_Name(int fd_cli) {
-	if (_clients[fd_cli]._nickname.empty())
-		return ("default");
-	return _clients[fd_cli]._nickname;
 }
 
 int	main(int ac, char **av) {

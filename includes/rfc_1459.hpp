@@ -53,4 +53,4 @@
 
 
 //privmsg
-#define ERR_NOSUCHNICK(client , nick) ("401 " + (client) + (nick) + " :No such nick/channel\r\n")
+#define ERR_NOSUCHNICK(client , nick) ("401 :" + (client) + ":" + (nick) + ": No such nick\r\n")

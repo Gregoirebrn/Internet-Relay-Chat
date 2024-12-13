@@ -13,27 +13,7 @@ Channel::~Channel(void) {
 	std::cout << "Channel default destructor called!" << std::endl;
 }
 
-// Public methods
-
-int	Channel::Canal_Operators(std::string buff, int fd_cli) {
-	int	(Channel::*fptr[])(std::string, int ) = {&Channel::Kick, &Channel::Invite, &Channel::Topic, &Channel::Mode, &Channel::Join};
-	std::string tab_com[] = {"KICK", "INVITE", "TOPIC", "MODE", "JOIN"};
-
-	for (int i = 0; i < 5; ++i) {
-		try {
-			if (!buff.compare(0, tab_com[i].size(), tab_com[i])) {
-				std::string arg = buff.substr(tab_com[i].size() + 1, buff.size());
-				return ((this->*fptr[i])(arg, fd_cli), 1);
-			}
-		}
-		catch (std::exception &exe) {
-			std::cout << "Channel: " << exe.what() << std::endl;
-		}
-	}
-	return (0);
-}
-
-//utils for commands
+// getters
 bool Channel::get_rights(std::string name, std::string channel, int fd_cli) {
 	if (_all_chan.end() == _all_chan.find(channel))
 		return (send_error(fd_cli, ERR_NOSUCHCHANNEL(channel)), false);
@@ -46,9 +26,42 @@ bool Channel::get_rights(std::string name, std::string channel, int fd_cli) {
 				return (send_error(fd_cli, ERR_NOTONCHANNEL(channel)), false);
 			if (i->second)
 				return true;
-			return (send_error(fd_cli, ERR_CHANOPRIVSNEEDED(Get_Client_Name(fd_cli), channel)), false);
+			return (send_error(fd_cli, ERR_CHANOPRIVSNEEDED(GetName(fd_cli), channel)), false);
 		}
 	}
 	return false;
 }
+
+int	Channel::check_max_joined(int fd_cli, std::vector<std::string> channel_v) { // check with the macro MAX_CHAN if he would be in too many channel
+	size_t chan_joined = 0;
+	for (chan_t it = _channel.begin(); it != _channel.end() ; ++it) {
+		if (it->second.find(GetName(fd_cli)) != it->second.end())
+			chan_joined++;
+	}
+	if (chan_joined >= MAX_CHAN + 1)
+		return (send_error(fd_cli, ERR_TOOMANYCHANNELS(GetName(fd_cli), channel_v.front())), 405);
+	return (0);
+}
+
+// Public methods
+
+int	Channel::Canal_Operators(std::string buff, int fd_cli) {
+	int	(Channel::*fptr[])(std::string, int ) = {&Channel::Kick, &Channel::Invite, \
+		&Channel::Topic, &Channel::Mode, &Channel::Join, &Channel::Quit, &Channel::Privmsg};
+	const char *comm[] = {"KICK", "INVITE", "TOPIC", "MODE", "JOIN", "QUIT", "PRIVMSG"};
+	std::vector<std::string> comm_v(comm, end(comm));
+	for (size_t i = 0; i < comm_v.size(); ++i) {
+		try {
+			if (!buff.compare(0, comm_v[i].size(), comm_v[i])) {
+				std::string arg = buff.substr(comm_v[i].size() + 1, buff.size());
+				return ((this->*fptr[i])(arg, fd_cli), 1);
+			}
+		}
+		catch (std::exception &exe) {
+			std::cout << "Channel: " << exe.what() << std::endl;
+		}
+	}
+	return (0);
+}
+
 

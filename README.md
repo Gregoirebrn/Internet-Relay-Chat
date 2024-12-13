@@ -36,8 +36,8 @@ We Will use the RFC 1459, the full name is Request for comments and it is used t
 - [ ] Channels operateurs a traiter :
   - INVITE
   - JOIN
-    - KICK
-      - TOPIC
+  - KICK
+  - TOPIC
 
 - [ ] Ajouter MODE avec les flags i, t, k, o & l
 
