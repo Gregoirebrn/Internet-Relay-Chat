@@ -24,9 +24,9 @@ int	Channel::Privmsg(std::string buff, int fd_cli) {
 		}
 		targets.push_back(line);
 	}
-	for (vec_t it = targets.begin(); it != targets.end() ; ++it) {
-		std::cout << "TARGETS :" << *it << std::endl;
-	}
+//	for (vec_t it = targets.begin(); it != targets.end() ; ++it) {
+//		std::cout << "TARGETS :" << *it << std::endl;
+//	}
 	std::string msg = buff.substr((buff.find(targets.back()) + targets.back().size() + 1), buff.size()) + "\r\n";
 	for (vec_t it = targets.begin(); it != targets.end() ; ++it) {
 		if (it->find('#') != std::string::npos) { // its a channel send to all user in it

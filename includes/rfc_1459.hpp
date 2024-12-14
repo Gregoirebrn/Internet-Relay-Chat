@@ -4,11 +4,15 @@
 
 #pragma once
 
+#define USERLEN 12
+#define C_USR "USER"
+
 //pass
-#define ERR_NEEDMOREPARAMS(command) ("461 : " + (command) + " :Not enough parameters\r\n")
+#define ERR_NEEDMOREPARAMS(command) ("461 : " + (std::string(command)) + " :Not enough parameters\r\n")
 #define ERR_ALREADYREGISTRED "462 :You may not reregister\r\n"
 #define ERR_NOTREGISTRED "808 :You must send PASS before any SERVER command\r\n"
 #define ERR_PASSWDMISMATCH "464 :Password incorrect\r\n"
+#define RPL_WELCOME(client, nick) ((client) + " :Welcome to the IRECTION Network, " + (nick) + "[!<user>@<host>]\r\n" )
 
 //nickname
 #define ERR_NONICKNAMEGIVEN "431 :No nickname given"

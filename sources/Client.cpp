@@ -33,11 +33,11 @@ int	Client::GetFd(std::string nick) {
 			return (it->first);
 		}
 	}
-	for (list_t it = _clients.begin(); it != _clients.end(); ++it) {
-		std::cout << "---------FINDER_FD " << it->first << ":" << it->second._nickname << std::endl;
-		std::cout << "---------IT_FIRST :" << it->first << std::endl;
-	}
-	std::cout << "EMPTYYYYYYYYYYYYYYYYYY" << std::endl;
+//	for (list_t it = _clients.begin(); it != _clients.end(); ++it) {
+//		std::cout << "---------FINDER_FD " << it->first << ":" << it->second._nickname << std::endl;
+//		std::cout << "---------IT_FIRST :" << it->first << std::endl;
+//	}
+//	std::cout << "EMPTYYYYYYYYYYYYYYYYYY" << std::endl;
 	return (-1);
 }
 
@@ -48,7 +48,7 @@ std::string Client::GetName(int fd_cli) {
 }
 
 int Client::CreateClient(int fd_cli, sockaddr *pSockaddr) {
-	_clients[fd_cli] = (info_t){._register = false, ._pw_verified = false, ._nickname = "", ._pseudo = "", ._addr_cli = pSockaddr};
+	_clients[fd_cli] = (info_t){._register = false, ._pw_verified = false, ._nickname = "", ._pseudo = "", ._realname = "", ._addr_cli = pSockaddr};
 //	_clients.find(std::map<int, info_t>::value_type(fd_cli, (info_t){._register = false, ._pw_verified = false, ._addr_cli = pSockaddr}));
 	return 0;
 }
@@ -68,12 +68,14 @@ int Client::CommandClient(std::string buff, int fd_cli)
 					std::string ret = tab_com[i];
 					return (send_error(fd_cli, ERR_NEEDMOREPARAMS(ret)), 462);
 				}
+//				if (pos + 1 >= buff.size())
+//					throw std::exception() ;
 				std::string arg = buff.substr(pos + 1);
 				if (arg.find('\r') != std::string::npos) {
-					std::cout << "BEFORE:" << arg << std::endl;
+//					std::cout << "BEFORE:" << arg << std::endl;
 					std::string mod = arg.substr(0, arg.size() - 1);
 					arg = mod;
-					std::cout << "AFTER :" << mod << std::endl;
+//					std::cout << "AFTER :" << mod << std::endl;
 				}
 				(this->*fptr[i])(arg, fd_cli);
 				return (0);
@@ -98,9 +100,9 @@ void	send_error(int fd, std::string error) {
 
 //send error to client
 int	Client::send_cli_msg(std::string nick, std::string msg, int fd_sender) {
-	std::cout << "ITERATOR :" << nick << std::endl;
+//	std::cout << "ITERATOR :" << nick << std::endl;
 	int fd_msg = GetFd(nick);
-	std::cout << "FDCLIENT:" << fd_msg << std::endl;
+//	std::cout << "FDCLIENT:" << fd_msg << std::endl;
 	std::string full_msg = ":" + GetName(fd_sender) + " PRIVMSG " + nick + " " + msg;
 	if (fd_msg > 0)
 		return (send_error(fd_msg, full_msg), 0);
@@ -121,9 +123,9 @@ int	Client::send_private(std::string buff, int fd_cli) {
 		}
 		targets.push_back(line);
 	}
-	for (vec_t it = targets.begin(); it != targets.end() ; ++it) {
-		std::cout << "TARGETS :" << *it << std::endl;
-	}
+//	for (vec_t it = targets.begin(); it != targets.end() ; ++it) {
+//		std::cout << "TARGETS :" << *it << std::endl;
+//	}
 	std::string msg = buff.substr((buff.find(targets.back()) + targets.back().size() + 1), buff.size());
 	for (vec_t it = targets.begin(); it != targets.end() ; ++it) {
 		if (it->find('#') == std::string::npos) { //its for one user check the nick exist & get the fd

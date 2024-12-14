@@ -60,6 +60,7 @@ public :
 	void	send_rpl_name(std::string channel, int fd_cli);
 	void	send_rpl_topic(std::string channel, std::string topic, int fd_cli);
 	//Utils
+	void	CreateChannel(std::string channel, int fd_cli);
 	int		check_max_joined(int fd_cli, std::vector<std::string> channel_v);
 	};
 

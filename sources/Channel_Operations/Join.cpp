@@ -41,6 +41,14 @@ void	Channel::send_rpl_name(std::string channel, int fd_cli) { //get all names o
 	send_error(fd_cli, RPL_NAMREPLY(GetName(fd_cli), channel, all_names));
 }
 
+void	Channel::CreateChannel(std::string channel, int fd_cli) {
+	_all_chan[channel] = (mod_t){.chan_key = "", .topic = "", .max_user = 0};
+	_channel[channel][GetName(fd_cli)] = true;
+	send_error(fd_cli, RPL_NOTOPIC(GetName(fd_cli), channel));
+	send_rpl_name(channel, fd_cli);
+	send_error(fd_cli, RPL_ENDOFNAMES(GetName(fd_cli), channel));
+}
+
 int	Channel::Join(std::string buff, int fd_cli) {
 	std::vector<std::string> channel_v;
 	std::vector<std::string> key_v;
@@ -52,9 +60,10 @@ int	Channel::Join(std::string buff, int fd_cli) {
 			return (404);
 		if (key_it == key_v.end()) // if their is no keys to the channel
 			send_error(fd_cli, ERR_BADCHANNELKEY(GetName(fd_cli), *it));
-		if (_all_chan.find(*it) == _all_chan.end()) // not a channel
+		if (_all_chan.find(*it) == _all_chan.end()) { // not a channel
 			send_error(fd_cli, ERR_NOSUCHCHANNEL(*it));
-		else {
+			CreateChannel(*it, fd_cli);
+		} else {
 			if (_all_chan[*it].chan_key != *key_it) // check the value of the key
 				send_error(fd_cli, ERR_BADCHANNELKEY(GetName(fd_cli), *it));
 			else { // add the client to the channel

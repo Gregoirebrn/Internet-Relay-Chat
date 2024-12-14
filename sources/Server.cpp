@@ -83,7 +83,7 @@ void	Server::messag_handle(std::vector<pollfd>::iterator &it) {
 	char buff[512 + 1];
 	bzero(buff, 513);
 	ssize_t ret = recv(it->fd, buff, n, MSG_DONTWAIT);
-	std::cout << "RECV :" << it->fd << std::endl;
+//	std::cout << "RECV :" << it->fd << std::endl;
 	if (!ret) { // client gone suppress it
 		std::cout << "SERVER: clear poll & Quit" << std::endl;
 		_chan.Quit(buff, it->fd);
@@ -96,7 +96,7 @@ void	Server::messag_handle(std::vector<pollfd>::iterator &it) {
 		std::istringstream message;
 		message.str(buff);
 		for (std::string line; std::getline(message, line, '\n');) {
-			std::cout << "LINE :" << line << std::endl;
+//			std::cout << "LINE :" << line << std::endl;
 			_cli.CommandClient(line, it->fd); //user nick pass
 			_chan.Canal_Operators(line, it->fd); //join mode kick topic invite
 		}
