@@ -87,7 +87,6 @@ void	Server::messag_handle(std::vector<pollfd>::iterator &it) {
 //	std::cout << "RECV :" << it->fd << std::endl;
 	if (!ret) { // client gone suppress it
 		std::cout << "SERVER: clear poll & Quit" << std::endl;
-		_chan.Quit(buff, it->fd);
 		it = _pollfds.erase(it);
 		_nfds--;
 	}
