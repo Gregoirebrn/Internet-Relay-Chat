@@ -5,18 +5,18 @@
 #include "Server.hpp"
 
 // Constructors & destructor
-Server::Server(char *port, std::string pw) : _port(static_cast <uint16_t>(std::strtod(port, NULL))), _password(pw), _addr(), _nfds(0), _cli(pw) {
+Server::Server(char *port, std::string pw) : _port(static_cast <uint16_t>(std::strtod(port, NULL))), _password(pw), _addr(), _nfds(0), _cli(pw), _chan(&_cli) {
 	//Init sock_addr struct for bind
 	_addr.sin_family = AF_INET; // IPv4
 	_addr.sin_port = htons(_port); // Port number, convert host to network byte order
 	_addr.sin_addr.s_addr = INADDR_ANY; // Bind to all available interfaces (0.0.0.0)
 	signal_handler();
-	std::cout << "Server default constructor called!" << std::endl;
+//	std::cout << "Server default constructor called!" << std::endl;
 }
 
 Server::~Server() {
 	close(_socketfd);
-	std::cout << "Server default destructor called!" << std::endl;
+//	std::cout << "Server default destructor called!" << std::endl;
 }
 
 
@@ -51,6 +51,7 @@ int Server::CreatSocket()
 	_pollfds.push_back((struct pollfd){.fd = _socketfd, .events = POLLIN, .revents = 0}); //add the socket to the poll fds
 	_nfds++;
 	//change true to the global that is false if a ctrl D or a sigaction ocured
+	std::cout << "Server :IRECTION up & running" << std::endl;
 	while (g_signal) {
 //		std::cout << "WAITING ..." << std::endl;
 		if (poll(_pollfds.data(), _nfds, -1) < 0 && !g_signal) //wait to have a action from one of the fds

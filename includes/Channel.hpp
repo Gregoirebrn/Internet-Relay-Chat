@@ -37,9 +37,10 @@ class Channel : public Client{
 private :
 	std::map<std::string, std::map<std::string, bool> >	_channel;
 	std::map<std::string, mod_t>						_all_chan;
+	Client												*_client;
 public :
 	//Constructors & destructor
-	Channel();
+	Channel(Client *instance);
 	~Channel();
 	//Getters
 	int		cpy_fd(std::string nick);

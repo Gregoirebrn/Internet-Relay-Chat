@@ -5,16 +5,18 @@
 #include "Channel.hpp"
 
 // Constructors & destructor
-Channel::Channel(void) {
-	std::cout << "Channel default constructor called!" << std::endl;
+Channel::Channel(Client *cli) {
+	_client = cli;
+//	std::cout << "Channel default constructor called!" << std::endl;
 }
 
 Channel::~Channel(void) {
-	std::cout << "Channel default destructor called!" << std::endl;
+//	std::cout << "Channel default destructor called!" << std::endl;
 }
 
 // getters
 bool Channel::get_rights(std::string name, std::string channel, int fd_cli) {
+	std::cout << "GET_RIGHTS_NAME :"  << name << std::endl;
 	if (_all_chan.end() == _all_chan.find(channel))
 		return (send_error(fd_cli, ERR_NOSUCHCHANNEL(channel)), false);
 	for (chan_t it = _channel.begin(); it != _channel.end(); ++it) {

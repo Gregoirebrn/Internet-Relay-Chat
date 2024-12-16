@@ -32,7 +32,7 @@ typedef std::vector<std::string>::iterator	vec_t;
 
 
 class Client {
-private :
+protected :
 	std::string				_password;
 	std::map<int , info_t>	_clients;
 public :
