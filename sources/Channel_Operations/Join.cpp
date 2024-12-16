@@ -9,7 +9,7 @@
 
 int	Channel::get_join_arg(std::string buff, int fd_cli, std::vector<std::string> &channel_v, std::vector<std::string> &key_v) {
 	if (buff.find(' ') == std::string::npos)
-		return (send_error(fd_cli, ERR_NEEDMOREPARAMS(buff)), 462);//missing params
+		return (send_error(fd_cli, ERR_NEEDMOREPARAMS("JOIN")), 462);//missing params
 	std::istringstream haystack;
 	haystack.str(buff);
 	for (std::string channel; std::getline(haystack, channel, ',');) {

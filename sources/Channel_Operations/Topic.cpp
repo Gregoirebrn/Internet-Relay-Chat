@@ -13,7 +13,7 @@ void	Channel::send_rpl_topic(std::string channel, std::string topic, int fd_cli)
 
 int Channel::Topic(std::string buff, int fd_cli) {
 	if (buff.size() <= 2)
-		return (send_error(fd_cli, ERR_NEEDMOREPARAMS(buff)), 462);//missing params
+		return (send_error(fd_cli, ERR_NEEDMOREPARAMS("TOPIC")), 462);//missing params
 	size_t space = buff.find(' ');
 	if (std::string::npos == space) {
 		std::string channel = buff.substr(0, buff.size() -2);
@@ -29,6 +29,6 @@ int Channel::Topic(std::string buff, int fd_cli) {
 		return (404);
 	_all_chan[channel].topic = topic;
 	if (_all_chan[channel].topic.empty())
-		return (send_error(fd_cli, ERR_NEEDMOREPARAMS(buff)), 462);
+		return (send_error(fd_cli, ERR_NEEDMOREPARAMS("TOPIC")), 462);
 	return (send_rpl_topic(channel, topic, fd_cli), 462); // send mod of topic to every client of the channel
 }

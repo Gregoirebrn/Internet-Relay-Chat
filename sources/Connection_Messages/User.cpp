@@ -6,7 +6,7 @@
 
 int Client::register_user(std::string buff, int fd_cli) {
 	if (buff.size() < 4)
-		return (send_error(fd_cli, ERR_NEEDMOREPARAMS(buff)), 461);
+		return (send_error(fd_cli, ERR_NEEDMOREPARAMS("USER")), 461);
 	if (!_clients[fd_cli]._pw_verified)
 		return (send(fd_cli, ERR_NOTREGISTRED, sizeof(ERR_NOTREGISTRED), 0), 808);
 	if (!_clients[fd_cli]._pseudo.empty())
@@ -27,7 +27,7 @@ int Client::register_user(std::string buff, int fd_cli) {
 		_clients[fd_cli]._pseudo = ps;
 	}
 	catch (std::exception &e) {
-		return (send_error(fd_cli, ERR_NEEDMOREPARAMS(buff)), 461);
+		return (send_error(fd_cli, ERR_NEEDMOREPARAMS("USER")), 461);
 	}
 	if (!_clients[fd_cli]._nickname.empty())
 		return (send_error(fd_cli, RPL_WELCOME(_clients[fd_cli]._pseudo, _clients[fd_cli]._nickname)), 462);

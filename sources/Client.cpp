@@ -66,7 +66,7 @@ int Client::CommandClient(std::string buff, int fd_cli)
 				std::size_t pos = buff.find(' ');
 				if (pos == std::string::npos) {
 					std::string ret = tab_com[i];
-					return (send_error(fd_cli, ERR_NEEDMOREPARAMS(ret)), 462);
+					return (send_error(fd_cli, ERR_NEEDMOREPARAMS(tab_com[i])), 462);
 				}
 //				if (pos + 1 >= buff.size())
 //					throw std::exception() ;

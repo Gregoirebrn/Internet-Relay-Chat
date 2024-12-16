@@ -15,7 +15,7 @@
 #define RPL_WELCOME(client, nick) ((client) + " :Welcome to the IRECTION Network, " + (nick) + "[!<user>@<host>]\r\n" )
 
 //nickname
-#define ERR_NONICKNAMEGIVEN "431 :No nickname given"
+#define ERR_NONICKNAMEGIVEN "431 :No nickname given\r\n"
 #define ERR_ERRONEUSNICKNAME(nick) ("432 " + (nick) + ":Erroneus nickname\r\n")
 #define ERR_NICKNAMEINUSE(nick) ("433 " + (nick) + ":Nickname is already in use\r\n")
 //for multiple server #define ERR_NICKCOLLISION(nick) ("436 " + (nick) + ":Nickname collision KILL from <user>@<host>\r\n")

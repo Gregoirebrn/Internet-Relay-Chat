@@ -7,7 +7,7 @@
 int Channel::Kick(std::string buff, int fd_cli) {
 	size_t end_wd = buff.find(' ');//search first argument
 	if (std::string::npos == end_wd)
-		return (send_error(fd_cli, ERR_NEEDMOREPARAMS(buff)), 462);//if we are at the end of the word then the second word is missing
+		return (send_error(fd_cli, ERR_NEEDMOREPARAMS("KICK")), 462);//if we are at the end of the word then the second word is missing
 	std::string channel = buff.substr(0, end_wd);
 	if (!get_rights(GetName(fd_cli), channel, fd_cli))// check if the client caller have the rights to kick
 		return (404);

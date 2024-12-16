@@ -12,7 +12,7 @@ void	Channel::send_chan_msg(std::string channel, std::string msg) {
 
 int	Channel::Privmsg(std::string buff, int fd_cli) {
 	if (buff.find(' ') == std::string::npos)
-		return (send_error(fd_cli, ERR_NEEDMOREPARAMS(buff)), 461);
+		return (send_error(fd_cli, ERR_NEEDMOREPARAMS("PRIVMSG")), 461);
 	buff = buff.substr(0 , buff.size() - 1);
 	std::vector<std::string> targets;
 	std::istringstream haystack;

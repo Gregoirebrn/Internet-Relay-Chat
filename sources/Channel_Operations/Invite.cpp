@@ -7,7 +7,7 @@
 int Channel::Invite(std::string buff, int fd_cli) {
 	size_t space = buff.find(' ');
 	if (std::string::npos == space) //the channel is missing
-		return (send_error(fd_cli, ERR_NEEDMOREPARAMS(buff)), 462);
+		return (send_error(fd_cli, ERR_NEEDMOREPARAMS("JOIN")), 462);
 	std::string nick_target = buff.substr(0, space);
 	std::string channel = buff.substr(space, buff.size() - 2);
 	if (!get_rights(GetName(fd_cli), channel, fd_cli)) // check if the client caller have the rights to invite
