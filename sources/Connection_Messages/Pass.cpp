@@ -15,7 +15,7 @@ int Client::register_pass(std::string arg, int fd_cli) {
 		_clients[fd_cli]._pw_verified = true;
 	if (!_clients[fd_cli]._pw_verified)
 		return (send_error(fd_cli, ERR_PASSWDMISMATCH), 464);
-	if (!_clients[fd_cli]._pseudo.empty())
-		return(send_error(fd_cli, RPL_WELCOME(_clients[fd_cli]._pseudo, _clients[fd_cli]._nickname)), 462);
+//	if (!_clients[fd_cli]._pseudo.empty())
+//		return(send_error(fd_cli, RPL_WELCOME(_clients[fd_cli]._pseudo, _clients[fd_cli]._nickname)), 462);
 	return (0);
 }

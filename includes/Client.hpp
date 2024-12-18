@@ -27,7 +27,7 @@ typedef struct info_s {
 	std::string		_realname;
 	std::string		_hostname;
 	std::string		_prefix;
-	sockaddr		*_addr_cli;
+	sockaddr_in		*_addr_cli;
 } info_t;
 
 typedef std::map<int , info_t>::iterator	list_t;
@@ -49,7 +49,7 @@ public :
 	std::string				GetPrefix(int fd_cli);
 	Client(const std::string& password);
 	// Public methods
-	int CreateClient(int fd_cli, sockaddr *pSockaddr);
+	int CreateClient(int fd_cli, sockaddr_in *pSockaddr);
 	int CommandClient(std::string buff, int fd_cli);
 	int register_nick(std::string buff, int fd_cli);
 	int register_user(std::string buff, int fd_cli);

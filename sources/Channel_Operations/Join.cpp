@@ -40,7 +40,7 @@ void	Channel::send_rpl_name(std::string channel, int fd_cli) { //get all names o
 	}
 	std::cout << "PRENICK---------" << all_names << std::endl;
 	send_error(fd_cli, RPL_NAMREPLY(_client->GetName(fd_cli), channel, all_names));
-	send_error(fd_cli, RPL_ENDOFNAMES(_client->GetName(fd_cli), channel));
+	send_error(fd_cli, RPL_ENDOFNAMES(channel));
 }
 
 void	Channel::send_rpl_topic(std::string channel, std::string topic, int fd_cli) {

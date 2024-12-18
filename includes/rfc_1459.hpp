@@ -12,7 +12,7 @@
 #define ERR_ALREADYREGISTRED ":irc_server 462 :You may not reregister\r\n"
 #define ERR_NOTREGISTRED ":irc_server 808 :You must send PASS before any SERVER command\r\n"
 #define ERR_PASSWDMISMATCH ":irc_server 464 :Password incorrect\r\n"
-#define RPL_WELCOME(client, nick) (":irc_server " + (client) + " :Welcome to the IRECTION Network, " + (nick) + "[!<user>@<host>]\r\n" )
+#define RPL_WELCOME(client, nick, prefix) (":irc_server 001 " + (client) + " :Welcome to the IRECTION Network, " + (nick) + " " + (prefix) + "\r\n" )
 
 //nickname
 #define ERR_NONICKNAMEGIVEN ":irc_server 431 :No nickname given\r\n"
@@ -21,8 +21,9 @@
 //for multiple server #define ERR_NICKCOLLISION(nick) ("436 " + (nick) + ":Nickname collision KILL from <user>@<host>\r\n")
 
 //kick
-#define ERR_USERNOTINCHANNEL(client, nick, channel) (":irc_server 441 " + (client) + (nick) + (channel) + " :They aren't on that channel\r\n")
-#define RPL_SUCCESKICK(nick, channel, comment) ("Command to kick " + (nick) + " from " + (channel) + " \r\n")
+#define ERR_USERNOTINCHANNEL(nick, channel) (":irc_server 441 " + (nick) + " " + (channel) + " :They aren't on that channel\r\n")
+#define RPL_SUCCESKICK(prefix, nick, channel) (":" + (prefix)) + " KICK " + (channel) + " " + (nick) + " \r\n")
+#define RPL_KICK(client, nick, channel) (":irc_server " + (client)) + " KICK " + (channel) + " " + (nick) + " \r\n")
 
 //gone
 #define ERR_GONE(nick) ("QUIT :Gone to have lunch " + (nick) + " exiting from the network\r\n")
@@ -39,10 +40,10 @@
 
 //invite
 #define RPL_INVITING(client, nick, channel) (":irc_server 341 " + (client) + " " + (nick) + " " + (channel) + "\r\n")
-#define RPL_INVITED(prefix, client, nick, channel) (":" + (prefix) + (client) + " " + (nick) + " " + (channel) + "\r\n")
+#define RPL_INVITED(prefix, client, nick, channel) (":" + (prefix) + " INVITE " + (client) + " " + (channel) + " " + "\r\n")
 #define ERR_NOSUCHCHANNEL(channel) (":irc_server 403 " + (channel) + " :No such channel\r\n")
 #define ERR_NOTONCHANNEL(channel) (":irc_server 442 " + (channel) + " :You're not on that channel\r\n")
-#define ERR_USERONCHANNEL(nick, channel) (":irc_server 443 " + (nick) + (channel) + " :is already on channel\r\n")
+#define ERR_USERONCHANNEL(nick, channel) (":irc_server 443 " + (nick) + " " + (channel) + " :is already on channel\r\n")
 #define ERR_CHANOPRIVSNEEDED(client, channel) (":irc_server 482 " + (client) + (channel) + " :You're not channel operator\r\n")
 
 //topic
@@ -54,7 +55,7 @@
 #define RPL_NAMREPLY(client, channel, prenick) (":irc_server 353 " + (client) + " = " + (channel) + " :" + (prenick) + "\r\n")
 #define ERR_TOOMANYCHANNELS(client, channel) (":irc_server 405 " + (client) + " " + (channel) + " :You have joined too many channels\r\n")
 #define ERR_BADCHANNELKEY(client, channel) (":irc_server 475 " + (client) + " " + (channel) + " :Cannot join channel (+k)\r\n")
-#define RPL_ENDOFNAMES(client, channel) (":irc_server 366 " + (client) + " " + (channel) + " :End of /NAMES list\r\n")
+#define RPL_ENDOFNAMES(channel) (":irc_server 366 " + (channel) + " :End of /NAMES list\r\n")
 
 
 //privmsg

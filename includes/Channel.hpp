@@ -43,7 +43,6 @@ public :
 	Channel(Client *instance);
 	~Channel();
 	//Getters
-	int		cpy_fd(std::string nick);
 	bool	get_rights(std::string name, std::string chan, int fd_cli);
 	int		get_join_arg(std::string buff, int fd_cli, std::vector<std::string> &channel_v, std::vector<std::string> &key_v);
 	//Public methods

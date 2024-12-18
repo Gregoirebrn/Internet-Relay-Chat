@@ -29,8 +29,15 @@ int Client::register_user(std::string buff, int fd_cli) {
 	catch (std::exception &e) {
 		return (send_error(fd_cli, ERR_NEEDMOREPARAMS("USER")), 461);
 	}
-	if (!_clients[fd_cli]._nickname.empty())
-		return (send_error(fd_cli, RPL_WELCOME(_clients[fd_cli]._pseudo, _clients[fd_cli]._nickname)), 462);
+	if (!_clients[fd_cli]._nickname.empty()){
+		_clients[fd_cli]._prefix = _clients[fd_cli]._nickname + "!" + _clients[fd_cli]._pseudo + "@" + _clients[fd_cli]._hostname;
+		std::cout << "---INFO---" << std::endl;
+		std::cout << "PSEUDO---" << _clients[fd_cli]._pseudo << std::endl;
+		std::cout << "NICK---" << _clients[fd_cli]._nickname << std::endl;
+		std::cout << "PREFIX---" << _clients[fd_cli]._prefix << std::endl;
+		std::cout << "---END---" << std::endl;
+		return (send_error(fd_cli, RPL_WELCOME(_clients[fd_cli]._pseudo, _clients[fd_cli]._nickname, _clients[fd_cli]._prefix)), 462);
+	}
 	return (0);
 }
 
