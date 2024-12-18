@@ -12,6 +12,7 @@
 # include <cstring>
 # include <algorithm>
 # include <sstream>
+#include <netdb.h>
 
 //RFC
 # include "rfc_1459.hpp"
@@ -24,6 +25,8 @@ typedef struct info_s {
 	std::string		_nickname;
 	std::string		_pseudo;
 	std::string		_realname;
+	std::string		_hostname;
+	std::string		_prefix;
 	sockaddr		*_addr_cli;
 } info_t;
 
@@ -43,6 +46,7 @@ public :
 	std::map<int , info_t>	GetClients();
 	int						GetFd(std::string);
 	std::string				GetName(int fd_cli);
+	std::string				GetPrefix(int fd_cli);
 	Client(const std::string& password);
 	// Public methods
 	int CreateClient(int fd_cli, sockaddr *pSockaddr);

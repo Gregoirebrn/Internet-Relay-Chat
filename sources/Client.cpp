@@ -47,9 +47,21 @@ std::string Client::GetName(int fd_cli) {
 	return _clients[fd_cli]._nickname;
 }
 
-int Client::CreateClient(int fd_cli, sockaddr *pSockaddr) {
-	_clients[fd_cli] = (info_t){._register = false, ._pw_verified = false, ._nickname = "", ._pseudo = "", ._realname = "", ._addr_cli = pSockaddr};
-//	_clients.find(std::map<int, info_t>::value_type(fd_cli, (info_t){._register = false, ._pw_verified = false, ._addr_cli = pSockaddr}));
+std::string Client::GetPrefix(int fd_cli) {
+	return _clients[fd_cli]._prefix;
+}
+
+int Client::CreateClient(int fd_cli, sockaddr *ClientAddr) {
+	char host[NI_MAXHOST];
+	_clients[fd_cli] = (info_t){._register = false, ._pw_verified = false, \
+	._nickname = "", ._pseudo = "", ._realname = "", ._hostname = "", ._prefix = "", \
+	._addr_cli = ClientAddr};
+	int res = getnameinfo(ClientAddr, sizeof(ClientAddr), host, NI_MAXHOST, NULL, 0, 0);
+	if (res != 0)
+		return (std::cout << "Client :getnameinfo failed :" << gai_strerror(res) << std::endl, 4040);
+	_clients[fd_cli]._hostname = host;
+	_clients[fd_cli]._prefix = _clients[fd_cli]._nickname + "!" + _clients[fd_cli]._pseudo + "@" + _clients[fd_cli]._hostname;
+	std::cout << "CLIENT_PRFIX :" << _clients[fd_cli]._prefix << std::endl;
 	return 0;
 }
 

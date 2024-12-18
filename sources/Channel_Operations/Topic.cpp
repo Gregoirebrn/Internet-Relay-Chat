@@ -10,9 +10,6 @@ int Channel::Topic(std::string buff, int fd_cli) {
 	size_t two_dots = buff.find(':');
 	if (two_dots == std::string::npos) { //no topic is given, so checking the topic
 		std::string channel = buff.substr(0, buff.size() -1);
-		if (channel[0] != '#')
-			return (send_error(fd_cli, ERR_NOSUCHCHANNEL(channel)), false);
-		channel = channel.substr(1, channel.size());
 		if (_all_chan.find(channel) == _all_chan.end())
 			return (send_error(fd_cli, ERR_NOSUCHCHANNEL(channel)), false);
 		if (_all_chan[channel].topic.empty())
@@ -20,9 +17,8 @@ int Channel::Topic(std::string buff, int fd_cli) {
 		return (send_error(fd_cli, RPL_TOPIC(GetName(fd_cli), channel, _all_chan[channel].topic)), 331);
 	}
 	std::string channel = buff.substr(0, buff.find(' '));
-	if (channel[0] != '#')
+	if (_all_chan.find(channel) == _all_chan.end())
 		return (send_error(fd_cli, ERR_NOSUCHCHANNEL(channel)), false);
-	channel = channel.substr(1, channel.size());
 //	std::cout << "SUBBBSSS :" << channel << std::endl;
 	std::string topic = buff.substr(two_dots + 1, buff.size()); //trim the two dots
 //	std::cout << "NO_CUTS :" << topic << std::endl;

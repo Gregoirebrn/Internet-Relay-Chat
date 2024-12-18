@@ -40,20 +40,23 @@ void	Channel::send_rpl_name(std::string channel, int fd_cli) { //get all names o
 	}
 	std::cout << "PRENICK---------" << all_names << std::endl;
 	send_error(fd_cli, RPL_NAMREPLY(_client->GetName(fd_cli), channel, all_names));
+	send_error(fd_cli, RPL_ENDOFNAMES(_client->GetName(fd_cli), channel));
+}
+
+void	Channel::send_rpl_topic(std::string channel, std::string topic, int fd_cli) {
+	if (topic.empty())
+		return (send_error(fd_cli, RPL_NOTOPIC(GetName(fd_cli), channel)));
+	return (send_error(fd_cli, RPL_TOPIC(GetName(fd_cli), channel, topic)));
 }
 
 void	Channel::CreateChannel(std::string channel, int fd_cli) {
 	if (channel[0] != '#')
 		return (send_error(fd_cli, ERR_NOSUCHCHANNEL(channel)), (void)0);
-	channel = channel.substr(1, channel.size() - 2);
+	channel = channel.substr(0, channel.size() - 1);
 	_all_chan[channel] = (mod_t){.chan_key = "", .topic = "", .max_user = 0};
-//	std::cout << "NAME_CHANNEL-------" << channel << std::endl;
 	_channel[channel][_client->GetName(fd_cli)] = true;
-//	if (_channel.find(channel) == _channel.end())
-//		std::cout << "EMPTY CHANNEL-----------------" << std::endl;
 	send_error(fd_cli, RPL_NOTOPIC(_client->GetName(fd_cli), channel));
 	send_rpl_name(channel, fd_cli);
-	send_error(fd_cli, RPL_ENDOFNAMES(_client->GetName(fd_cli), channel));
 }
 
 int	Channel::Join(std::string buff, int fd_cli) {
@@ -77,9 +80,8 @@ int	Channel::Join(std::string buff, int fd_cli) {
 				send_error(fd_cli, ERR_BADCHANNELKEY(_client->GetName(fd_cli), *it));
 			else { // add the client to the channel
 				_channel[*it][_client->GetName(fd_cli)] = false;
-				send_error(fd_cli, RPL_TOPIC(_client->GetName(fd_cli), *it, _all_chan[*it].topic)); // ! the topic needs to be set accordingly !
+				send_rpl_topic(*it, _all_chan[*it].topic, fd_cli); // ! the topic needs to be set accordingly !
 				send_rpl_name(*it, fd_cli);
-				send_error(fd_cli, RPL_ENDOFNAMES(_client->GetName(fd_cli), *it));
 			}
 		}
 		++key_it;
