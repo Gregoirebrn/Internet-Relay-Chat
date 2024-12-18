@@ -5,18 +5,18 @@
 #include "Server.hpp"
 
 // Constructors & destructor
-Server::Server(char *port, std::string pw) : _port(static_cast <uint16_t>(std::strtod(port, NULL))), _password(pw), _addr(), _nfds(0), _cli(pw) {
+Server::Server(char *port, std::string pw) : _port(static_cast <uint16_t>(std::strtod(port, NULL))), _password(pw), _addr(), _nfds(0), _cli(pw), _chan(&_cli) {
 	//Init sock_addr struct for bind
 	_addr.sin_family = AF_INET; // IPv4
 	_addr.sin_port = htons(_port); // Port number, convert host to network byte order
 	_addr.sin_addr.s_addr = INADDR_ANY; // Bind to all available interfaces (0.0.0.0)
 	signal_handler();
-	std::cout << "Server default constructor called!" << std::endl;
+//	std::cout << "Server default constructor called!" << std::endl;
 }
 
 Server::~Server() {
 	close(_socketfd);
-	std::cout << "Server default destructor called!" << std::endl;
+//	std::cout << "Server default destructor called!" << std::endl;
 }
 
 
@@ -51,6 +51,7 @@ int Server::CreatSocket()
 	_pollfds.push_back((struct pollfd){.fd = _socketfd, .events = POLLIN, .revents = 0}); //add the socket to the poll fds
 	_nfds++;
 	//change true to the global that is false if a ctrl D or a sigaction ocured
+	std::cout << "Server :IRECTION up & running" << std::endl;
 	while (g_signal) {
 //		std::cout << "WAITING ..." << std::endl;
 		if (poll(_pollfds.data(), _nfds, -1) < 0 && !g_signal) //wait to have a action from one of the fds
@@ -62,6 +63,7 @@ int Server::CreatSocket()
 				if (it->fd == _socketfd) {
 					struct sockaddr *addr_cli = NULL;
 					int fd_cli = accept(_socketfd, addr_cli, reinterpret_cast<socklen_t *>(sizeof(&addr_cli)));
+					std::cout << "NEW CLIENT CONNECT :" << fd_cli << std::endl;
 					_pollfds.push_back((struct pollfd){.fd = fd_cli, .events = POLLIN, .revents = 0});
 					_cli.CreateClient(fd_cli, addr_cli);
 					_nfds++;
@@ -82,17 +84,23 @@ void	Server::messag_handle(std::vector<pollfd>::iterator &it) {
 	char buff[512 + 1];
 	bzero(buff, 513);
 	ssize_t ret = recv(it->fd, buff, n, MSG_DONTWAIT);
+//	std::cout << "RECV :" << it->fd << std::endl;
 	if (!ret) { // client gone suppress it
-		std::cout << "CLient : " << it->fd << "disconnected." << std::endl;
+		std::cout << "SERVER: clear poll & Quit" << std::endl;
 		it = _pollfds.erase(it);
+		_nfds--;
 	}
 	else if (ret < 0) // error occured
 		std::cerr << "Recv failed: " << strerror(errno) << std::endl;
 	else { //message
-		buff[ret] = '\0';
-		std::string trim = buff;
-		_cli.CommandClient(trim, it->fd); //user nick pass
-		_chan.Canal_Operators(trim, it->fd); //join mode kick topic invite
+		std::istringstream message;
+		message.str(buff);
+		for (std::string line; std::getline(message, line, '\n');) {
+//			std::cout << "LINE :" << line << std::endl;
+			_cli.CommandClient(line, it->fd); //user nick pass
+			_chan.Canal_Operators(line, it->fd); //join mode kick topic invite
+		}
+//		std::cout << "GET :" << buff << std::endl;
 	}
 }
 
@@ -107,12 +115,6 @@ int Server::signal_handler() {
 	std::signal(SIGQUIT, &Server::handler);
 	std::signal(SIGPIPE, SIG_IGN);
 	return (100);
-}
-
-std::string Client::Get_Client_Name(int fd_cli) {
-	if (_map[fd_cli]._nickname.empty())
-		return ("default");
-	return _map[fd_cli]._nickname;
 }
 
 int	main(int ac, char **av) {
