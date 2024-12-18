@@ -20,7 +20,13 @@ int Channel::mode_i(bool s, std::vector<std::string> v, size_t *j, all_chan_t it
 }
 
 int Channel::mode_k(bool s, std::vector<std::string> v, size_t *j, all_chan_t itc) {
-
+	if (s)
+	{
+		itc->second.chan_key = v[*j];
+		(*j)++;
+	}
+	else
+		itc->second.chan_key = "";
 }
 
 int Channel::mode_t(bool s, std::vector<std::string> v, size_t *j, all_chan_t itc) {
@@ -77,10 +83,10 @@ int	Channel::Mode(std::string buff, int fd_cli) {
 		return (1); //ERR_CHANOPRIVSNEEDED
 	if (v[1][0] != '+' && v[1][0] != '-')
 		return (1); //ERR_NEEDMOREPARAMS
-	for (size_t i = 1; i < v[1].size(); i++) {
-		if (v[1][i] != 'i' && v[1][i] != 'k' && v[1][i] != 't' && v[1][i] != 'o' && v[1][i] != 'l')
-			return (1); //ERR_UNKNOWNMODE
-	}
+//	for (size_t i = 1; i < v[1].size(); i++) {
+//		if (v[1][i] != 'i' && v[1][i] != 'k' && v[1][i] != 't' && v[1][i] != 'o' && v[1][i] != 'l')
+//			return (1); //ERR_UNKNOWNMODE
+//	}
 	exec_loop(v, itc);
 	return (0);
 }

@@ -22,11 +22,13 @@ typedef struct mod_s {
 	std::string		chan_key;
 	std::string		topic;
 	size_t			max_user;
+	bool			invite;
 }	mod_t;
 
 typedef std::map<std::string , std::map<std::string, bool> >::iterator	chan_t;
 typedef std::map<std::string, bool>::iterator							user_t;
 typedef std::vector<std::string>::iterator								vec_t;
+typedef std::map<std::string, mod_t>::iterator							all_chan_t;
 
 template<typename T, size_t N>
 T * end(T (&ra)[N]) {
@@ -43,7 +45,6 @@ public :
 	Channel(Client *instance);
 	~Channel();
 	//Getters
-	int		cpy_fd(std::string nick);
 	bool	get_rights(std::string name, std::string chan, int fd_cli);
 	int		get_join_arg(std::string buff, int fd_cli, std::vector<std::string> &channel_v, std::vector<std::string> &key_v);
 	//Public methods
@@ -56,6 +57,14 @@ public :
 	int		Privmsg(std::string buff, int fd_cli);
 	int		Quit(std::string buff, int fd_cli);
 	int		Topic(std::string buff, int fd_cli);
+	// Utils for mode
+	int 	mode_i(bool s, std::vector<std::string> v, size_t *j, all_chan_t itc);
+	int 	mode_t(bool s, std::vector<std::string> v, size_t *j, all_chan_t itc);
+	int 	mode_k(bool s, std::vector<std::string> v, size_t *j, all_chan_t itc);
+	int 	mode_o(bool s, std::vector<std::string> v, size_t *j, all_chan_t itc);
+	int 	mode_l(bool s, std::vector<std::string> v, size_t *j, all_chan_t itc);
+	int		exec_mode(bool s, char c, std::vector<std::string> v, size_t *j, all_chan_t itc);
+	int 	exec_loop(std::vector<std::string> v, all_chan_t itc);
 	//Sends
 	void	send_chan_msg(std::string channel, std::string msg);
 	void	send_rpl_name(std::string channel, int fd_cli);
