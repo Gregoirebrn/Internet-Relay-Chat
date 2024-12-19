@@ -23,7 +23,7 @@
 //kick
 #define ERR_USERNOTINCHANNEL(nick, channel) (":irc_server 441 " + (nick) + " " + (channel) + " :They aren't on that channel\r\n")
 #define RPL_SUCCESKICK(prefix, nick, channel) (":" + (prefix)) + " KICK " + (channel) + " " + (nick) + " \r\n")
-#define RPL_KICK(client, nick, channel) (":irc_server " + (client)) + " KICK " + (channel) + " " + (nick) + " \r\n")
+#define RPL_KICK(nick, channel) (":irc_server KICK " + (channel) + " " + (nick) + " \r\n")
 
 //gone
 #define ERR_GONE(nick) ("QUIT :Gone to have lunch " + (nick) + " exiting from the network\r\n")
@@ -52,6 +52,7 @@
 #define RPL_TOPICWHOTIME(client, channel, nick, setat) (":irc_server 333 " + (client) + " " + (channel) + " " + (nick) + " " + (setat) + "\r\n")
 
 //join
+#define RPL_JOIN(nick, channel) (":" + (nick) + " JOIN " + (channel) + "\r\n")
 #define RPL_NAMREPLY(client, channel, prenick) (":irc_server 353 " + (client) + " = " + (channel) + " :" + (prenick) + "\r\n")
 #define ERR_TOOMANYCHANNELS(client, channel) (":irc_server 405 " + (client) + " " + (channel) + " :You have joined too many channels\r\n")
 #define ERR_BADCHANNELKEY(client, channel) (":irc_server 475 " + (client) + " " + (channel) + " :Cannot join channel (+k)\r\n")

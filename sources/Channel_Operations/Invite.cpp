@@ -24,6 +24,8 @@ int Channel::Invite(std::string buff, int fd_cli) {
 	if (_channel[channel].end() != found)
 		return (send_error(fd_cli, ERR_USERONCHANNEL(nick_target, channel)), 443); //already on channel
 	_channel[channel][nick_target] = false;
+	send_error(_client->GetFd(nick_target), RPL_JOIN(_client->GetName(fd_cli), channel));
+	send_error(fd_cli, RPL_JOIN(_client->GetUser(fd_cli), channel));
 	send_error(_client->GetFd(nick_target), RPL_INVITED(_client->GetPrefix(fd_cli), nick_target, _client->GetName(fd_cli), channel));
 	return (send_error(fd_cli, RPL_INVITING(_client->GetName(fd_cli), nick_target, channel)), 341); //added to channel and welcome
 }

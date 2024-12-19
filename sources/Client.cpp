@@ -51,16 +51,20 @@ std::string Client::GetPrefix(int fd_cli) {
 	return _clients[fd_cli]._prefix;
 }
 
-int Client::CreateClient(int fd_cli, sockaddr_in *addr_cli) {
-	_clients[fd_cli] = (info_t){._register = false, ._pw_verified = false, ._nickname = "", ._pseudo = "", ._realname = "", ._hostname = "", ._prefix = "", ._addr_cli = addr_cli};
-//	char host[1024];
-//	socklen_t addr_len = sizeof(&addr_cli);
-//
-//	int res = getnameinfo((struct sockaddr *)&addr_cli, addr_len, host, 1024, NULL, 0, 0);
-//	if (res != 0)
-//		return (std::cout << "Client :getnameinfo failed :" << gai_strerror(res) << std::endl, 4040);
-//	_clients[fd_cli]._hostname = host;
-	_clients[fd_cli]._hostname = "localhost";
+std::string Client::GetUser(int fd_cli) {
+	if (_clients[fd_cli]._pseudo.empty())
+		return ("");
+	return _clients[fd_cli]._pseudo;
+}
+
+int Client::CreateClient(int fd_cli, sockaddr_in addr_srv) {
+	_clients[fd_cli] = (info_t){._register = false, ._pw_verified = false, ._nickname = "", ._pseudo = "", ._realname = "", ._hostname = "", ._prefix = "", ._addr_cli = addr_srv};
+	char host[1024];
+
+	int res = getnameinfo((sockaddr *)&addr_srv, sizeof(addr_srv), host, 1024, NULL, 0, 0);
+	if (res != 0)
+		return (std::cout << "Client :getnameinfo failed :" << gai_strerror(res) << std::endl, 4040);
+	_clients[fd_cli]._hostname = host;
 	_clients[fd_cli]._prefix = _clients[fd_cli]._nickname + "!" + _clients[fd_cli]._pseudo + "@" + _clients[fd_cli]._hostname;
 	std::cout << "CLIENT_PRFIX :" << _clients[fd_cli]._prefix << std::endl;
 	return 0;

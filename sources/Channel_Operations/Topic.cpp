@@ -4,6 +4,8 @@
 
 #include "Channel.hpp"
 
+//!!! A Ajouter la verif que le topic peut etre modifier par des non opp
+
 int Channel::Topic(std::string buff, int fd_cli) {
 	if (buff.size() <= 2)
 		return (send_error(fd_cli, ERR_NEEDMOREPARAMS("TOPIC")), 462);//missing params

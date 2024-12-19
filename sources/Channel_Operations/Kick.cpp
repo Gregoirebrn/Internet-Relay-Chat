@@ -25,7 +25,11 @@ int Channel::Kick(std::string buff, int fd_cli) {
 		return (send_error(fd_cli, ERR_USERNOTINCHANNEL(nick, channel)), 441);// we didn't find him
 	_channel[channel].erase(nick);//we did find him
 	send_error(_client->GetFd(nick), RPL_SUCCESKICK(_client->GetPrefix(fd_cli) , nick, channel);
+	send_error(_client->GetFd(nick), RPL_KICK(channel, nick));
+	send_error(_client->GetFd(nick), "KICK\r\n");
 	send_error(fd_cli, RPL_SUCCESKICK(_client->GetPrefix(fd_cli) , nick, channel);
+	send_error(fd_cli, RPL_KICK(channel, nick));
+	send_error(fd_cli, "KICK\r\n");
 	return (0);
 }
 //	std::string nick = buff.substr(end_wd, comma);

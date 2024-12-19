@@ -55,6 +55,7 @@ void	Channel::CreateChannel(std::string channel, int fd_cli) {
 	channel = channel.substr(0, channel.size() - 1);
 	_all_chan[channel] = (mod_t){.chan_key = "", .topic = "", .max_user = 0};
 	_channel[channel][_client->GetName(fd_cli)] = true;
+	send_error(fd_cli, RPL_JOIN(_client->GetUser(fd_cli), channel));
 	send_error(fd_cli, RPL_NOTOPIC(_client->GetName(fd_cli), channel));
 	send_rpl_name(channel, fd_cli);
 }
@@ -80,6 +81,7 @@ int	Channel::Join(std::string buff, int fd_cli) {
 				send_error(fd_cli, ERR_BADCHANNELKEY(_client->GetName(fd_cli), *it));
 			else { // add the client to the channel
 				_channel[*it][_client->GetName(fd_cli)] = false;
+				send_error(fd_cli, RPL_JOIN(_client->GetUser(fd_cli), *it));
 				send_rpl_topic(*it, _all_chan[*it].topic, fd_cli); // ! the topic needs to be set accordingly !
 				send_rpl_name(*it, fd_cli);
 			}

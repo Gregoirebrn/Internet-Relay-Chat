@@ -61,12 +61,11 @@ int Server::CreatSocket()
 		for(std::vector<pollfd>::iterator it = _pollfds.begin(); it < _pollfds.end(); it++) { //find the fd that had an event by iterating the list of vector
 			if (it->revents & POLLIN) {
 				if (it->fd == _socketfd) {
-					struct sockaddr_in *addr_cli = NULL;
-					socklen_t addr_len = sizeof(addr_cli);
-					int fd_cli = accept(_socketfd, (struct sockaddr *)&addr_cli, &addr_len);
+					int addr_len = sizeof(_addr);
+					int fd_cli = accept(_socketfd, (struct sockaddr *)&_addr, (socklen_t*)&addr_len);
 					std::cout << "NEW CLIENT CONNECT :" << fd_cli << std::endl;
 					_pollfds.push_back((struct pollfd){.fd = fd_cli, .events = POLLIN, .revents = 0});
-					_cli.CreateClient(fd_cli, addr_cli);
+					_cli.CreateClient(fd_cli, _addr);
 					_nfds++;
 					it = _pollfds.begin();
 				}
