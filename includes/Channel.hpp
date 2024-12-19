@@ -21,8 +21,9 @@ class Server;
 typedef struct mod_s {
 	std::string		chan_key;
 	std::string		topic;
-	size_t			max_user;
-	bool			invite;
+	bool			t_bool; // WARNING TOPIC SHOULD CHECK THIS BOOL
+	size_t			max_user; // WARNING JOIN SHOULD CHECK THIS VALUE - 0 means not limits
+	bool			i_bool; // WARNING JOIN SHOULD CHECK THIS BOOL
 }	mod_t;
 
 typedef std::map<std::string , std::map<std::string, bool> >::iterator	chan_t;
