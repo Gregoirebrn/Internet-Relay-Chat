@@ -27,9 +27,7 @@ std::map<int , info_t> Client::GetClients(){
 
 int	Client::GetFd(std::string nick) {
 	for (list_t it = _clients.begin(); it != _clients.end(); ++it) {
-		std::cout << "FINDER_FD " << it->first << ":" << it->second._nickname << std::endl;
 		if (it->second._nickname == nick) {
-			std::cout << "IT_FIRST :" << it->first << std::endl;
 			return (it->first);
 		}
 	}
@@ -73,12 +71,12 @@ int Client::CreateClient(int fd_cli, sockaddr_in addr_srv) {
 int Client::CommandClient(std::string buff, int fd_cli)
 {
 	static int (Client::*fptr[4])(std::string, int fd_cli) = {&Client::register_nick, &Client::register_user, \
-	&Client::register_pass, &Client::send_private};
-	static std::string tab_com[] = {"NICK", "USER", "PASS", "PRIVMSG"};
+	&Client::register_pass};
+	static std::string tab_com[] = {"NICK", "USER", "PASS"};
 
 	try {
 //		std::cout << "COMMAND :" << buff << " " << buff.size();
-		for (int i = 0; i < 4; ++i) {
+		for (int i = 0; i < 3; ++i) {
 			if (!buff.compare(0, tab_com[i].size(), tab_com[i])) {
 				std::size_t pos = buff.find(' ');
 				if (pos == std::string::npos) {

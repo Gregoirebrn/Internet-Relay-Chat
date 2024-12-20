@@ -49,13 +49,14 @@ int	Channel::check_max_joined(int fd_cli, std::vector<std::string> channel_v) { 
 
 int	Channel::Canal_Operators(std::string buff, int fd_cli) {
 	int	(Channel::*fptr[])(std::string, int ) = {&Channel::Kick, &Channel::Invite, \
-		&Channel::Topic, &Channel::Mode, &Channel::Join, &Channel::Quit, &Channel::Privmsg};
-	const char *comm[] = {"KICK", "INVITE", "TOPIC", "MODE", "JOIN", "QUIT", "PRIVMSG"};
-	std::vector<std::string> comm_v(comm, end(comm));
-	for (size_t i = 0; i < comm_v.size(); ++i) {
+		&Channel::Topic, &Channel::Mode, &Channel::Join, &Channel::Quit, &Channel::Privmsg, &Channel::Who};
+	static std::string comm[] = {"KICK", "INVITE", "TOPIC", "MODE", "JOIN", "QUIT", "PRIVMSG", "WHO"};
+	for (size_t i = 0; i < 8; ++i) {
 		try {
-			if (!buff.compare(0, comm_v[i].size(), comm_v[i])) {
-				std::string arg = buff.substr(comm_v[i].size() + 1, buff.size());
+			if (!buff.compare(0, comm[i].size(), comm[i])) {
+				std::string arg = buff.substr(comm[i].size() + 1, buff.size());
+				std::cout << "COMM :" << comm[i] << std::endl;
+				std::cout << "CO ARG :" << arg << std::endl;
 				return ((this->*fptr[i])(arg, fd_cli), 1);
 			}
 		}

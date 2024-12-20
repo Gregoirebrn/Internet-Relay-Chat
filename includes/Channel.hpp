@@ -55,8 +55,10 @@ public :
 	int		Privmsg(std::string buff, int fd_cli);
 	int		Quit(std::string buff, int fd_cli);
 	int		Topic(std::string buff, int fd_cli);
+	int		Who(std::string buff, int fd_cli);
 	//Sends
 	void	send_chan_msg(std::string channel, std::string msg);
+	void	send_msg_to_chan(std::string channel, std::string msg, int to_not_send);
 	void	send_rpl_name(std::string channel, int fd_cli);
 	void	send_rpl_topic(std::string channel, std::string topic, int fd_cli);
 	//Utils

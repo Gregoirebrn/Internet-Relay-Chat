@@ -22,8 +22,9 @@
 
 //kick
 #define ERR_USERNOTINCHANNEL(nick, channel) (":irc_server 441 " + (nick) + " " + (channel) + " :They aren't on that channel\r\n")
-#define RPL_SUCCESKICK(prefix, nick, channel) (":" + (prefix)) + " KICK " + (channel) + " " + (nick) + " \r\n")
-#define RPL_KICK(nick, channel) (":irc_server KICK " + (channel) + " " + (nick) + " \r\n")
+#define RPL_SUCCESKICK(nick, channel, client) (":" + (nick)) + " KICK " + (channel) + " " + (client) + " \r\n")
+#define RPL_KICK(nick, channel) (":" + (nick) + " PART " + (channel) + " \r\n")
+#define RPL_PART(nick, channel) (":" + (nick) + " PART " + (channel) + "\r\n")
 
 //gone
 #define ERR_GONE(nick) ("QUIT :Gone to have lunch " + (nick) + " exiting from the network\r\n")
@@ -40,7 +41,7 @@
 
 //invite
 #define RPL_INVITING(client, nick, channel) (":irc_server 341 " + (client) + " " + (nick) + " " + (channel) + "\r\n")
-#define RPL_INVITED(prefix, client, nick, channel) (":" + (prefix) + " INVITE " + (client) + " " + (channel) + " " + "\r\n")
+#define RPL_INVITED(client, nick, channel) (":" + (client) + " INVITE " + (nick) + " " + (channel) + " " + "\r\n")
 #define ERR_NOSUCHCHANNEL(channel) (":irc_server 403 " + (channel) + " :No such channel\r\n")
 #define ERR_NOTONCHANNEL(channel) (":irc_server 442 " + (channel) + " :You're not on that channel\r\n")
 #define ERR_USERONCHANNEL(nick, channel) (":irc_server 443 " + (nick) + " " + (channel) + " :is already on channel\r\n")

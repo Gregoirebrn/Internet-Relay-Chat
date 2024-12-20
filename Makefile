@@ -16,9 +16,11 @@ SRCS		:=	Server.cpp			\
 				$(CO)Privmsg.cpp	\
 				$(CO)Quit.cpp		\
 				$(CO)Topic.cpp		\
+				$(CO)Who.cpp		\
 				$(CM)Nick.cpp		\
 				$(CM)Pass.cpp		\
 				$(CM)User.cpp		\
+#				$(CO)List.cpp		\
 
 SRCS_D		:=	sources/
 
