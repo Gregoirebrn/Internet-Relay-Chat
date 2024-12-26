@@ -10,6 +10,7 @@
 #include <iostream>
 #include <sstream>
 #include <string>
+#include <ctime>
 //internal libs
 # include "Client.hpp"
 
@@ -22,6 +23,8 @@ typedef struct mod_s {
 	std::string		chan_key;
 	std::string		topic;
 	size_t			max_user;
+	std::string		set_of_topic;
+	std::string		time;
 }	mod_t;
 
 typedef std::map<std::string , std::map<std::string, bool> >::iterator	chan_t;

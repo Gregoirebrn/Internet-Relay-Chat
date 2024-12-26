@@ -48,10 +48,11 @@
 #define ERR_CHANOPRIVSNEEDED(client, channel) (":irc_server 482 " + (client) + (channel) + " :You're not channel operator\r\n")
 
 //topic
-#define RPL_NOTOPIC(client, channel) (":irc_server 331 " + (client) + (channel) + " :No topic is set\r\n")
+#define RPL_NOTOPIC(client, channel) (":irc_server 331 " + (client) + " " + (channel) + " :No topic is set\r\n")
 #define RPL_TOPIC(client, channel, topic) (":irc_server 332 " + (client) + " " + (channel) + " :" + (topic) + "\r\n")
 #define RPL_TOPICWHOTIME(client, channel, nick, setat) (":irc_server 333 " + (client) + " " + (channel) + " " + (nick) + " " + (setat) + "\r\n")
-
+#define RPL_CHANGETOPIC(client, channel, topic) (":" + (client) + " TOPIC " + (channel) + " " + (topic) + "\r\n")
+#define RPL_CREATIONTOPIC(client, channel, topic) (":" + (client) + " TOPIC " + (channel) + " " + (client) + " " + (topic) + "\r\n")
 //join
 #define RPL_JOIN(nick, channel) (":" + (nick) + " JOIN " + (channel) + "\r\n")
 #define RPL_NAMREPLY(client, channel, prenick) (":irc_server 353 " + (client) + " = " + (channel) + " :" + (prenick) + "\r\n")
