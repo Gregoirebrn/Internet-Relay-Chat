@@ -64,7 +64,7 @@ int Client::CreateClient(int fd_cli, sockaddr_in addr_srv) {
 		return (std::cout << "Client :getnameinfo failed :" << gai_strerror(res) << std::endl, 4040);
 	_clients[fd_cli]._hostname = host;
 	_clients[fd_cli]._prefix = _clients[fd_cli]._nickname + "!" + _clients[fd_cli]._pseudo + "@" + _clients[fd_cli]._hostname;
-	std::cout << "CLIENT_PRFIX :" << _clients[fd_cli]._prefix << std::endl;
+//	std::cout << "CLIENT_PRFIX :" << _clients[fd_cli]._prefix << std::endl;
 	return 0;
 }
 
@@ -111,42 +111,4 @@ void	Client::Remove(int fd_cli) {
 void	send_error(int fd, std::string error) {
 	const char *err = error.c_str();
 	send(fd, err, strlen(err), 0);
-}
-
-//send error to client
-int	Client::send_cli_msg(std::string nick, std::string msg, int fd_sender) {
-//	std::cout << "ITERATOR :" << nick << std::endl;
-	int fd_msg = GetFd(nick);
-//	std::cout << "FDCLIENT:" << fd_msg << std::endl;
-	std::string full_msg = ":" + GetName(fd_sender) + " PRIVMSG " + nick + " " + msg;
-	if (fd_msg > 0)
-		return (send_error(fd_msg, full_msg), 0);
-	return (1);
-}
-
-int	Client::send_private(std::string buff, int fd_cli) {
-	if (buff.find(' ') == std::string::npos)
-		return (send_error(fd_cli, ERR_NEEDMOREPARAMS(buff)), 461);
-	buff = buff.substr(0 , buff.size() - 1);
-	std::vector<std::string> targets;
-	std::istringstream haystack;
-	haystack.str(buff);
-	for (std::string line; std::getline(haystack, line, ',');) {
-		if (line.find(' ') != std::string::npos) {
-			targets.push_back(line.substr(0, line.find(' ')));
-			break;
-		}
-		targets.push_back(line);
-	}
-//	for (vec_t it = targets.begin(); it != targets.end() ; ++it) {
-//		std::cout << "TARGETS :" << *it << std::endl;
-//	}
-	std::string msg = buff.substr((buff.find(targets.back()) + targets.back().size() + 1), buff.size());
-	for (vec_t it = targets.begin(); it != targets.end() ; ++it) {
-		if (it->find('#') == std::string::npos) { //its for one user check the nick exist & get the fd
-			if (send_cli_msg(*it, msg, fd_cli))
-				send_error(fd_cli, ERR_NOSUCHNICK(GetName(fd_cli), *it));
-		}
-	}
-	return (0);
 }

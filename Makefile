@@ -49,7 +49,7 @@ all			:	msg_compil $(BIN)
 				@echo "Success !"
 
 run			:	all
-				$(RUN)
+				echo $(RUN)
 
 msg_compil	:
 				@echo "Making..."
@@ -75,4 +75,3 @@ fclean		:	clean
 re			:	fclean all
 
 .PHONY: all clean fclean re
-#.SILENT: all clean fclean $(OBJS) $(BIN)

@@ -5,20 +5,31 @@
 #include "Channel.hpp"
 
 int Channel::Kick(std::string buff, int fd_cli) {
+	std::cout << "---KICK COMMAND---" << std::endl;
+	std::stringstream stream(buff);
+	std::vector<std::string> v_arg;
+	for (std::string word; std::getline(stream, word, ' ');) {
+		v_arg.push_back(word);
+	}
+	std::cout << "--------Kick vector arg------" << std::endl;
+	for (vec_t it = v_arg.begin(); it != v_arg.end(); ++it) {
+		std::cout << *it << std::endl;
+	}
+	std::cout << "--------Kick End arg---------" << std::endl;
 	std::string channel = buff.substr(buff.find('#'), buff.find(' '));
-	std::cout << "CHANNEL :" << channel << std::endl;
+//	std::cout << "CHANNEL :" << channel << std::endl;
 	std::string nick = buff.substr((buff.find(' ') + 1), buff.size());
-	std::cout << "NICK :" << nick << std::endl;
+//	std::cout << "NICK :" << nick << std::endl;
 	nick = nick.substr(0, (nick.size() - 1));
-	std::cout << "NICK 1.5:" << nick << std::endl;
+//	std::cout << "NICK 1.5:" << nick << std::endl;
 	if (nick.find(':')) {
 		nick = nick.substr(0, nick.find(' '));
-		std::cout << "NICK 2:" << nick << std::endl;
+//		std::cout << "NICK 2:" << nick << std::endl;
 	}
 	if (!get_rights(_client->GetName(fd_cli), channel, fd_cli))// check if the client caller have the rights to kick
 		return (404);
 	for (user_t it =_channel[channel].begin(); it !=_channel[channel].end(); ++it) {
-		std::cout << "USERS --" << it->first << std::endl;
+//		std::cout << "USERS --" << it->first << std::endl;
 	}
 	user_t found = _channel[channel].find(nick);//search the nickname in the database of the channel
 	if (_channel[channel].end() == found)
@@ -50,3 +61,6 @@ int Channel::Kick(std::string buff, int fd_cli) {
 //>> :irc_server 441 You #mab :They aren't on that channel
 //<< KICK #mab * :You suck
 //>> :irc_server 441 You #mab :They aren't on that channel
+
+//Don't send part message to the user been kicked
+//Send only one kick to the user been kicked
