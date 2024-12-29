@@ -22,9 +22,9 @@
 
 //kick
 #define ERR_USERNOTINCHANNEL(nick, channel) (":irc_server 441 " + (nick) + " " + (channel) + " :They aren't on that channel\r\n")
-#define RPL_SUCCESKICK(nick, channel, client) (":" + (nick)) + " KICK " + (channel) + " " + (client) + " \r\n")
+#define RPL_PART(nick, channel, client) (":" + (nick)) + " KICK " + (channel) + " " + (client) + " \r\n")
 #define RPL_KICK(nick, channel) (":" + (nick) + " PART " + (channel) + " \r\n")
-#define RPL_PART(nick, channel) (":" + (nick) + " PART " + (channel) + "\r\n")
+#define RPL_SUCCESKICK(nick, channel) ("KICK " + (nick) + " " + (channel) + " \r\n")
 
 //gone
 #define ERR_GONE(nick) ("QUIT :Gone to have lunch " + (nick) + " exiting from the network\r\n")

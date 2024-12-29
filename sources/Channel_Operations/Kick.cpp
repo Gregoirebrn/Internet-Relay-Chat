@@ -36,11 +36,10 @@ int Channel::Kick(std::string buff, int fd_cli) {
 		return (send_error(fd_cli, ERR_USERNOTINCHANNEL(nick, channel)), 441);// we didn't find him
 	_channel[channel].erase(nick);//we did find him
 
-	send_chan_msg(channel, RPL_KICK(_client->GetUser(_client->GetFd(nick)), channel));
-	send_error(_client->GetFd(nick), RPL_PART(nick, channel));
-
-	send_error(_client->GetFd(nick), RPL_SUCCESKICK(_client->GetName(fd_cli), channel, _client->GetUser(_client->GetFd(nick)));
-	send_error(_client->GetFd(nick), RPL_SUCCESKICK(_client->GetName(fd_cli), channel, _client->GetUser(_client->GetFd(nick)));
+	send_error(fd_cli, RPL_SUCCESKICK(nick, channel));
+	send_msg_to_chan(channel, RPL_KICK(_client->GetUser(_client->GetFd(nick)), channel), _client->GetFd(nick));
+//	send_error(_client->GetFd(nick), RPL_PART(nick, channel));
+	send_error(_client->GetFd(nick), RPL_PART(_client->GetName(fd_cli), channel, _client->GetUser(_client->GetFd(nick)));
 	return (0);
 }
 //	std::string nick = buff.substr(end_wd, comma);
@@ -64,3 +63,5 @@ int Channel::Kick(std::string buff, int fd_cli) {
 
 //Don't send part message to the user been kicked
 //Send only one kick to the user been kicked
+
+//!! Confirmation de kick par le opp ne fonctionne pas !!

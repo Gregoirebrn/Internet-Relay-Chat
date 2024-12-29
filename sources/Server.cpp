@@ -74,7 +74,7 @@ int Server::CreatSocket()
 			}
 		}
 	}
-	std::cout << "Server successfully bound to port 8080." << std::endl;
+	std::cout << "End of run for Irection." << std::endl;
 	return 0;
 }
 
