@@ -38,7 +38,6 @@ void	Channel::send_rpl_name(std::string channel, int fd_cli) { //get all names o
 	for (user_t it = _channel[channel].begin(); it != _channel[channel].end(); ++it) {
 		all_names += it->first + " ";
 	}
-//	std::cout << "PRENICK---------" << all_names << std::endl;
 	send_error(fd_cli, RPL_NAMREPLY(_client->GetName(fd_cli), channel, all_names));
 	send_error(fd_cli, RPL_ENDOFNAMES(channel));
 }
@@ -50,10 +49,11 @@ void	Channel::send_rpl_topic(std::string channel, std::string topic, int fd_cli)
 }
 
 void	Channel::CreateChannel(std::string channel, int fd_cli) {
-	if (channel[0] != '#' && channel[0] != '&')
+	if (channel[0] != '#')
 		return (send_error(fd_cli, ERR_NOSUCHCHANNEL(channel)), (void)0);
-	channel = channel.substr(0, channel.size() - 1);
-	_all_chan[channel] = (mod_t){.chan_key = "", .topic = "", .max_user = 0, .set_of_topic = "", .time = ""};
+	if (std::string::npos != channel.find('\r'))
+		channel = channel.substr(0, channel.size() - 1);
+	_all_chan[channel] = (mod_t){.chan_key = "", .topic = "", .max_user = 0};
 	_channel[channel][_client->GetName(fd_cli)] = true;
 	send_error(fd_cli, RPL_JOIN(_client->GetUser(fd_cli), channel));
 }
@@ -88,11 +88,3 @@ int	Channel::Join(std::string buff, int fd_cli) {
 	}
 	return 0;
 }
-//	/// test
-//	std::cout << std::endl << "CHANNEL" << std::endl;
-//	for (std::vector<std::string>::iterator i = channel_v.begin(); i != channel_v.end(); ++i)
-//		std::cout << ':' << *i << std::endl;
-//	std::cout << "KEY" << std::endl;
-//	for (std::vector<std::string>::iterator i = key_v.begin(); i != key_v.end(); ++i)
-//		std::cout << ':' << *i << std::endl;
-//	/// test

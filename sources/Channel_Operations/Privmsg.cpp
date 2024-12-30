@@ -21,14 +21,16 @@ void	Channel::send_msg_to_chan(std::string channel, std::string msg, int to_not_
 
 int	Channel::Privmsg(std::string buff, int fd_cli) {
 	std::string channel = buff.substr(0 , buff.find(' '));
-	if (channel[0] == '#') {
+	if (channel[0] == '#' || channel[0] == '&') {
 		if (_channel.find(channel) == _channel.end())
 			send_error(fd_cli, ERR_NOSUCHCHANNEL(channel));
-		std::cout << "CHANNEL1 :" << channel << std::endl;
+		if (std::string::npos == buff.find(':'))
+			return (send_error(fd_cli, ERR_NODOTMSG), 404);
 		std::string msg = buff.substr(buff.find(':'), buff.size());
-		msg = msg.substr(0, (msg.size() -1));
+		if (std::string::npos != msg.find('\r'))
+			msg = msg.substr(0, (msg.size() -1));
 		msg = ":" + _client->GetPrefix(fd_cli) + " PRIVMSG " + channel + " " + msg + "\r\n";
-		std::cout << "MSG1 :" << msg << std::endl;
+//		std::cout << "MSG1 :" << msg << std::endl;
 		send_msg_to_chan(channel, msg, fd_cli);
 		return (1);
 	}

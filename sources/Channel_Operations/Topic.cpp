@@ -11,7 +11,9 @@ int Channel::Topic(std::string buff, int fd_cli) {
 		return (send_error(fd_cli, ERR_NEEDMOREPARAMS("TOPIC")), 462);//missing params
 	size_t two_dots = buff.find(':');
 	if (two_dots == std::string::npos) { //no topic is given, so checking the topic
-		std::string channel = buff.substr(0, buff.size() -1);
+		std::string channel = buff;
+		if (std::string::npos != buff.find('\r'))
+			channel = buff.substr(0, buff.size() -1);
 		if (_all_chan.find(channel) == _all_chan.end())
 			return (send_error(fd_cli, ERR_NOSUCHCHANNEL(channel)), false);
 		if (_all_chan[channel].topic.empty())
@@ -25,7 +27,8 @@ int Channel::Topic(std::string buff, int fd_cli) {
 //	std::cout << "SUBBBSSS :" << channel << std::endl;
 	std::string topic = buff.substr(two_dots + 1, buff.size()); //trim the two dots
 //	std::cout << "NO_CUTS :" << topic << std::endl;
-	topic = topic.substr(0, topic.size() - 1); //trim the \r
+	if (std::string::npos != topic.find('\r'))
+		topic = topic.substr(0, topic.size() - 1); //trim the \r
 //	std::cout << "CUTS :" << topic << std::endl;
 	if (!get_rights(_client->GetName(fd_cli), channel, fd_cli)) //check if the client can mod the topic of the channel
 		return (404);

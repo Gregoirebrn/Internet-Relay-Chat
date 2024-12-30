@@ -5,11 +5,11 @@
 #include "Client.hpp"
 
 int Client::register_user(std::string buff, int fd_cli) {
+	if (!_clients[fd_cli]._pw_verified)
+		return (send_error(fd_cli, ERR_PWNOTCHECK), 808);
 	if (buff.size() < 4)
 		return (send_error(fd_cli, ERR_NEEDMOREPARAMS("USER")), 461);
-	if (!_clients[fd_cli]._pw_verified)
-		return (send(fd_cli, ERR_NOTREGISTRED, sizeof(ERR_NOTREGISTRED), 0), 808);
-	if (!_clients[fd_cli]._pseudo.empty())
+	if (!_clients[fd_cli]._username.empty())
 		return(send_error(fd_cli, ERR_ALREADYREGISTRED), 462);
 	try {
 		if (std::string::npos == buff.find(' '))
@@ -24,19 +24,20 @@ int Client::register_user(std::string buff, int fd_cli) {
 		_clients[fd_cli]._realname = rn;
 		if (USERLEN < ps.size())
 			ps = ps.substr(0, USERLEN);
-		_clients[fd_cli]._pseudo = ps;
+		_clients[fd_cli]._username = ps;
 	}
 	catch (std::exception &e) {
 		return (send_error(fd_cli, ERR_NEEDMOREPARAMS("USER")), 461);
 	}
 	if (!_clients[fd_cli]._nickname.empty()){
-		_clients[fd_cli]._prefix = _clients[fd_cli]._nickname + "!" + _clients[fd_cli]._pseudo + "@" + _clients[fd_cli]._hostname;
-		std::cout << "---INFO---" << std::endl;
-		std::cout << "PSEUDO---" << _clients[fd_cli]._pseudo << std::endl;
-		std::cout << "NICK---" << _clients[fd_cli]._nickname << std::endl;
-		std::cout << "PREFIX---" << _clients[fd_cli]._prefix << std::endl;
-		std::cout << "---END---" << std::endl;
-		return (send_error(fd_cli, RPL_WELCOME(_clients[fd_cli]._pseudo, _clients[fd_cli]._nickname, _clients[fd_cli]._prefix)), 462);
+		_clients[fd_cli]._prefix = _clients[fd_cli]._nickname + "!" + _clients[fd_cli]._username + "@" + _clients[fd_cli]._hostname;
+		std::cout << "---INFO------------:" << std::endl;
+		std::cout << "---PSEUDO :" << _clients[fd_cli]._username << std::endl;
+		std::cout << "---NICK   :" << _clients[fd_cli]._nickname << std::endl;
+		std::cout << "---PREFIX :" << _clients[fd_cli]._prefix << std::endl;
+		std::cout << "---END-------------:" << std::endl;
+		_clients[fd_cli]._register = true;
+		return (send_error(fd_cli, RPL_WELCOME(_clients[fd_cli]._username, _clients[fd_cli]._nickname, _clients[fd_cli]._prefix)), 462);
 	}
 	return (0);
 }

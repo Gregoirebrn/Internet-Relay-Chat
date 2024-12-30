@@ -6,18 +6,18 @@
 
 // Constructors & destructor
 Client::Client() {
-	std::cout << "Client default destructor called!" << std::endl;
+//	std::cout << "Client default destructor called!" << std::endl;
 }
 
 Client::Client(const std::string& password) : _password(password) {
-	std::cout << "Client default constructor called!" << std::endl;
+//	std::cout << "Client default constructor called!" << std::endl;
 }
 
 Client::~Client(void) {
 	for (std::map<int , info_t>::iterator it = _clients.begin(); it != _clients.end(); it++) {
 		close(it->first); // close all client fd
 	}
-	std::cout << "Client second destructor called!" << std::endl;
+//	std::cout << "Client second destructor called!" << std::endl;
 }
 
 //getter
@@ -31,11 +31,6 @@ int	Client::GetFd(std::string nick) {
 			return (it->first);
 		}
 	}
-//	for (list_t it = _clients.begin(); it != _clients.end(); ++it) {
-//		std::cout << "---------FINDER_FD " << it->first << ":" << it->second._nickname << std::endl;
-//		std::cout << "---------IT_FIRST :" << it->first << std::endl;
-//	}
-//	std::cout << "EMPTYYYYYYYYYYYYYYYYYY" << std::endl;
 	return (-1);
 }
 
@@ -45,53 +40,61 @@ std::string Client::GetName(int fd_cli) {
 	return _clients[fd_cli]._nickname;
 }
 
+bool Client::IsRegister(int fd_cli) {
+	return _clients[fd_cli]._register;
+}
+
 std::string Client::GetPrefix(int fd_cli) {
 	return _clients[fd_cli]._prefix;
 }
 
 std::string Client::GetUser(int fd_cli) {
-	if (_clients[fd_cli]._pseudo.empty())
+	if (_clients[fd_cli]._username.empty())
 		return ("");
-	return _clients[fd_cli]._pseudo;
+	return _clients[fd_cli]._username;
 }
 
 int Client::CreateClient(int fd_cli, sockaddr_in addr_srv) {
-	_clients[fd_cli] = (info_t){._register = false, ._pw_verified = false, ._nickname = "", ._pseudo = "", ._realname = "", ._hostname = "", ._prefix = "", ._addr_cli = addr_srv};
+	_clients[fd_cli] = (info_t){._register = false, ._pw_verified = false, ._nickname = "", ._username = "", ._realname = "", ._hostname = "", ._prefix = "", ._addr_cli = addr_srv};
 	char host[1024];
 
 	int res = getnameinfo((sockaddr *)&addr_srv, sizeof(addr_srv), host, 1024, NULL, 0, 0);
 	if (res != 0)
 		return (std::cout << "Client :getnameinfo failed :" << gai_strerror(res) << std::endl, 4040);
 	_clients[fd_cli]._hostname = host;
-	_clients[fd_cli]._prefix = _clients[fd_cli]._nickname + "!" + _clients[fd_cli]._pseudo + "@" + _clients[fd_cli]._hostname;
-//	std::cout << "CLIENT_PRFIX :" << _clients[fd_cli]._prefix << std::endl;
 	return 0;
 }
 
 int Client::CommandClient(std::string buff, int fd_cli)
 {
+	// Fast checkin
+	if (buff == "ff\r") {
+		register_pass("pass", fd_cli);
+		register_nick("defni", fd_cli);
+		register_user("defus 0 * :noreal", fd_cli);
+		return (3);
+	}
+	if (buff == "fff\r") {
+		register_pass("pass", fd_cli);
+		register_nick("fn", fd_cli);
+		register_user("fu 0 * :norh", fd_cli);
+		return (3);
+	}
+	//End Fast Check
 	static int (Client::*fptr[4])(std::string, int fd_cli) = {&Client::register_nick, &Client::register_user, \
 	&Client::register_pass};
 	static std::string tab_com[] = {"NICK", "USER", "PASS"};
 
 	try {
-//		std::cout << "COMMAND :" << buff << " " << buff.size();
 		for (int i = 0; i < 3; ++i) {
 			if (!buff.compare(0, tab_com[i].size(), tab_com[i])) {
-				std::size_t pos = buff.find(' ');
-				if (pos == std::string::npos) {
-					std::string ret = tab_com[i];
-					return (send_error(fd_cli, ERR_NEEDMOREPARAMS(tab_com[i])), 462);
+				if (std::string::npos == buff.find(' ')) { //send nothing to the command so she throw the apropriate error
+					(this->*fptr[i])("", fd_cli);
+					return (0);
 				}
-//				if (pos + 1 >= buff.size())
-//					throw std::exception() ;
-				std::string arg = buff.substr(pos + 1);
-				if (arg.find('\r') != std::string::npos) {
-//					std::cout << "BEFORE:" << arg << std::endl;
-					std::string mod = arg.substr(0, arg.size() - 1);
-					arg = mod;
-//					std::cout << "AFTER :" << mod << std::endl;
-				}
+				std::string arg = buff.substr((buff.find(' ') + 1), buff.size());
+				if (arg.find('\r') != std::string::npos) // if we aree on Hexchat
+					arg = arg.substr(0, arg.size() - 1);
 				(this->*fptr[i])(arg, fd_cli);
 				return (0);
 			}
@@ -111,4 +114,12 @@ void	Client::Remove(int fd_cli) {
 void	send_error(int fd, std::string error) {
 	const char *err = error.c_str();
 	send(fd, err, strlen(err), 0);
+}
+
+//send error to client
+void	Client::send_all_serv(std::string msg) {
+	std::cout << "---ALL_SERV---" << std::endl;
+	for (list_t it = _clients.begin(); it != _clients.end(); ++it) {
+		send_error(it->first, msg);
+	}
 }

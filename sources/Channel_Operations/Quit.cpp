@@ -12,7 +12,5 @@ int	Channel::Quit(std::string buff, int fd_cli) {
 			_channel[it->first].erase(nick);
 	}
 	_client->Remove(fd_cli);
-	send_error(fd_cli, ERR_GONE(nick));
-	std::cout << "QUIT" << std::endl;
 	return (0);
 }

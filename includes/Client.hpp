@@ -23,7 +23,7 @@ typedef struct info_s {
 	bool			_register;
 	bool			_pw_verified;
 	std::string		_nickname;
-	std::string		_pseudo;
+	std::string		_username;
 	std::string		_realname;
 	std::string		_hostname;
 	std::string		_prefix;
@@ -48,6 +48,7 @@ public :
 	std::string				GetName(int fd_cli);
 	std::string				GetPrefix(int fd_cli);
 	std::string				GetUser(int fd_cli);
+	bool					IsRegister(int fd_cli);
 	Client(const std::string& password);
 	// Public methods
 	int CreateClient(int fd_cli, sockaddr_in pSockaddr);
@@ -58,6 +59,7 @@ public :
 	//quit handle
 	void	Remove(int fd_cli);
 	//send msg
+	void	send_all_serv(std::string msg);
 	int		send_private(std::string buff, int fd_cli);
 	int		send_cli_msg(std::string nick, std::string msg, int fd_sender);
 	class GradeTooHighException : public std::exception {

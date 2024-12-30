@@ -51,9 +51,8 @@ int Server::CreatSocket()
 	_pollfds.push_back((struct pollfd){.fd = _socketfd, .events = POLLIN, .revents = 0}); //add the socket to the poll fds
 	_nfds++;
 	//change true to the global that is false if a ctrl D or a sigaction ocured
-	std::cout << "Server :IRECTION up & running" << std::endl;
+	std::cout << "Irection up." << std::endl;
 	while (g_signal) {
-//		std::cout << "WAITING ..." << std::endl;
 		if (poll(_pollfds.data(), _nfds, -1) < 0 && !g_signal) //wait to have a action from one of the fds
 			break ;
 		if (!g_signal) //check if the global value of signal have changed with a if
@@ -63,7 +62,7 @@ int Server::CreatSocket()
 				if (it->fd == _socketfd) {
 					int addr_len = sizeof(_addr);
 					int fd_cli = accept(_socketfd, (struct sockaddr *)&_addr, (socklen_t*)&addr_len);
-					std::cout << "NEW CLIENT CONNECT :" << fd_cli << std::endl;
+//					std::cout << "NEW CLIENT CONNECT :" << fd_cli << std::endl;
 					_pollfds.push_back((struct pollfd){.fd = fd_cli, .events = POLLIN, .revents = 0});
 					_cli.CreateClient(fd_cli, _addr);
 					_nfds++;
@@ -74,7 +73,7 @@ int Server::CreatSocket()
 			}
 		}
 	}
-	std::cout << "End of run for Irection." << std::endl;
+	std::cout << "Irection down." << std::endl;
 	return 0;
 }
 
@@ -83,11 +82,12 @@ void	Server::messag_handle(std::vector<pollfd>::iterator &it) {
 	char buff[512 + 1];
 	bzero(buff, 513);
 	ssize_t ret = recv(it->fd, buff, n, MSG_DONTWAIT);
-//	std::cout << "RECV :" << it->fd << std::endl;
 	if (!ret) { // client gone suppress it
-		std::cout << "SERVER: clear poll & Quit" << std::endl;
+		std::cout << "Irection: client " << it->fd << " quit." << std::endl;
 		it = _pollfds.erase(it);
 		_nfds--;
+		_chan.Quit("", it->fd);
+		_cli.Remove(it->fd);
 	}
 	else if (ret < 0) // error occured
 		std::cerr << "Recv failed: " << strerror(errno) << std::endl;
@@ -95,11 +95,9 @@ void	Server::messag_handle(std::vector<pollfd>::iterator &it) {
 		std::istringstream message;
 		message.str(buff);
 		for (std::string line; std::getline(message, line, '\n');) {
-//			std::cout << "LINE :" << line << std::endl;
 			_cli.CommandClient(line, it->fd); //user nick pass
 			_chan.Canal_Operators(line, it->fd); //join mode kick topic invite
 		}
-//		std::cout << "GET :" << buff << std::endl;
 	}
 }
 
@@ -122,10 +120,5 @@ int	main(int ac, char **av) {
 	Server serv(av[1], av[2]);
 	serv.CreatSocket();
 }
-//	if (accept(_socketfd, (struct sockaddr *)&_addr, sizeof(_addr) ) ) < 0) {
-//		std::cerr << "Listen creation failed: " << strerror(errno) << std::endl;
-//		close(_socketfd);
-//		exit(EXIT_FAILURE);
-//	}
 
 

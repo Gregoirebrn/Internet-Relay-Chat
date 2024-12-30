@@ -50,13 +50,20 @@ int	Channel::check_max_joined(int fd_cli, std::vector<std::string> channel_v) { 
 int	Channel::Canal_Operators(std::string buff, int fd_cli) {
 	int	(Channel::*fptr[])(std::string, int ) = {&Channel::Kick, &Channel::Invite, \
 		&Channel::Topic, &Channel::Mode, &Channel::Join, &Channel::Quit, &Channel::Privmsg, &Channel::Who};
-	static std::string comm[] = {"KICK", "INVITE", "TOPIC", "MODE", "JOIN", "QUIT", "PRIVMSG", "WHO"};
+	static std::string commands[] = {"KICK", "INVITE", "TOPIC", "MODE", "JOIN", "QUIT", "PRIVMSG", "WHO"};
 	for (size_t i = 0; i < 8; ++i) {
 		try {
-			if (!buff.compare(0, comm[i].size(), comm[i])) {
-				std::string arg = buff.substr(comm[i].size() + 1, buff.size());
-				std::cout << "COMM :" << comm[i] << std::endl;
-				std::cout << "CO ARG :" << arg << std::endl;
+			if (!buff.compare(0, commands[i].size(), commands[i])) {
+				if (std::string::npos == buff.find(' ')) { //send nothing to the command so she throw the apropriate error
+					(this->*fptr[i])("", fd_cli);
+					return (0);
+				}
+				std::string arg = buff.substr((buff.find(' ') + 1), buff.size());
+				if (arg.find('\r') != std::string::npos) // if we aree on Hexchat
+					arg = arg.substr(0, arg.size() - 1);
+//				std::cout << "CHANNEL ARG :" << arg << std::endl;
+				if (!_client->IsRegister(fd_cli))
+					return (send_error(fd_cli, ERR_NOTREGISTRED), 404);
 				return ((this->*fptr[i])(arg, fd_cli), 1);
 			}
 		}
@@ -66,5 +73,3 @@ int	Channel::Canal_Operators(std::string buff, int fd_cli) {
 	}
 	return (0);
 }
-
-
