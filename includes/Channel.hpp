@@ -22,14 +22,18 @@ class Server;
 typedef struct mod_s {
 	std::string		chan_key;
 	std::string		topic;
-	size_t			max_user;
 	std::string		set_of_topic;
 	std::string		time;
+	bool			t_bool; // WARNING TOPIC SHOULD CHECK THIS BOOL
+	size_t			in_user;
+	size_t			max_user; // WARNING JOIN SHOULD CHECK THIS VALUE - 0 means not limits
+	bool			i_bool; // WARNING JOIN SHOULD CHECK THIS BOOL
 }	mod_t;
 
 typedef std::map<std::string , std::map<std::string, bool> >::iterator	chan_t;
 typedef std::map<std::string, bool>::iterator							user_t;
 typedef std::vector<std::string>::iterator								vec_t;
+typedef std::map<std::string, mod_t>::iterator							all_chan_t;
 
 template<typename T, size_t N>
 T * end(T (&ra)[N]) {
@@ -65,7 +69,16 @@ public :
 	void	send_rpl_name(std::string channel, int fd_cli);
 	void	send_rpl_topic(std::string channel, std::string topic, int fd_cli);
 	//Utils
+	bool	Top_Right(std::string name, std::string channel, int fd_cli);
 	void	CreateChannel(std::string channel, int fd_cli);
 	int		check_max_joined(int fd_cli, std::vector<std::string> channel_v);
+	//Mode flags
+	int		mode_i(bool s, std::vector<std::string> v, size_t *j, all_chan_t itc);
+	int		mode_k(bool s, std::vector<std::string> v, size_t *j, all_chan_t itc);
+	int		mode_t(bool s, std::vector<std::string> v, size_t *j, all_chan_t itc);
+	int		mode_o(bool s, std::vector<std::string> v, size_t *j, all_chan_t itc);
+	int		mode_l(bool s, std::vector<std::string> v, size_t *j, all_chan_t itc);
+	int		exec_mode(bool s, char c, std::vector<std::string> v, size_t *j, all_chan_t itc);
+	int		exec_loop(std::vector<std::string> v, all_chan_t itc);
 	};
 
