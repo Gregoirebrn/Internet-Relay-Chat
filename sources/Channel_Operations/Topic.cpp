@@ -5,6 +5,26 @@
 #include "Channel.hpp"
 
 //!!! A Ajouter la verif que le topic peut etre modifier par des non opp
+bool Channel::Top_Right(std::string name, std::string channel, int fd_cli) {
+//	std::cout << "GET_RIGHTS_NAME :"  << name << std::endl;
+	if (_all_chan.end() == _all_chan.find(channel))
+		return (send_error(fd_cli, ERR_NOSUCHCHANNEL(channel)), false);
+	for (chan_t it = _channel.begin(); it != _channel.end(); ++it) {
+		if (it->first == channel) {
+			user_t i = it->second.begin();
+			while (i != it->second.end() && i->first != name)
+				i++;
+			if (i == it->second.end())
+				return (send_error(fd_cli, ERR_NOTONCHANNEL(channel)), false);
+			if (i->second)
+				return true;
+			if (_all_chan[channel].t_bool)
+				return (send_error(fd_cli, ERR_CHANOPRIVSNEEDED(GetName(fd_cli), channel)), false);
+		}
+	}
+	return false;
+}
+
 
 int Channel::Topic(std::string buff, int fd_cli) {
 	if (buff.size() <= 2)
@@ -30,7 +50,7 @@ int Channel::Topic(std::string buff, int fd_cli) {
 	if (std::string::npos != topic.find('\r'))
 		topic = topic.substr(0, topic.size() - 1); //trim the \r
 //	std::cout << "CUTS :" << topic << std::endl;
-	if (!get_rights(_client->GetName(fd_cli), channel, fd_cli)) //check if the client can mod the topic of the channel
+	if (!Top_Right(_client->GetName(fd_cli), channel, fd_cli)) //check if the client can mod the topic of the channel
 		return (404);
 	std::time_t timestamp = std::time(0);   // get time now
 	std::stringstream ss;

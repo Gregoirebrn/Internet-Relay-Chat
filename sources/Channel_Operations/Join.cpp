@@ -53,7 +53,7 @@ void	Channel::CreateChannel(std::string channel, int fd_cli) {
 		return (send_error(fd_cli, ERR_NOSUCHCHANNEL(channel)), (void)0);
 	if (std::string::npos != channel.find('\r'))
 		channel = channel.substr(0, channel.size() - 1);
-	_all_chan[channel] = (mod_t){.chan_key = "", .topic = "", .max_user = 0};
+	_all_chan[channel] = (mod_t){.chan_key = "", .topic = "", .set_of_topic = "", .time = "", .t_bool = false , .in_user = 0 ,.max_user = 0, .i_bool = false};
 	_channel[channel][_client->GetName(fd_cli)] = true;
 	send_error(fd_cli, RPL_JOIN(_client->GetUser(fd_cli), channel));
 }
@@ -76,8 +76,10 @@ int	Channel::Join(std::string buff, int fd_cli) {
 			CreateChannel(*it, fd_cli);
 		} else {
 			if (_all_chan[*it].chan_key != *key_it) // check the value of the key
-				send_error(fd_cli, ERR_BADCHANNELKEY(_client->GetName(fd_cli), *it));
+				return (send_error(fd_cli, ERR_BADCHANNELKEY(_client->GetName(fd_cli), *it)), 475);
 			else { // add the client to the channel
+				if (_all_chan[*it].max_user != 0 && _all_chan[*it].max_user < _all_chan[*it].in_user + 1)
+					return (send_error(fd_cli, ERR_CHANNELISFULL(_client->GetName(fd_cli), *it)), 471);
 				_channel[*it][_client->GetName(fd_cli)] = false;
 				send_error(fd_cli, RPL_JOIN(_client->GetUser(fd_cli), *it));
 				send_rpl_topic(*it, _all_chan[*it].topic, fd_cli); // ! the topic needs to be set accordingly !

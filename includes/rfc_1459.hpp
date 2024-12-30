@@ -32,6 +32,7 @@
 #define ERR_GONE(nick) ("QUIT :Gone to have lunch " + (nick) + " exiting from the network\n")
 
 //mode
+#define RPL_CREAMODE(channel) (":irc_server 324 " + channel + " +nrt" + "\r\n")
 //#define RPL_CHANNELMODEIS
 //#define ERR_NOSUCHNICK
 //#define ERR_KEYSET
@@ -56,13 +57,14 @@
 #define RPL_TOPICWHOTIME(client, channel, nick, setat) (":irc_server 333 " + (client) + " " + (channel) + " " + (nick) + " " + (setat) + "\n")
 #define RPL_CHANGETOPIC(client, channel, topic) (":" + (client) + " TOPIC " + (channel) + " " + (topic) + "\n")
 #define RPL_CREATIONTOPIC(client, channel, topic) (":" + (client) + " TOPIC " + (channel) + " " + (client) + " " + (topic) + "\n")
+
 //join
 #define RPL_JOIN(nick, channel) (":" + (nick) + " JOIN " + (channel) + "\n")
 #define RPL_NAMREPLY(client, channel, prenick) (":irc_server 353 " + (client) + " = " + (channel) + " :" + (prenick) + "\n")
 #define ERR_TOOMANYCHANNELS(client, channel) (":irc_server 405 " + (client) + " " + (channel) + " :You have joined too many channels\n")
 #define ERR_BADCHANNELKEY(client, channel) (":irc_server 475 " + (client) + " " + (channel) + " :Cannot join channel (+k)\n")
 #define RPL_ENDOFNAMES(channel) (":irc_server 366 " + (channel) + " :End of /NAMES list\n")
-//#define ERR_USERLIM () // to use send mess to client because the chan is full
+#define ERR_CHANNELISFULL(client, channel) (":irc_server 471 " + (client) + " " + (channel) + " :Cannot join channel (+l)" + "\r\n")
 
 //privmsg
 #define ERR_NOSUCHNICK(client , nick) (":irc_server 401 " + (client) + " " + (nick) + ": No such nick\n")
