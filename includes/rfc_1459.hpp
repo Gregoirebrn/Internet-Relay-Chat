@@ -32,13 +32,13 @@
 #define ERR_GONE(nick) ("QUIT :Gone to have lunch " + (nick) + " exiting from the network\n")
 
 //mode
-#define RPL_CREAMODE(channel) (":irc_server 324 " + channel + " +nrt" + "\r\n")
+#define RPL_CREAMODE(channel) (":irc_server 324 " + (channel) + " +nrt" + "\r\n")
 //#define RPL_CHANNELMODEIS
 //#define ERR_NOSUCHNICK
 //#define ERR_KEYSET
 //#define RPL_BANLIST
 //#define RPL_ENDOFBANLIST
-//#define ERR_UNKNOWNMODE
+#define ERR_UNKNOWNMODE(nick, mode) (":irc_server 472 " + (nick) + " " + (mode) + " :is unknown mode char to me\n")
 //#define ERR_USERSDONTMATCH
 //#define RPL_UMODEIS
 //#define ERR_UMODEUNKNOWNFLAG

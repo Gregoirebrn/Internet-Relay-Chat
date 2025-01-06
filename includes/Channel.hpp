@@ -73,12 +73,12 @@ public :
 	void	CreateChannel(std::string channel, int fd_cli);
 	int		check_max_joined(int fd_cli, std::vector<std::string> channel_v);
 	//Mode flags
-	int		mode_i(bool s, std::vector<std::string> v, size_t *j, all_chan_t itc);
-	int		mode_k(bool s, std::vector<std::string> v, size_t *j, all_chan_t itc);
-	int		mode_t(bool s, std::vector<std::string> v, size_t *j, all_chan_t itc);
-	int		mode_o(bool s, std::vector<std::string> v, size_t *j, all_chan_t itc);
-	int		mode_l(bool s, std::vector<std::string> v, size_t *j, all_chan_t itc);
-	int		exec_mode(bool s, char c, std::vector<std::string> v, size_t *j, all_chan_t itc);
-	int		exec_loop(std::vector<std::string> v, all_chan_t itc);
+	int		mode_i(int fd_cli, bool s, std::vector<std::string> v, size_t *j, all_chan_t itc);
+	int		mode_k(int fd_cli, bool s, std::vector<std::string> v, size_t *j, all_chan_t itc);
+	int		mode_t(int fd_cli, bool s, std::vector<std::string> v, size_t *j, all_chan_t itc);
+	int		mode_o(int fd_cli, bool s, std::vector<std::string> v, size_t *j, all_chan_t itc);
+	int		mode_l(int fd_cli, bool s, std::vector<std::string> v, size_t *j, all_chan_t itc);
+	int		exec_mode(int fd_cli, bool s, char c, std::vector<std::string> v, size_t *j, all_chan_t itc);
+	int		exec_loop(int fd_cli, std::vector<std::string> v, all_chan_t itc);
 	};
 
