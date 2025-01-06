@@ -8,27 +8,24 @@
 #include <string>
 
 int	Channel::get_join_arg(std::string buff, int fd_cli, std::vector<std::string> &channel_v, std::vector<std::string> &key_v) {
-	if (buff.find(' ') == std::string::npos)
-		return (send_error(fd_cli, ERR_NEEDMOREPARAMS("JOIN")), 462);//missing params
-	std::istringstream haystack;
-	haystack.str(buff);
-	for (std::string channel; std::getline(haystack, channel, ',');) {
-		if (channel.find(' ') != std::string::npos) {
-			channel_v.push_back(channel.substr(0, channel.find(' ')));
-			break;
-		}
-		channel_v.push_back(channel.substr(0, channel.size() - 1));
-	}
-	haystack.str(buff.substr(buff.find(' '), buff.size() -2));
-	for (std::string key; std::getline(haystack, key, ',');) {
-		if (key.find(',') != std::string::npos) {
-			if (key.find(' ') == 2)
-				key_v.push_back(key.substr(1, key.size() -1));
-			else
-				key_v.push_back(key.substr(0, key.size() -1));
-		}
-		else
+	(void)fd_cli;
+	if (buff.find(' ') != std::string::npos) {
+		std::istringstream keys;
+		keys.str(buff.substr((buff.find(' ') + 1), buff.size()));
+		for (std::string key; std::getline(keys, key, ',');) {
 			key_v.push_back(key.substr(0, key.size()));
+		}
+	}
+	std::istringstream haystack;
+	haystack.str(buff.substr(0, buff.find(' ')));
+	for (std::string channel; std::getline(haystack, channel, ' ');) {
+		channel_v.push_back(channel.substr(0, channel.size()));
+	}
+	for (vec_t it = channel_v.begin(); it != channel_v.end(); ++it) {
+		std::cout << "CHA_V :" << *it << std::endl;
+	}
+	for (vec_t it = key_v.begin(); it != key_v.end(); ++it) {
+		std::cout << "KEY_V :" << *it << std::endl;
 	}
 	return (0);
 }
@@ -51,42 +48,54 @@ void	Channel::send_rpl_topic(std::string channel, std::string topic, int fd_cli)
 void	Channel::CreateChannel(std::string channel, int fd_cli) {
 	if (channel[0] != '#')
 		return (send_error(fd_cli, ERR_NOSUCHCHANNEL(channel)), (void)0);
+	std::string charset = "0123456789abcdefghijklmnopqrstuvwxyz_-";
+	for (int i = 1; channel[i]; ++i) {
+		if (std::string::npos == charset.find(channel[i]))
+			return (send_error(fd_cli, ERR_BADCHANMASK(channel)), void(0));
+	}
 	if (std::string::npos != channel.find('\r'))
 		channel = channel.substr(0, channel.size() - 1);
 	_all_chan[channel] = (mod_t){.chan_key = "", .topic = "", .set_of_topic = "", .time = "", .t_bool = false , .in_user = 0 ,.max_user = 0, .i_bool = false};
 	_channel[channel][_client->GetName(fd_cli)] = true;
-	send_error(fd_cli, RPL_JOIN(_client->GetUser(fd_cli), channel));
+	send_error(fd_cli, RPL_JOIN(_client->GetName(fd_cli), channel));
 }
 
 int	Channel::Join(std::string buff, int fd_cli) {
 	std::vector<std::string> channel_v;
 	std::vector<std::string> key_v;
-	if (buff.find(' ') == std::string::npos) // create new channel
-		return (CreateChannel(buff, fd_cli), 462);
-	if (get_join_arg(buff, fd_cli, channel_v, key_v)) // trim the buff in a vector of channels and keys
-		return (404);
+
+	if (buff.size() == 0)
+		return (send_error(fd_cli, ERR_NEEDMOREPARAMS("JOIN")), 462);//missing params
+	get_join_arg(buff, fd_cli, channel_v, key_v); // trim the buff in a vector of channels and keys
+
+//	for (vec_t it = channel_v.begin(); it != channel_v.end(); ++it) {
+//		std::cout << "CHA_V :" << *it << std::endl;
+//	}
+//	for (vec_t it = key_v.begin(); it != key_v.end(); ++it) {
+//		std::cout << "KEY_V :" << *it << std::endl;
+//	}
+//	if (std::string::npos != buff.find('\n'))
+//		buff = buff.substr(0, buff.size() - 1);
+//	channel_v.push_back(buff);
 	vec_t key_it = key_v.begin();
 	for (vec_t it = channel_v.begin(); it != channel_v.end(); ++it) {
-		if (check_max_joined(fd_cli, channel_v))
-			return (404);
-		if (key_it == key_v.end()) // if their is no keys to the channel
-			send_error(fd_cli, ERR_BADCHANNELKEY(_client->GetName(fd_cli), *it));
-		if (_all_chan.find(*it) == _all_chan.end()) { // not a channel
-			send_error(fd_cli, ERR_NOSUCHCHANNEL(*it));
+		if (_all_chan.find(*it) == _all_chan.end()) {// not a channel so we create a new one
 			CreateChannel(*it, fd_cli);
-		} else {
-			if (_all_chan[*it].chan_key != *key_it) // check the value of the key
-				return (send_error(fd_cli, ERR_BADCHANNELKEY(_client->GetName(fd_cli), *it)), 475);
-			else { // add the client to the channel
-				if (_all_chan[*it].max_user != 0 && _all_chan[*it].max_user < _all_chan[*it].in_user + 1)
-					return (send_error(fd_cli, ERR_CHANNELISFULL(_client->GetName(fd_cli), *it)), 471);
-				_channel[*it][_client->GetName(fd_cli)] = false;
-				send_error(fd_cli, RPL_JOIN(_client->GetUser(fd_cli), *it));
-				send_rpl_topic(*it, _all_chan[*it].topic, fd_cli); // ! the topic needs to be set accordingly !
-				send_rpl_name(*it, fd_cli);
-			}
+			continue;
 		}
+		if (!_all_chan[*it].chan_key.empty() && _all_chan[*it].chan_key != *key_it) // check the value of the key
+			return (send_error(fd_cli, ERR_BADCHANNELKEY(_client->GetName(fd_cli), *it)), 475);
+		if (_all_chan[*it].max_user != 0 && _all_chan[*it].max_user < _all_chan[*it].in_user + 1) // limit user in
+			return (send_error(fd_cli, ERR_CHANNELISFULL(_client->GetName(fd_cli), *it)), 471);
+		if (_all_chan[*it].i_bool) // is channel is in invite mod
+			return (send_error(fd_cli, ERR_INVITEONLYCHAN(_client->GetName(fd_cli), *it)), 473);
+		_channel[*it][_client->GetName(fd_cli)] = false;
+		send_chan_msg(*it, RPL_JOIN(_client->GetName(fd_cli), *it));
+		send_rpl_topic(*it, _all_chan[*it].topic, fd_cli); // ! the topic needs to be set accordingly !
+		send_rpl_name(*it, fd_cli);
 		++key_it;
 	}
 	return 0;
 }
+
+//	std::cout << "PRINT BOOL I :" << _all_chan["#chanada"].i_bool << std::endl;

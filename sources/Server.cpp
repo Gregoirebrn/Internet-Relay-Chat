@@ -83,6 +83,7 @@ void	Server::messag_handle(std::vector<pollfd>::iterator &it) {
 	bzero(buff, 513);
 	ssize_t ret = recv(it->fd, buff, n, MSG_DONTWAIT);
 	std::cout << "HEXMES :" << buff << std::endl;
+	std::cout << "END HEXMES." << std::endl;
 	if (!ret) { // client gone suppress it
 		std::cout << "Irection: client " << it->fd << " quit." << std::endl;
 		it = _pollfds.erase(it);

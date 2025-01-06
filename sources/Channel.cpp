@@ -34,19 +34,7 @@ bool Channel::get_rights(std::string name, std::string channel, int fd_cli) {
 	return false;
 }
 
-int	Channel::check_max_joined(int fd_cli, std::vector<std::string> channel_v) { // check with the macro MAX_CHAN if he would be in too many channel
-	size_t chan_joined = 0;
-	for (chan_t it = _channel.begin(); it != _channel.end() ; ++it) {
-		if (it->second.find(GetName(fd_cli)) != it->second.end())
-			chan_joined++;
-	}
-	if (chan_joined >= MAX_CHAN + 1)
-		return (send_error(fd_cli, ERR_TOOMANYCHANNELS(GetName(fd_cli), channel_v.front())), 405);
-	return (0);
-}
-
 // Public methods
-
 int	Channel::Canal_Operators(std::string buff, int fd_cli) {
 	int	(Channel::*fptr[])(std::string, int ) = {&Channel::Kick, &Channel::Invite, \
 		&Channel::Topic, &Channel::Mode, &Channel::Join, &Channel::Quit, &Channel::Privmsg, &Channel::Who};

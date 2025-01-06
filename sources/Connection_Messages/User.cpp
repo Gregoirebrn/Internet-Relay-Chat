@@ -37,7 +37,7 @@ int Client::register_user(std::string buff, int fd_cli) {
 		std::cout << "---PREFIX :" << _clients[fd_cli]._prefix << std::endl;
 		std::cout << "---END-------------:" << std::endl;
 		_clients[fd_cli]._register = true;
-		return (send_error(fd_cli, RPL_WELCOME(_clients[fd_cli]._username, _clients[fd_cli]._nickname, _clients[fd_cli]._prefix)), 462);
+		return (send_error(fd_cli, RPL_WELCOME(_clients[fd_cli]._nickname, _clients[fd_cli]._nickname)), 462);
 	}
 	return (0);
 }

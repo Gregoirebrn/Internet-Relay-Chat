@@ -29,6 +29,6 @@ int Channel::Invite(std::string buff, int fd_cli) {
 	send_error(_client->GetFd(nick_target), RPL_INVITED(_client->GetName(fd_cli), _client->GetUser(_client->GetFd(nick_target)), channel));
 	send_rpl_name(channel, _client->GetFd(nick_target));
 	send_error(fd_cli, RPL_INVITING(_client->GetName(fd_cli), nick_target, channel)); //added to channel and welcome
-	send_chan_msg(channel, RPL_JOIN(_client->GetUser(_client->GetFd(nick_target)), channel));
+	send_chan_msg(channel, RPL_JOIN(nick_target, channel));
 	return (0);
 }
