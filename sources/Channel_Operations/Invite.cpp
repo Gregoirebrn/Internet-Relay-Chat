@@ -24,11 +24,9 @@ int Channel::Invite(std::string buff, int fd_cli) {
 	user_t found = _channel[channel].find(nick_target); //search the nickname in the database of the channel
 	if (_channel[channel].end() != found)
 		return (send_error(fd_cli, ERR_USERONCHANNEL(nick_target, channel)), 443); //already on channel
-	_channel[channel][nick_target] = false;
 	//send msg
-	send_error(_client->GetFd(nick_target), RPL_INVITED(_client->GetName(fd_cli), _client->GetUser(_client->GetFd(nick_target)), channel));
-	send_rpl_name(channel, _client->GetFd(nick_target));
-	send_error(fd_cli, RPL_INVITING(_client->GetName(fd_cli), nick_target, channel)); //added to channel and welcome
-	send_chan_msg(channel, RPL_JOIN(nick_target, channel));
+	send_error(_client->GetFd(nick_target), RPL_INVITED(_client->GetPrefix(fd_cli), nick_target, channel));
+	send_error(fd_cli, RPL_INVITING(_client->GetPrefix(fd_cli), nick_target, channel)); //added to channel and welcome
+	_all_chan[channel].invite_list.push_back(nick_target);
 	return (0);
 }

@@ -19,7 +19,16 @@ Server::~Server() {
 //	std::cout << "Server default destructor called!" << std::endl;
 }
 
-
+void Server::suppr(int fd) {
+	for (std::vector<pollfd>::iterator it = _pollfds.begin(); it != _pollfds.end(); ++it) {
+		if (it->fd == fd) {
+			std::cout << "Irection: client " << it->fd << " quit." << std::endl;
+			_pollfds.erase(it);
+			_nfds--;
+			return ;
+		}
+	}
+}
 
 // Public methods
 int Server::CreatSocket()
@@ -62,7 +71,7 @@ int Server::CreatSocket()
 				if (it->fd == _socketfd) {
 					int addr_len = sizeof(_addr);
 					int fd_cli = accept(_socketfd, (struct sockaddr *)&_addr, (socklen_t*)&addr_len);
-//					std::cout << "NEW CLIENT CONNECT :" << fd_cli << std::endl;
+					std::cout << "NEW CLIENT CONNECT :" << fd_cli << std::endl;
 					_pollfds.push_back((struct pollfd){.fd = fd_cli, .events = POLLIN, .revents = 0});
 					_cli.CreateClient(fd_cli, _addr);
 					_nfds++;
@@ -70,6 +79,9 @@ int Server::CreatSocket()
 				}
 				else //handle the message of the event
 					messag_handle(it);
+				for (std::vector<pollfd>::iterator fu = _pollfds.begin(); fu != _pollfds.end(); ++fu) {
+					std::cout << "AFTERMESS :" << fu->fd << "--" << std::endl;
+				}
 			}
 		}
 	}
@@ -86,7 +98,10 @@ void	Server::messag_handle(std::vector<pollfd>::iterator &it) {
 	std::cout << "END HEXMES." << std::endl;
 	if (!ret) { // client gone suppress it
 		std::cout << "Irection: client " << it->fd << " quit." << std::endl;
-		it = _pollfds.erase(it);
+		_pollfds.erase(it);
+		for (std::vector<pollfd>::iterator fu = _pollfds.begin(); fu != _pollfds.end(); ++fu) {
+			std::cout << "RESTE :" << fu->fd << "--" << std::endl;
+		}
 		_nfds--;
 		_chan.Quit("", it->fd);
 		_cli.Remove(it->fd);

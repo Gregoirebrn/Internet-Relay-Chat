@@ -43,6 +43,7 @@ public :
 	void			messag_handle(std::vector<pollfd>::iterator &it);
 	int				signal_handler();
 	static void		handler(int sig);
+	void			suppr(int fd);
 	};
 
 int signal_handler();

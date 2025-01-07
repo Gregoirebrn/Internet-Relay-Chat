@@ -7,20 +7,20 @@
 bool Channel::Top_Right(std::string name, std::string channel, int fd_cli) {
 	std::cout << "GET_RIGHTS_NAME :"  << name << std::endl;
 	if (_all_chan.end() == _all_chan.find(channel))
-		return (send_error(fd_cli, ERR_NOSUCHCHANNEL(channel)), false);
+		return (send_error(fd_cli, ERR_NOSUCHCHANNEL(channel)), true);
 	for (chan_t it = _channel.begin(); it != _channel.end(); ++it) {
 		if (it->first == channel) {
 			user_t i = it->second.begin();
 			while (i != it->second.end() && i->first != name)
 				i++;
 			if (i == it->second.end())
-				return (send_error(fd_cli, ERR_NOTONCHANNEL(channel)), false);
-			if (i->second)
-				return true;
-			if (_all_chan[channel].t_bool && !_channel[channel][name])
-				return (send_error(fd_cli, ERR_CHANOPRIVSNEEDED(_client->GetName(fd_cli), channel)), false);
+				return (send_error(fd_cli, ERR_NOTONCHANNEL(channel)), true);
 		}
 	}
+	std::cout << "CHECK BOOL TOPIC" << std::endl;
+	if (!_all_chan[channel].t_bool && !_channel[channel][name])
+		return (send_error(fd_cli, ERR_CHANOPRIVSNEEDED(_client->GetName(fd_cli), channel)), true);
+	std::cout << "CHECK BOOL TOPIC OKKK" << std::endl;
 	return false;
 }
 
@@ -49,8 +49,9 @@ int Channel::Topic(std::string buff, int fd_cli) {
 	if (std::string::npos != topic.find('\r'))
 		topic = topic.substr(0, topic.size() - 1); //trim the \r
 	std::cout << "CUTS :" << topic << std::endl;
-	if (!Top_Right(_client->GetName(fd_cli), channel, fd_cli)) //check if the client can mod the topic of the channel
+	if (Top_Right(_client->GetName(fd_cli), channel, fd_cli)) //check if the client can mod the topic of the channel
 		return (404);
+	std::cout << "CHECK BOOL TOPIC O@@@@" << std::endl;
 	std::time_t timestamp = std::time(0);   // get time now
 	std::stringstream ss;
 	ss << timestamp;
@@ -64,9 +65,4 @@ int Channel::Topic(std::string buff, int fd_cli) {
 	return (send_chan_msg(channel, RPL_CHANGETOPIC(_client->GetName(fd_cli), channel, topic)), 0);
 }
 
-//	std::cout << "CHAN_TOPIC :" << topic << std::endl;
-//	std::cout << "CHAN_NAME  :" << channel << std::endl;
-//change of topic
-//%C22*%O$t%C26$1%C has changed the topic to: $2%O
-//creation of topic
-//%C22*%O$tTopic for %C22$1%C set by %C26$2%C (%C24$3%O)
+//retour d'errreur sur le -t de mode il ne dit pas le channopriivneeded

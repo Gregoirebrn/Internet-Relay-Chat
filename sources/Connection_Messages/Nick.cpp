@@ -16,7 +16,7 @@ int Client::register_nick(std::string buff, int fd_cli) {
 	}
 	for (list_t it = _clients.begin() ; it != _clients.end(); ++it) {
 		if (it->second._nickname == buff)
-			return (send_error(fd_cli, ERR_NICKNAMEINUSE(buff)), 432);
+			return (send_error(fd_cli, ERR_NICKNAMEINUSE(it->second._nickname)), 432);
 	}
 	if (!_clients[fd_cli]._nickname.empty()) {
 		std::string old_prefix = _clients[fd_cli]._prefix;

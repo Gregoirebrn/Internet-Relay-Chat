@@ -18,7 +18,7 @@
 //nickname
 #define ERR_NONICKNAMEGIVEN ":irc_server 431 :No nickname given\n"
 #define ERR_ERRONEUSNICKNAME(nick) (":irc_server 432 " + (nick) + " :Erroneus nickname\n")
-#define ERR_NICKNAMEINUSE(nick) (":irc_server 433 " + (nick) + " :Nickname is already in use\n")
+#define ERR_NICKNAMEINUSE(nick) (":irc_server 433 * " + (nick) + " :Nickname is already in use\n")
 #define RPL_NICK(old, new_nick) (":" + (old) + " NICK " + (new_nick) + "\n")
 #define RPL_PRENICK(prefix, new_nick) (":" + (prefix) + " NICK " + (new_nick) + "\n")
 
@@ -33,8 +33,13 @@
 
 //mode
 #define RPL_CREAMODE(channel) (":irc_server 324 " + (channel) + " +nrt" + "\r\n")
-#define ERR_UNKNOWNMODE(empty) (":irc_server 472 " + (empty) + " " + "+t" + " :is unknown mode char to me\r\n")
-//#define RPL_CHANNELMODEIS
+#define ERR_UNKNOWNMODE(nick, channel, c) (":irc_server 472 "+ (nick) + " " + (channel) + " " + (c) + " :is unknown mode char to me\r\n")
+#define ERR_NEEDMODPARAMS(nick, channel, command) (":irc_server 461 " + (nick) + " " + (channel) + " " + (std::string(command)) + " :Not enough parameters\n")
+#define RPL_CHANNELMODEIS(nick, channel, mode) (":irc_server 324 " + (nick) + " " + (channel) + " " + (mode) + "\n")
+#define RPL_MODE(channel, nick, message) (":" + (nick) + " MODE " + (channel) + (message))
+#define RPL_OMODE(channel, nick, message, nick2) (":" + (nick) + " MODE " + (channel) + (message) + (nick2) + " \n")
+#define RPL_LMODE(channel, nick, message, number) (":" + (nick) + " MODE " + (channel) + (message) + (number) + "\n")
+
 //#define ERR_NOSUCHNICK
 //#define ERR_KEYSET
 //#define RPL_BANLIST
@@ -43,6 +48,10 @@
 //#define ERR_USERSDONTMATCH
 //#define RPL_UMODEIS
 //#define ERR_UMODEUNKNOWNFLAG
+
+//who
+#define RPL_WHOREPLY(who) (":irc_server 352 " + (who) + "\n")
+#define RPL_ENDOFWHO(nick, channel) (":irc_server 315 " + (nick) + " " + (channel) + " :End of WHO list\n")
 
 //invite
 #define RPL_INVITING(client, nick, channel) (":irc_server 341 " + (client) + " " + (nick) + " " + (channel) + "\n")

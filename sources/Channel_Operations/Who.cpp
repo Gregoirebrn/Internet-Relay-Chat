@@ -11,7 +11,9 @@ int	Channel::Who(std::string buff, int fd_cli) {
 	std::cout << "WHO :" << channel << std::endl;
 	if (_channel.find(channel) == _channel.end())
 		return (send_error(fd_cli, ERR_NOSUCHCHANNEL(channel)), 403);
-	Topic(buff, fd_cli);
-	send_rpl_name(channel, fd_cli);
+	for (user_t it = _channel[channel].begin(); it != _channel[channel].end(); ++it) {
+		send_error(fd_cli, RPL_WHOREPLY(_client->GetWho(_client->GetFd(it->first), channel)));
+	}
+	send_error(fd_cli, RPL_ENDOFWHO(_client->GetName(fd_cli), channel));
 	return (0);
 }

@@ -54,14 +54,22 @@ std::string Client::GetUser(int fd_cli) {
 	return _clients[fd_cli]._username;
 }
 
+std::string Client::GetWho(int fd_cli, std::string channel) {
+	_clients[fd_cli]._who = _clients[fd_cli]._nickname + " " + channel + " " + _clients[fd_cli]._username + " ";
+	_clients[fd_cli]._who += _clients[fd_cli]._hostname + " irc_server " + _clients[fd_cli]._nickname + " H@~ :0 " + _clients[fd_cli]._realname;
+	return _clients[fd_cli]._who;
+}
+
 int Client::CreateClient(int fd_cli, sockaddr_in addr_srv) {
 	_clients[fd_cli] = (info_t){._register = false, ._pw_verified = false, ._nickname = "", ._username = "", ._realname = "", ._hostname = "", ._prefix = "", ._addr_cli = addr_srv};
 	char host[1024];
 
+	char *client_ip = inet_ntoa(addr_srv.sin_addr);
+	std::cout << "Client IP: " << client_ip << std::endl;
 	int res = getnameinfo((sockaddr *)&addr_srv, sizeof(addr_srv), host, 1024, NULL, 0, 0);
 	if (res != 0)
 		return (std::cout << "Client :getnameinfo failed :" << gai_strerror(res) << std::endl, 4040);
-	_clients[fd_cli]._hostname = host;
+	_clients[fd_cli]._hostname = client_ip;
 	return 0;
 }
 

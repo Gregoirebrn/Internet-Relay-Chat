@@ -19,6 +19,7 @@ int Channel::Kick(std::string buff, int fd_cli)
 		return (send_error(fd_cli, ERR_USERNOTINCHANNEL(nick, channel)), 441);// we didn't find him
 	send_chan_msg(channel, RPL_KICKED(_client->GetName(fd_cli), channel, nick));
 	_channel[channel].erase(nick);//we did find him
+	_all_chan[channel].in_user++;
 //	send_error(_client->GetFd(nick), RPL_KICKED(_client->GetName(fd_cli), channel, nick));
 	return (0);
 }

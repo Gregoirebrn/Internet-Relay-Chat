@@ -28,7 +28,7 @@ bool Channel::get_rights(std::string name, std::string channel, int fd_cli) {
 				return (send_error(fd_cli, ERR_NOTONCHANNEL(channel)), false);
 			if (i->second)
 				return true;
-			return (send_error(fd_cli, ERR_CHANOPRIVSNEEDED(GetName(fd_cli), channel)), false);
+			return (send_error(fd_cli, ERR_CHANOPRIVSNEEDED(_client->GetName(fd_cli), channel)), false);
 		}
 	}
 	return false;
