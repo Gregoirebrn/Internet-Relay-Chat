@@ -55,7 +55,7 @@ public :
 	bool	get_rights(std::string name, std::string chan, int fd_cli);
 	int		get_join_arg(std::string buff, int fd_cli, std::vector<std::string> &channel_v, std::vector<std::string> &key_v);
 	//Public methods
-	int		Canal_Operators(std::string buff, int fd_cli);
+	bool		Canal_Operators(std::string buff, int fd_cli);
 	//Channel Operators
 	int		Invite(std::string buff, int fd_cli);
 	int		Join(std::string buff, int fd_cli);

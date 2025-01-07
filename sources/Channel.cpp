@@ -35,7 +35,7 @@ bool Channel::get_rights(std::string name, std::string channel, int fd_cli) {
 }
 
 // Public methods
-int	Channel::Canal_Operators(std::string buff, int fd_cli) {
+bool	Channel::Canal_Operators(std::string buff, int fd_cli) {
 	int	(Channel::*fptr[])(std::string, int ) = {&Channel::Kick, &Channel::Invite, \
 		&Channel::Topic, &Channel::Mode, &Channel::Join, &Channel::Quit, &Channel::Privmsg, &Channel::Who};
 	static std::string commands[] = {"KICK", "INVITE", "TOPIC", "MODE", "JOIN", "QUIT", "PRIVMSG", "WHO"};
@@ -44,7 +44,7 @@ int	Channel::Canal_Operators(std::string buff, int fd_cli) {
 			if (!buff.compare(0, commands[i].size(), commands[i])) {
 				if (std::string::npos == buff.find(' ')) { //send nothing to the command so she throw the apropriate error
 					(this->*fptr[i])("", fd_cli);
-					return (0);
+					return (false);
 				}
 				std::string arg = buff.substr((buff.find(' ') + 1), buff.size());
 				if (arg.find('\r') != std::string::npos) // if we aree on Hexchat
@@ -52,12 +52,15 @@ int	Channel::Canal_Operators(std::string buff, int fd_cli) {
 //				std::cout << "CHANNEL ARG :" << arg << std::endl;
 				if (!_client->IsRegister(fd_cli))
 					return (send_error(fd_cli, ERR_NOTREGISTRED), 404);
-				return ((this->*fptr[i])(arg, fd_cli), 1);
+				(this->*fptr[i])(arg, fd_cli);
+				if (i == 5)
+					return true;
+				return false;
 			}
 		}
 		catch (std::exception &exe) {
 			std::cout << "Channel: " << exe.what() << std::endl;
 		}
 	}
-	return (0);
+	return (false);
 }

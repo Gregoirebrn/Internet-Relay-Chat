@@ -62,7 +62,7 @@ int Server::CreatSocket()
 	//change true to the global that is false if a ctrl D or a sigaction ocured
 	std::cout << "Irection up." << std::endl;
 	while (g_signal) {
-		if (poll(_pollfds.data(), _nfds, -1) < 0 && !g_signal) //wait to have a action from one of the fds
+		if (poll(_pollfds.data(), _nfds, 5) < 0 && !g_signal) //wait to have a action from one of the fds
 			break ;
 		if (!g_signal) //check if the global value of signal have changed with a if
 			break ;
@@ -113,7 +113,13 @@ void	Server::messag_handle(std::vector<pollfd>::iterator &it) {
 		message.str(buff);
 		for (std::string line; std::getline(message, line, '\n');) {
 			_cli.CommandClient(line, it->fd); //user nick pass
-			_chan.Canal_Operators(line, it->fd); //join mode kick topic invite
+			if (_chan.Canal_Operators(line, it->fd)) { //join mode kick topic invite
+				_pollfds.erase(it);
+				_nfds--;
+				for (std::vector<pollfd>::iterator fu = _pollfds.begin(); fu != _pollfds.end(); ++fu) {
+					std::cout << "RESTE :" << fu->fd << "--" << std::endl;
+				}
+			}
 		}
 	}
 }
