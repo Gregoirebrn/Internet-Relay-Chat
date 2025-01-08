@@ -22,12 +22,15 @@
 #define RPL_NICK(old, new_nick) (":" + (old) + " NICK " + (new_nick) + "\n")
 #define RPL_PRENICK(prefix, new_nick) (":" + (prefix) + " NICK " + (new_nick) + "\n")
 
+//part
+#define RPL_PART(nick, channel, msg) (":" + (nick) + " PART " + (channel) + " " + (msg) + "\n")
+
 //kick
 #define ERR_USERNOTINCHANNEL(nick, channel, target) (":irc_server 441 " + (nick) + " " + (channel) + " " + (target) + " :They aren't on that channel\n")
 #define RPL_SUCCESKICK(nick, channel, client) (":" + (nick) + " KICK " + (channel) + " " + (client) + "\n")
 #define RPL_KICK(prefix, channel, nick) (":" + (prefix) + " KICK " + (channel) + (nick) + "\n")
-#define RPL_PART(nick, channel) (":" + (nick) + " PART " + (channel) + "\n")
 #define RPL_KICKED(client, channel, kicked) (":" + (client) + " KICK " + (channel) + " " + (kicked) + "\n")
+
 //gone
 #define ERR_GONE(nick) ("QUIT :Gone to have lunch " + (nick) + " exiting from the network\n")
 
