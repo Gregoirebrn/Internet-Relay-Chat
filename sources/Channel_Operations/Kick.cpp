@@ -6,6 +6,10 @@
 
 int Channel::Kick(std::string buff, int fd_cli)
 {
+	if (std::string::npos == buff.find(' '))
+		return (send_error(fd_cli, ERR_NEEDMOREPARAMS("KICK")), 461);
+	if (std::string::npos == buff.find('#'))
+		return (send_error(fd_cli, ERR_NOSUCHCHANNEL(buff.substr(0, buff.find(' ')))), false);
 	std::string channel = buff.substr(buff.find('#'), buff.find(' '));
 	std::string nick = buff.substr((buff.find(' ') + 1), buff.size());
 	if (std::string::npos != nick.find('\n'))
@@ -16,7 +20,7 @@ int Channel::Kick(std::string buff, int fd_cli)
 		return (404);
 	user_t found = _channel[channel].find(nick);//search the nickname in the database of the channel
 	if (_channel[channel].end() == found)
-		return (send_error(fd_cli, ERR_USERNOTINCHANNEL(nick, channel)), 441);// we didn't find him
+		return (send_error(fd_cli, ERR_USERNOTINCHANNEL(_client->GetName(fd_cli), channel, nick)), 441);// we didn't find him
 	send_chan_msg(channel, RPL_KICKED(_client->GetName(fd_cli), channel, nick));
 	_channel[channel].erase(nick);//we did find him
 	_all_chan[channel].in_user--;

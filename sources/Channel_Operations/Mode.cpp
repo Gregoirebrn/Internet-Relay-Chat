@@ -54,7 +54,7 @@ int Channel::mode_o(int fd_cli, bool s, std::vector<std::string> v, size_t *j, a
 		return (send_error(fd_cli, ERR_NEEDMODPARAMS(_client->GetName(fd_cli), v[0], "MODE +o")), 461);
 	user_t it = _channel[v[0]].find(v[*j]);
 	if (it == _channel[v[0]].end())
-		return (send_error(fd_cli, ERR_USERNOTINCHANNEL(_client->GetName(fd_cli), v[*j])), 441); // TRY TO CONFIRM IF v[1]
+		return (send_error(fd_cli, ERR_USERNOTINCHANNEL(_client->GetName(fd_cli), v[0], v[*j])), 441); // TRY TO CONFIRM IF v[1]
 	if (s) {
 		it->second = true;
 		return (send_chan_msg(v[0], RPL_OMODE(v[0], _client->GetName(fd_cli), " +o ", v[*j])), 0);

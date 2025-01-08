@@ -16,7 +16,8 @@ Channel::~Channel(void) {
 
 // getters
 bool Channel::get_rights(std::string name, std::string channel, int fd_cli) {
-//	std::cout << "GET_RIGHTS_NAME :"  << name << std::endl;
+	std::cout << "GET_RIGHTS_NAME :"  << name << std::endl;
+	std::cout << " :"  << channel << std::endl;
 	if (_all_chan.end() == _all_chan.find(channel))
 		return (send_error(fd_cli, ERR_NOSUCHCHANNEL(channel)), false);
 	for (chan_t it = _channel.begin(); it != _channel.end(); ++it) {

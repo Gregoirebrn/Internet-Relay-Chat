@@ -23,7 +23,7 @@
 #define RPL_PRENICK(prefix, new_nick) (":" + (prefix) + " NICK " + (new_nick) + "\n")
 
 //kick
-#define ERR_USERNOTINCHANNEL(nick, channel) (":irc_server 441 " + (nick) + " " + (channel) + " :They aren't on that channel\n")
+#define ERR_USERNOTINCHANNEL(nick, channel, target) (":irc_server 441 " + (nick) + " " + (channel) + " " + (target) + " :They aren't on that channel\n")
 #define RPL_SUCCESKICK(nick, channel, client) (":" + (nick) + " KICK " + (channel) + " " + (client) + "\n")
 #define RPL_KICK(prefix, channel, nick) (":" + (prefix) + " KICK " + (channel) + (nick) + "\n")
 #define RPL_PART(nick, channel) (":" + (nick) + " PART " + (channel) + "\n")
@@ -74,7 +74,7 @@
 #define RPL_NAMREPLY(client, channel, prenick) (":irc_server 353 " + (client) + " = " + (channel) + " :" + (prenick) + "\n")
 #define ERR_TOOMANYCHANNELS(client, channel) (":irc_server 405 " + (client) + " " + (channel) + " :You have joined too many channels\n")
 #define ERR_BADCHANNELKEY(client, channel) (":irc_server 475 " + (client) + " " + (channel) + " :Cannot join channel (+k)\n")
-#define RPL_ENDOFNAMES(channel) (":irc_server 366 " + (channel) + " :End of /NAMES list\n")
+#define RPL_ENDOFNAMES(nick, channel) (":irc_server 366 " + (nick) + " " + (channel) + " :End of /NAMES list\n")
 #define ERR_CHANNELISFULL(client, channel) (":irc_server 471 " + (client) + " " + (channel) + " :Cannot join channel (+l)" + "\r\n")
 #define ERR_BADCHANMASK(channel) (":irc_server 476 " + (channel) + " :Bad Channel Mask\n")
 

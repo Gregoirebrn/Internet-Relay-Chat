@@ -36,6 +36,11 @@ int	Channel::Privmsg(std::string buff, int fd_cli) {
 		return (1);
 	}
 	//send to client
+	std::cout << "PRIVMSG" << std::endl;
+	std::cout << "MSG" << msg << std::endl;
+	msg = msg.substr(1, msg.size());
+	std::cout << "MSG" << msg << std::endl;
+	std::cout << "REC" << receiver << std::endl;
 	if (!_client->GetFd(receiver))
 		send_error(fd_cli, ERR_NOSUCHNICK(_client->GetName(fd_cli), receiver));
 	send_error(_client->GetFd(receiver), RPL_PRIVMSG(_client->GetPrefix(fd_cli), receiver, msg));

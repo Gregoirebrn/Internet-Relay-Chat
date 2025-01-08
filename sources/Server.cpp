@@ -62,10 +62,10 @@ int Server::CreatSocket()
 	//change true to the global that is false if a ctrl D or a sigaction ocured
 	std::cout << "Irection up." << std::endl;
 	while (g_signal) {
-//		std::cout << "EXPLOSIO" << std::endl;
+		std::cout << "EXPLOSIO" << std::endl;
 		if (poll(_pollfds.data(), _nfds, -1) < 0 && !g_signal) //wait to have a action from one of the fds
 			break ;
-//		std::cout << "FATALITY" << std::endl;
+		std::cout << "FATALITY" << std::endl;
 		if (!g_signal) //check if the global value of signal have changed with a if
 			break ;
 		for(std::vector<pollfd>::iterator it = _pollfds.begin(); it < _pollfds.end(); it++) { //find the fd that had an event by iterating the list of vector
@@ -73,7 +73,7 @@ int Server::CreatSocket()
 				if (it->fd == _socketfd) {
 					int addr_len = sizeof(_addr);
 					int fd_cli = accept(_socketfd, (struct sockaddr *)&_addr, (socklen_t*)&addr_len);
-//					std::cout << "NEW CLIENT CONNECT :" << fd_cli << std::endl;
+					std::cout << "NEW CLIENT CONNECT :" << fd_cli << std::endl;
 					_pollfds.push_back((struct pollfd){.fd = fd_cli, .events = POLLIN, .revents = 0});
 					_cli.CreateClient(fd_cli, _addr);
 					_nfds++;

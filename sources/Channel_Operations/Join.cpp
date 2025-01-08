@@ -43,7 +43,7 @@ void	Channel::send_rpl_name(std::string channel, int fd_cli) { //get all names o
 		all_names += it->first + " ";
 	}
 	send_error(fd_cli, RPL_NAMREPLY(_client->GetName(fd_cli), channel, all_names));
-	send_error(fd_cli, RPL_ENDOFNAMES(channel));
+	send_error(fd_cli, RPL_ENDOFNAMES(_client->GetName(fd_cli), channel));
 }
 
 void	Channel::send_rpl_topic(std::string channel, std::string topic, int fd_cli) {
@@ -97,7 +97,7 @@ int	Channel::Join(std::string buff, int fd_cli) {
 		if (_all_chan[*it].i_bool ) {// is channel is in invite mod
 			if (_all_chan[*it].invite_list.end() == std::find(_all_chan[*it].invite_list.begin(), _all_chan[*it].invite_list.end(),_client->GetName(fd_cli)))
 				return (send_error(fd_cli, ERR_INVITEONLYCHAN(_client->GetName(fd_cli), *it)), 473);
-			std::remove(_all_chan[*it].invite_list.begin(), _all_chan[*it].invite_list.end(), *it);
+			std::remove(_all_chan[*it].invite_list.begin(), _all_chan[*it].invite_list.end(), _client->GetName(fd_cli));
 		}
 		_channel[*it][_client->GetName(fd_cli)] = false;
 		_all_chan[*it].in_user++;
