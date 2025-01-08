@@ -73,7 +73,7 @@ int Server::CreatSocket()
 				if (it->fd == _socketfd) {
 					int addr_len = sizeof(_addr);
 					int fd_cli = accept(_socketfd, (struct sockaddr *)&_addr, (socklen_t*)&addr_len);
-					std::cout << "NEW CLIENT CONNECT :" << fd_cli << std::endl;
+//					std::cout << "NEW CLIENT CONNECT :" << fd_cli << std::endl;
 					_pollfds.push_back((struct pollfd){.fd = fd_cli, .events = POLLIN, .revents = 0});
 					_cli.CreateClient(fd_cli, _addr);
 					_nfds++;
