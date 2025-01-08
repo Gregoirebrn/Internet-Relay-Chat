@@ -5,7 +5,7 @@
 #include "Channel.hpp"
 
 bool Channel::Top_Right(std::string name, std::string channel, int fd_cli) {
-	std::cout << "GET_RIGHTS_NAME :"  << name << std::endl;
+//	std::cout << "GET_RIGHTS_NAME :"  << name << std::endl;
 	if (_all_chan.end() == _all_chan.find(channel))
 		return (send_error(fd_cli, ERR_NOSUCHCHANNEL(channel)), true);
 	for (chan_t it = _channel.begin(); it != _channel.end(); ++it) {
@@ -17,10 +17,10 @@ bool Channel::Top_Right(std::string name, std::string channel, int fd_cli) {
 				return (send_error(fd_cli, ERR_NOTONCHANNEL(channel)), true);
 		}
 	}
-	std::cout << "CHECK BOOL TOPIC" << std::endl;
+//	std::cout << "CHECK BOOL TOPIC" << std::endl;
 	if (!_all_chan[channel].t_bool && !_channel[channel][name])
 		return (send_error(fd_cli, ERR_CHANOPRIVSNEEDED(_client->GetName(fd_cli), channel)), true);
-	std::cout << "CHECK BOOL TOPIC OKKK" << std::endl;
+//	std::cout << "CHECK BOOL TOPIC OKKK" << std::endl;
 	return false;
 }
 
@@ -43,15 +43,15 @@ int Channel::Topic(std::string buff, int fd_cli) {
 	std::string channel = buff.substr(0, buff.find(' '));
 	if (_all_chan.find(channel) == _all_chan.end())
 		return (send_error(fd_cli, ERR_NOSUCHCHANNEL(channel)), false);
-	std::cout << "SUBBBSSS :" << channel << std::endl;
+//	std::cout << "SUBBBSSS :" << channel << std::endl;
 	std::string topic = buff.substr(two_dots + 1, buff.size()); //trim the two dots
-	std::cout << "NO_CUTS :" << topic << std::endl;
+//	std::cout << "NO_CUTS :" << topic << std::endl;
 	if (std::string::npos != topic.find('\r'))
 		topic = topic.substr(0, topic.size() - 1); //trim the \r
-	std::cout << "CUTS :" << topic << std::endl;
+//	std::cout << "CUTS :" << topic << std::endl;
 	if (Top_Right(_client->GetName(fd_cli), channel, fd_cli)) //check if the client can mod the topic of the channel
 		return (404);
-	std::cout << "CHECK BOOL TOPIC O@@@@" << std::endl;
+//	std::cout << "CHECK BOOL TOPIC O@@@@" << std::endl;
 	std::time_t timestamp = std::time(0);   // get time now
 	std::stringstream ss;
 	ss << timestamp;

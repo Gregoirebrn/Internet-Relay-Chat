@@ -22,7 +22,7 @@ Server::~Server() {
 void Server::suppr(int fd) {
 	for (std::vector<pollfd>::iterator it = _pollfds.begin(); it != _pollfds.end(); ++it) {
 		if (it->fd == fd) {
-			std::cout << "Irection: client " << it->fd << " quit." << std::endl;
+//			std::cout << "Irection: client " << it->fd << " quit." << std::endl;
 			_pollfds.erase(it);
 			_nfds--;
 			return ;
@@ -62,10 +62,10 @@ int Server::CreatSocket()
 	//change true to the global that is false if a ctrl D or a sigaction ocured
 	std::cout << "Irection up." << std::endl;
 	while (g_signal) {
-		std::cout << "EXPLOSIO" << std::endl;
+//		std::cout << "EXPLOSIO" << std::endl;
 		if (poll(_pollfds.data(), _nfds, -1) < 0 && !g_signal) //wait to have a action from one of the fds
 			break ;
-		std::cout << "FATALITY" << std::endl;
+//		std::cout << "FATALITY" << std::endl;
 		if (!g_signal) //check if the global value of signal have changed with a if
 			break ;
 		for(std::vector<pollfd>::iterator it = _pollfds.begin(); it < _pollfds.end(); it++) { //find the fd that had an event by iterating the list of vector
@@ -73,7 +73,7 @@ int Server::CreatSocket()
 				if (it->fd == _socketfd) {
 					int addr_len = sizeof(_addr);
 					int fd_cli = accept(_socketfd, (struct sockaddr *)&_addr, (socklen_t*)&addr_len);
-					std::cout << "NEW CLIENT CONNECT :" << fd_cli << std::endl;
+//					std::cout << "NEW CLIENT CONNECT :" << fd_cli << std::endl;
 					_pollfds.push_back((struct pollfd){.fd = fd_cli, .events = POLLIN, .revents = 0});
 					_cli.CreateClient(fd_cli, _addr);
 					_nfds++;
@@ -81,9 +81,9 @@ int Server::CreatSocket()
 				}
 				else //handle the message of the event
 					messag_handle(it);
-				for (std::vector<pollfd>::iterator fu = _pollfds.begin(); fu != _pollfds.end(); ++fu) {
-					std::cout << "AFTERMESS :" << fu->fd << "--" << std::endl;
-				}
+//				for (std::vector<pollfd>::iterator fu = _pollfds.begin(); fu != _pollfds.end(); ++fu) {
+//					std::cout << "AFTERMESS :" << fu->fd << "--" << std::endl;
+//				}
 			}
 		}
 	}
@@ -96,14 +96,14 @@ void	Server::messag_handle(std::vector<pollfd>::iterator &it) {
 	char buff[512 + 1];
 	bzero(buff, 513);
 	ssize_t ret = recv(it->fd, buff, n, MSG_DONTWAIT);
-	std::cout << "HEXMES :" << buff << std::endl;
-	std::cout << "END HEXMES." << std::endl;
+//	std::cout << "HEXMES :" << buff << std::endl;
+//	std::cout << "END HEXMES." << std::endl;
 	if (!ret) { // client gone suppress it
-		std::cout << "Irection: client " << it->fd << " quit." << std::endl;
+//		std::cout << "Irection: client " << it->fd << " quit." << std::endl;
 		_pollfds.erase(it);
-		for (std::vector<pollfd>::iterator fu = _pollfds.begin(); fu != _pollfds.end(); ++fu) {
-			std::cout << "RESTE :" << fu->fd << "--" << std::endl;
-		}
+//		for (std::vector<pollfd>::iterator fu = _pollfds.begin(); fu != _pollfds.end(); ++fu) {
+//			std::cout << "RESTE :" << fu->fd << "--" << std::endl;
+//		}
 		_nfds--;
 		_chan.Quit("", it->fd);
 		_cli.Remove(it->fd);
@@ -118,9 +118,9 @@ void	Server::messag_handle(std::vector<pollfd>::iterator &it) {
 			if (_chan.Canal_Operators(line, it->fd)) { //join mode kick topic invite
 				_pollfds.erase(it);
 				_nfds--;
-				for (std::vector<pollfd>::iterator fu = _pollfds.begin(); fu != _pollfds.end(); ++fu) {
-					std::cout << "RESTE :" << fu->fd << "--" << std::endl;
-				}
+//				for (std::vector<pollfd>::iterator fu = _pollfds.begin(); fu != _pollfds.end(); ++fu) {
+//					std::cout << "RESTE :" << fu->fd << "--" << std::endl;
+//				}
 			}
 		}
 	}
@@ -141,10 +141,9 @@ int Server::signal_handler() {
 
 int	main(int ac, char **av) {
 	if (ac < 3)
-		return (std::cout << "Error: Missing arguments." << std::endl, 210);
-//	if (atoi(av[1]) <= 0)
+		return (std::cout << "Error: Missing arguments." << std::endl, 1);
+	if (atoi(av[1]) < 1024 || atoi(av[1]) > 65535)
+		return (std::cout << "Error: Bad number of port, range from 1024 to 65535." << std::endl, 2);
 	Server serv(av[1], av[2]);
 	serv.CreatSocket();
 }
-
-//1024

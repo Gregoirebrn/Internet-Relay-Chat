@@ -65,7 +65,7 @@ int Client::CreateClient(int fd_cli, sockaddr_in addr_srv) {
 	char host[1024];
 
 	char *client_ip = inet_ntoa(addr_srv.sin_addr);
-	std::cout << "Client IP: " << client_ip << std::endl;
+//	std::cout << "Client IP: " << client_ip << std::endl;
 	int res = getnameinfo((sockaddr *)&addr_srv, sizeof(addr_srv), host, 1024, NULL, 0, 0);
 	if (res != 0)
 		return (std::cout << "Client :getnameinfo failed :" << gai_strerror(res) << std::endl, 4040);
@@ -126,7 +126,7 @@ void	send_error(int fd, std::string error) {
 
 //send error to client
 void	Client::send_all_serv(std::string msg) {
-	std::cout << "---ALL_SERV---" << std::endl;
+//	std::cout << "---ALL_SERV---" << std::endl;
 	for (list_t it = _clients.begin(); it != _clients.end(); ++it) {
 		send_error(it->first, msg);
 	}

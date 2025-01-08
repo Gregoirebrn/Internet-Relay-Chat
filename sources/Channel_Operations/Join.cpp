@@ -25,12 +25,12 @@ int	Channel::get_join_arg(std::string buff, int fd_cli, std::vector<std::string>
 	for (std::string channel; std::getline(haystack, channel, ',');) {
 		channel_v.push_back(channel.substr(0, channel.size()));
 	}
-	for (vec_t it = channel_v.begin(); it != channel_v.end(); ++it) {
-		std::cout << "CHA_V :" << *it << std::endl;
-	}
-	for (vec_t it = key_v.begin(); it != key_v.end(); ++it) {
-		std::cout << "KEY_V :" << *it << std::endl;
-	}
+//	for (vec_t it = channel_v.begin(); it != channel_v.end(); ++it) {
+//		std::cout << "CHA_V :" << *it << std::endl;
+//	}
+//	for (vec_t it = key_v.begin(); it != key_v.end(); ++it) {
+//		std::cout << "KEY_V :" << *it << std::endl;
+//	}
 	return (0);
 }
 
@@ -83,9 +83,9 @@ int	Channel::Join(std::string buff, int fd_cli) {
 			CreateChannel(*it, fd_cli);
 			continue;
 		}
-		std::cout << "KEYIMEPTY:" << *key_it << "--" << std::endl;
-		std::cout << "BUTISITREALEY EMPTY:" << key_it->empty() << std::endl;
-		std::cout << "KKK:" << _all_chan[*it].chan_key.empty() << ":" << !_all_chan[*it].chan_key.empty()<< std::endl;
+//		std::cout << "KEYIMEPTY:" << *key_it << "--" << std::endl;
+//		std::cout << "BUTISITREALEY EMPTY:" << key_it->empty() << std::endl;
+//		std::cout << "KKK:" << _all_chan[*it].chan_key.empty() << ":" << !_all_chan[*it].chan_key.empty()<< std::endl;
 		if (!_all_chan[*it].chan_key.empty() && key_it->empty()) // check the value of the key
 			return (send_error(fd_cli, ERR_BADCHANNELKEY(_client->GetName(fd_cli), *it)), 475);
 		if (!_all_chan[*it].chan_key.empty() && _all_chan[*it].chan_key != *key_it) // check the value of the key

@@ -73,7 +73,7 @@ int Channel::mode_l(int fd_cli, bool s, std::vector<std::string> v, size_t *j, a
 	{
 		std::istringstream	iss(v[*j]);
 		iss >> itc->second.max_user;
-		std::cout << "MAXUSR:" << itc->second.max_user << std::endl;
+//		std::cout << "MAXUSR:" << itc->second.max_user << std::endl;
 		(*j)++;
 		return (send_chan_msg(v[0], RPL_LMODE(v[0], _client->GetName(fd_cli), " +l ", iss.str())), 0);
 	}
@@ -89,7 +89,7 @@ int	Channel::exec_mode(int fd_cli, bool s, char c, std::vector<std::string> v, s
 
 	for (size_t i = 0; i < 5; i++) {
 		if (c == str[i]) {
-			std::cout << "MODE CHOICE " << i << "--" << std::endl;
+//			std::cout << "MODE CHOICE " << i << "--" << std::endl;
 			return ((this->*func[i])(fd_cli, s, v, j, itc));
 		}
 	}
@@ -102,7 +102,7 @@ int Channel::exec_loop(int fd_cli, std::vector<std::string> v, all_chan_t itc) {
 	int		err = 0;
 
 	for (size_t i = 1; i < v[1].size(); i++) {
-		std::cout << "MODE FORR " << i << "--" << std::endl;
+//		std::cout << "MODE FORR " << i << "--" << std::endl;
 		err += exec_mode(fd_cli, s, v[1][i], v, &j, itc);
 		if (err != 0)
 			break ;
@@ -130,7 +130,7 @@ int	Channel::Mode(std::string buff, int fd_cli) {
 	std::string channel = buff;
 	if (std::string::npos != buff.find("\n"))
 		std::string channel = buff.substr(0, (buff.size() -1));
-	std::cout << "MODE CHANNEL :" << channel << std::endl;
+//	std::cout << "MODE CHANNEL :" << channel << std::endl;
 	if (_channel.find(channel) != _channel.end())
 		return (send_error(fd_cli, RPL_CHANNELMODEIS(_client->GetName(fd_cli), channel, GetMode(channel))), 404);
 	// Trim
@@ -151,7 +151,7 @@ int	Channel::Mode(std::string buff, int fd_cli) {
 //	user_t it = _channel[v[0]].find(_client->GetName(fd_cli));
 	if (_channel[v[0]].find(_client->GetName(fd_cli)) == _channel[v[0]].end())
 		return (send_error(fd_cli, ERR_NOTONCHANNEL(v[0])), 442);
-	std::cout << "MODE :::::" << _channel[v[0]][_client->GetName(fd_cli)] << std::endl;
+//	std::cout << "MODE :::::" << _channel[v[0]][_client->GetName(fd_cli)] << std::endl;
 	if (!_channel[v[0]][_client->GetName(fd_cli)])
 		return (send_error(fd_cli, ERR_CHANOPRIVSNEEDED(_client->GetName(fd_cli), v[0])), 482);
 	if (v[1][0] != '+' && v[1][0] != '-')

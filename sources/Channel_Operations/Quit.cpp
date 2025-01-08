@@ -15,14 +15,14 @@ int	Channel::Quit(std::string buff, int fd_cli) {
 		if (it->first.find(nick)) {
 			_channel[it->first].erase(nick);
 			_all_chan[it->first].in_user--;
-			std::cout << "IN USERR--" << std::endl;
+//			std::cout << "IN USERR--" << std::endl;
 			if (_all_chan[it->first].in_user == 0) {
 				_channel.erase(it->first);
 				_all_chan.erase(it->first);
 				if (_channel.empty())
 					break;
 				it = _channel.begin();
-				std::cout << "IT BEGIN--" << std::endl;
+//				std::cout << "IT BEGIN--" << std::endl;
 			}
 		}
 	}
@@ -32,7 +32,7 @@ int	Channel::Quit(std::string buff, int fd_cli) {
 //	for (all_chan_t it = _all_chan.begin(); it != _all_chan.end(); ++it) {
 //		std::cout << "FORCHAN :" << it->first << std::endl;
 //	}
-	std::cout << "OUTTTT" << std::endl;
+//	std::cout << "OUTTTT" << std::endl;
 	_client->Remove(fd_cli);
 	return (0);
 }

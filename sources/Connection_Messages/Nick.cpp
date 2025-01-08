@@ -29,11 +29,11 @@ int Client::register_nick(std::string buff, int fd_cli) {
 	_clients[fd_cli]._nickname = buff;
 	if (!_clients[fd_cli]._username.empty()){
 		_clients[fd_cli]._prefix = _clients[fd_cli]._nickname + "!" + _clients[fd_cli]._username + "@" + _clients[fd_cli]._hostname;
-		std::cout << "---INFO------------:" << std::endl;
-		std::cout << "---PSEUDO :" << _clients[fd_cli]._username << std::endl;
-		std::cout << "---NICK   :" << _clients[fd_cli]._nickname << std::endl;
-		std::cout << "---PREFIX :" << _clients[fd_cli]._prefix << std::endl;
-		std::cout << "---END-------------:" << std::endl;
+//		std::cout << "---INFO------------:" << std::endl;
+//		std::cout << "---PSEUDO :" << _clients[fd_cli]._username << std::endl;
+//		std::cout << "---NICK   :" << _clients[fd_cli]._nickname << std::endl;
+//		std::cout << "---PREFIX :" << _clients[fd_cli]._prefix << std::endl;
+//		std::cout << "---END-------------:" << std::endl;
 		_clients[fd_cli]._register = true;
 		return (send_error(fd_cli, RPL_WELCOME(_clients[fd_cli]._nickname, _clients[fd_cli]._nickname)), 462);
 	}
