@@ -79,5 +79,6 @@
 #define ERR_BADCHANMASK(channel) (":irc_server 476 " + (channel) + " :Bad Channel Mask\n")
 
 //privmsg
-#define ERR_NOSUCHNICK(client , nick) (":irc_server 401 " + (client) + " " + (nick) + ": No such nick\n")
-#define ERR_NODOTMSG (":irc_server bad format for privmsg missing two dots.\n")
+#define ERR_NOSUCHNICK(client , nick) (":irc_server 401 " + (client) + " " + (nick) + " :No such nick\n")
+#define ERR_NOTEXTTOSEND(client) (":irc_server 412 " + (client) + " :No text to send\n")
+#define RPL_PRIVMSG(client, nick, msg) (":" + (client) + " PRIVMSG " + (nick) + " " + (msg) + "\n")

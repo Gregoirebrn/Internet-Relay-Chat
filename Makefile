@@ -20,7 +20,6 @@ SRCS		:=	Server.cpp			\
 				$(CM)Nick.cpp		\
 				$(CM)Pass.cpp		\
 				$(CM)User.cpp		\
-#				$(CO)List.cpp		\
 
 SRCS_D		:=	sources/
 

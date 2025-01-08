@@ -31,7 +31,7 @@ int	Client::GetFd(std::string nick) {
 			return (it->first);
 		}
 	}
-	return (-1);
+	return (0);
 }
 
 std::string Client::GetName(int fd_cli) {

@@ -62,8 +62,10 @@ int Server::CreatSocket()
 	//change true to the global that is false if a ctrl D or a sigaction ocured
 	std::cout << "Irection up." << std::endl;
 	while (g_signal) {
-		if (poll(_pollfds.data(), _nfds, 5) < 0 && !g_signal) //wait to have a action from one of the fds
+		std::cout << "EXPLOSIO" << std::endl;
+		if (poll(_pollfds.data(), _nfds, -1) < 0 && !g_signal) //wait to have a action from one of the fds
 			break ;
+		std::cout << "FATALITY" << std::endl;
 		if (!g_signal) //check if the global value of signal have changed with a if
 			break ;
 		for(std::vector<pollfd>::iterator it = _pollfds.begin(); it < _pollfds.end(); it++) { //find the fd that had an event by iterating the list of vector
@@ -140,8 +142,9 @@ int Server::signal_handler() {
 int	main(int ac, char **av) {
 	if (ac < 3)
 		return (std::cout << "Error: Missing arguments." << std::endl, 210);
+//	if (atoi(av[1]) <= 0)
 	Server serv(av[1], av[2]);
 	serv.CreatSocket();
 }
 
-
+//1024

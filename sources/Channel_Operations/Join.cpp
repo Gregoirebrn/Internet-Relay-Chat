@@ -40,7 +40,7 @@ void	Channel::send_rpl_name(std::string channel, int fd_cli) { //get all names o
 		if (_channel[channel][it->first])
 			all_names += "@" + it->first + " ";
 		else
-		all_names +=  "~" + it->first + " ";
+		all_names += it->first + " ";
 	}
 	send_error(fd_cli, RPL_NAMREPLY(_client->GetName(fd_cli), channel, all_names));
 	send_error(fd_cli, RPL_ENDOFNAMES(channel));
