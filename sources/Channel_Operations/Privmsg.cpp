@@ -7,6 +7,8 @@
 void	Channel::send_chan_msg(std::string channel, std::string msg) {
 	for (user_t it = _channel[channel].begin(); it != _channel[channel].end(); ++it) {
 //		std::cout << "SEND_CHAN_MSG TO :" << _client->GetFd(it->first) << std::endl;
+		if ("bot" == it->first)
+			continue;
 		send_error(_client->GetFd(it->first), msg);
 	}
 }
@@ -14,6 +16,8 @@ void	Channel::send_chan_msg(std::string channel, std::string msg) {
 void	Channel::send_msg_to_chan(std::string channel, std::string msg, int to_not_send) {
 	for (user_t it = _channel[channel].begin(); it != _channel[channel].end(); ++it) {
 //		std::cout << "SEND_CHAN_MSG TO :" << _client->GetFd(it->first) << std::endl;
+		if ("bot" == it->first)
+			continue;
 		if (to_not_send != _client->GetFd(it->first))
 			send_error(_client->GetFd(it->first), msg);
 	}
@@ -31,16 +35,16 @@ int	Channel::Privmsg(std::string buff, int fd_cli) {
 	if (receiver[0] == '#') {
 		if (_channel.find(receiver) == _channel.end())
 			send_error(fd_cli, ERR_NOSUCHCHANNEL(receiver));
-		msg = ":" + _client->GetPrefix(fd_cli) + " PRIVMSG " + receiver + " " + msg + "\n";
+		std::string base_msg = msg;
+		msg = ":" + _client->GetPrefix(fd_cli) + " PRIVMSG " + receiver + " " + msg + "\r\n";
 		send_msg_to_chan(receiver, msg, fd_cli);
+		if (_channel.end() != _channel.find(receiver)) {
+			RecMessage(receiver, base_msg, fd_cli);
+		}
 		return (1);
 	}
 	//send to client
-//	std::cout << "PRIVMSG" << std::endl;
-//	std::cout << "MSG" << msg << std::endl;
 	msg = msg.substr(1, msg.size());
-//	std::cout << "MSG" << msg << std::endl;
-//	std::cout << "REC" << receiver << std::endl;
 	if (!_client->GetFd(receiver))
 		send_error(fd_cli, ERR_NOSUCHNICK(_client->GetName(fd_cli), receiver));
 	send_error(_client->GetFd(receiver), RPL_PRIVMSG(_client->GetPrefix(fd_cli), receiver, msg));

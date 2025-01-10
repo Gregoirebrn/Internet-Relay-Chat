@@ -131,3 +131,5 @@ void	Client::send_all_serv(std::string msg) {
 		send_error(it->first, msg);
 	}
 }
+
+	//UNKNOW COMMAND 421 to add

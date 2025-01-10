@@ -19,17 +19,6 @@ Server::~Server() {
 //	std::cout << "Server default destructor called!" << std::endl;
 }
 
-void Server::suppr(int fd) {
-	for (std::vector<pollfd>::iterator it = _pollfds.begin(); it != _pollfds.end(); ++it) {
-		if (it->fd == fd) {
-//			std::cout << "Irection: client " << it->fd << " quit." << std::endl;
-			_pollfds.erase(it);
-			_nfds--;
-			return ;
-		}
-	}
-}
-
 // Public methods
 int Server::CreatSocket()
 {
@@ -96,14 +85,8 @@ void	Server::messag_handle(std::vector<pollfd>::iterator &it) {
 	char buff[512 + 1];
 	bzero(buff, 513);
 	ssize_t ret = recv(it->fd, buff, n, MSG_DONTWAIT);
-//	std::cout << "HEXMES :" << buff << std::endl;
-//	std::cout << "END HEXMES." << std::endl;
 	if (!ret) { // client gone suppress it
-//		std::cout << "Irection: client " << it->fd << " quit." << std::endl;
 		_pollfds.erase(it);
-//		for (std::vector<pollfd>::iterator fu = _pollfds.begin(); fu != _pollfds.end(); ++fu) {
-//			std::cout << "RESTE :" << fu->fd << "--" << std::endl;
-//		}
 		_nfds--;
 		_chan.Quit("", it->fd);
 		_cli.Remove(it->fd);
@@ -118,9 +101,6 @@ void	Server::messag_handle(std::vector<pollfd>::iterator &it) {
 			if (_chan.Canal_Operators(line, it->fd)) { //join mode kick topic invite
 				_pollfds.erase(it);
 				_nfds--;
-//				for (std::vector<pollfd>::iterator fu = _pollfds.begin(); fu != _pollfds.end(); ++fu) {
-//					std::cout << "RESTE :" << fu->fd << "--" << std::endl;
-//				}
 			}
 		}
 	}
@@ -128,8 +108,8 @@ void	Server::messag_handle(std::vector<pollfd>::iterator &it) {
 
 void	Server::handler(int sig) {
 	(void)sig;
+	std::cerr << "\rIrection down." << std::endl;
 	g_signal = false;
-	std::cout << "\rSignal: quit program." << std::endl;
 }
 
 int Server::signal_handler() {

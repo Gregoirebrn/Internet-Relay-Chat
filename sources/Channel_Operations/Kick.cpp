@@ -18,6 +18,11 @@ int Channel::Kick(std::string buff, int fd_cli)
 		nick = nick.substr(0, nick.find(' '));
 	if (!get_rights(_client->GetName(fd_cli), channel, fd_cli))// check if the client caller have the rights to kick
 		return (404);
+	if (nick == "bot") {
+		_last_question.erase(channel);
+		send_chan_msg(channel, RPL_KICKED(_client->GetName(fd_cli), channel, nick));
+		return (90);
+	}
 	user_t found = _channel[channel].find(nick);//search the nickname in the database of the channel
 	if (_channel[channel].end() == found)
 		return (send_error(fd_cli, ERR_USERNOTINCHANNEL(_client->GetName(fd_cli), channel, nick)), 441);// we didn't find him

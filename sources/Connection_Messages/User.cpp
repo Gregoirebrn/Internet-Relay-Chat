@@ -13,13 +13,13 @@ int Client::register_user(std::string buff, int fd_cli) {
 		return(send_error(fd_cli, ERR_ALREADYREGISTRED), 462);
 	try {
 		if (std::string::npos == buff.find(' '))
-			throw (Client::GradeTooHighException());
+			return (send_error(fd_cli, ERR_NEEDMOREPARAMS("USER")), 461);
 		std::string ps = buff.substr(0, buff.find(' '));
 		if (ps.empty())
-			throw (Client::GradeTooHighException());
+			return (send_error(fd_cli, ERR_NEEDMOREPARAMS("USER")), 461);
 		std::string trim = buff.substr(buff.find(' '), buff.size());
 		if (trim.find(" 0 * ") == std::string::npos)
-			throw (Client::GradeTooHighException());
+			return (send_error(fd_cli, ERR_NEEDMOREPARAMS("USER")), 461);
 		std::string rn =  buff.substr(buff.find('*') + 2, buff.size());
 		_clients[fd_cli]._realname = rn;
 		if (USERLEN < ps.size())
@@ -40,8 +40,4 @@ int Client::register_user(std::string buff, int fd_cli) {
 		return (send_error(fd_cli, RPL_WELCOME(_clients[fd_cli]._nickname, _clients[fd_cli]._nickname)), 462);
 	}
 	return (0);
-}
-
-const char *Client::GradeTooHighException::what() const throw() {
-	return ("The grade is Too High.");
 }

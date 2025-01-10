@@ -12,9 +12,9 @@
 #include <string>
 #include <ctime>
 #include <algorithm>
+#include <cstdlib>
 //internal libs
 # include "Client.hpp"
-
 //define
 #define MAX_CHAN 5
 
@@ -36,6 +36,7 @@ typedef std::map<std::string , std::map<std::string, bool> >::iterator	chan_t;
 typedef std::map<std::string, bool>::iterator							user_t;
 typedef std::vector<std::string>::iterator								vec_t;
 typedef std::map<std::string, mod_t>::iterator							all_chan_t;
+typedef std::map<std::string, std::string>::iterator					quiz_t;
 
 template<typename T, size_t N>
 T * end(T (&ra)[N]) {
@@ -47,6 +48,8 @@ private :
 	std::map<std::string, std::map<std::string, bool> >	_channel;
 	std::map<std::string, mod_t>						_all_chan;
 	Client												*_client;
+	std::map<std::string, std::string>					_quiz;
+	std::map<std::string, std::string>					_last_question;
 public :
 	//Constructors & destructor
 	Channel(Client *instance);
@@ -83,5 +86,9 @@ public :
 	int			exec_mode(int fd_cli, bool s, char c, std::vector<std::string> v, size_t *j, all_chan_t itc);
 	int			exec_loop(int fd_cli, std::vector<std::string> v, all_chan_t itc);
 	std::string	GetMode(std::string chan);
-	};
+	//Bot
+	void	RecMessage(const std::string &channel, std::string &msg, int fd);
+	void	FoundNextQuestion(const std::string &channel);
+	void	SendQuestion(const std::string &channel, const std::string &question);
+};
 

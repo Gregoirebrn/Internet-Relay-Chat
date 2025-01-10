@@ -1,12 +1,9 @@
 //
 // Created by grebrune on 11/27/24.
 //
-
 #pragma once
-
 #define USERLEN 5
 #define C_USR "USER"
-
 //pass
 #define ERR_NEEDMOREPARAMS(command) (":irc_server 461 " + (std::string(command)) + " :Not enough parameters\n")
 #define ERR_ALREADYREGISTRED ":irc_server 462 :You may not reregister\n"
@@ -14,7 +11,6 @@
 #define ERR_PWNOTCHECK ":irc_server 808 :You must send PASS before any command\n"
 #define ERR_PASSWDMISMATCH ":irc_server 464 :Password incorrect\n"
 #define RPL_WELCOME(client, nick) (":irc_server 001 " + (client) + " :Welcome to the Irection Server, " + (nick) + " \n" )
-
 //nickname
 #define ERR_NONICKNAMEGIVEN ":irc_server 431 :No nickname given\n"
 #define ERR_ERRONEUSNICKNAME(nick) (":irc_server 432 " + (nick) + " :Erroneus nickname\n")
@@ -61,7 +57,7 @@
 #define RPL_INVITED(client, nick, channel) (":" + (client) + " INVITE " + (nick) + " " + (channel) + " " + "\n")
 #define ERR_NOSUCHCHANNEL(channel) (":irc_server 403 " + (channel) + " :No such channel\n")
 #define ERR_NOTONCHANNEL(channel) (":irc_server 442 " + (channel) + " :You're not on that channel\n")
-#define ERR_USERONCHANNEL(nick, channel) (":irc_server 443 " + (nick) + " " + (channel) + " :is already on channel\n")
+#define ERR_USERONCHANNEL(nick, target, channel) (":irc_server 443 " + (target) + " " + (nick) + " " + (channel) + " :is already on channel\n")
 #define ERR_CHANOPRIVSNEEDED(client, channel) (":irc_server 482 " + (client) + " " + (channel) + " :You're not channel operator\n")
 #define ERR_INVITEONLYCHAN(client, channel) (":irc_server 473 " + (client) + " " + (channel) + " :Cannot join channel (+i)\n")
 

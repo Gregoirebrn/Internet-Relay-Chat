@@ -65,10 +65,6 @@ public :
 	void	send_all_serv(std::string msg);
 	int		send_private(std::string buff, int fd_cli);
 	int		send_cli_msg(std::string nick, std::string msg, int fd_sender);
-	class GradeTooHighException : public std::exception {
-	public:
-		const char* what() const throw();
-	};
 };
 
 	void	send_error(int fd, std::string error);
