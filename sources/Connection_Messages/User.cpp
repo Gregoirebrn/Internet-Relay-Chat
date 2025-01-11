@@ -4,40 +4,35 @@
 
 #include "Client.hpp"
 
-int Client::register_user(std::string buff, int fd_cli) {
+int Client::User(const std::string& buff, int fd_cli) {
 	if (!_clients[fd_cli]._pw_verified)
-		return (send_error(fd_cli, ERR_PWNOTCHECK), 808);
+		return (SendMessage(fd_cli, ERR_PWNOTCHECK), 808);
 	if (buff.size() < 4)
-		return (send_error(fd_cli, ERR_NEEDMOREPARAMS("USER")), 461);
+		return (SendMessage(fd_cli, ERR_NEEDMOREPARAMS("USER")), 461);
 	if (!_clients[fd_cli]._username.empty())
-		return(send_error(fd_cli, ERR_ALREADYREGISTRED), 462);
+		return(SendMessage(fd_cli, ERR_ALREADYREGISTRED), 462);
 	try {
 		if (std::string::npos == buff.find(' '))
-			return (send_error(fd_cli, ERR_NEEDMOREPARAMS("USER")), 461);
-		std::string ps = buff.substr(0, buff.find(' '));
-		if (ps.empty())
-			return (send_error(fd_cli, ERR_NEEDMOREPARAMS("USER")), 461);
+			return (SendMessage(fd_cli, ERR_NEEDMOREPARAMS("USER")), 461);
+		std::string user = buff.substr(0, buff.find(' '));
+		if (user.empty())
+			return (SendMessage(fd_cli, ERR_NEEDMOREPARAMS("USER")), 461);
 		std::string trim = buff.substr(buff.find(' '), buff.size());
 		if (trim.find(" 0 * ") == std::string::npos)
-			return (send_error(fd_cli, ERR_NEEDMOREPARAMS("USER")), 461);
+			return (SendMessage(fd_cli, ERR_NEEDMOREPARAMS("USER")), 461);
 		std::string rn =  buff.substr(buff.find('*') + 2, buff.size());
 		_clients[fd_cli]._realname = rn;
-		if (USERLEN < ps.size())
-			ps = ps.substr(0, USERLEN);
-		_clients[fd_cli]._username = ps;
+		if (10 < user.size())
+			user = user.substr(0, 10);
+		_clients[fd_cli]._username = user;
 	}
 	catch (std::exception &e) {
-		return (send_error(fd_cli, ERR_NEEDMOREPARAMS("USER")), 461);
+		return (SendMessage(fd_cli, ERR_NEEDMOREPARAMS("USER")), 461);
 	}
 	if (!_clients[fd_cli]._nickname.empty()){
 		_clients[fd_cli]._prefix = _clients[fd_cli]._nickname + "!" + _clients[fd_cli]._username + "@" + _clients[fd_cli]._hostname;
-//		std::cout << "---INFO------------:" << std::endl;
-//		std::cout << "---PSEUDO :" << _clients[fd_cli]._username << std::endl;
-//		std::cout << "---NICK   :" << _clients[fd_cli]._nickname << std::endl;
-//		std::cout << "---PREFIX :" << _clients[fd_cli]._prefix << std::endl;
-//		std::cout << "---END-------------:" << std::endl;
 		_clients[fd_cli]._register = true;
-		return (send_error(fd_cli, RPL_WELCOME(_clients[fd_cli]._nickname, _clients[fd_cli]._nickname)), 462);
+		return (SendMessage(fd_cli, RPL_WELCOME(_clients[fd_cli]._nickname, _clients[fd_cli]._nickname)), 1);
 	}
 	return (0);
 }

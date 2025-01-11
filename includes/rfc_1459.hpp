@@ -2,8 +2,8 @@
 // Created by grebrune on 11/27/24.
 //
 #pragma once
-#define USERLEN 5
-#define C_USR "USER"
+
+#define ERR_UNKNOWNCOMMAND(client, command) (":irc_server 421 " + (client) + " " + (command) + " :Unknown command\n")
 //pass
 #define ERR_NEEDMOREPARAMS(command) (":irc_server 461 " + (std::string(command)) + " :Not enough parameters\n")
 #define ERR_ALREADYREGISTRED ":irc_server 462 :You may not reregister\n"
@@ -11,6 +11,7 @@
 #define ERR_PWNOTCHECK ":irc_server 808 :You must send PASS before any command\n"
 #define ERR_PASSWDMISMATCH ":irc_server 464 :Password incorrect\n"
 #define RPL_WELCOME(client, nick) (":irc_server 001 " + (client) + " :Welcome to the Irection Server, " + (nick) + " \n" )
+
 //nickname
 #define ERR_NONICKNAMEGIVEN ":irc_server 431 :No nickname given\n"
 #define ERR_ERRONEUSNICKNAME(nick) (":irc_server 432 " + (nick) + " :Erroneus nickname\n")
@@ -23,30 +24,15 @@
 
 //kick
 #define ERR_USERNOTINCHANNEL(nick, channel, target) (":irc_server 441 " + (nick) + " " + (channel) + " " + (target) + " :They aren't on that channel\n")
-#define RPL_SUCCESKICK(nick, channel, client) (":" + (nick) + " KICK " + (channel) + " " + (client) + "\n")
-#define RPL_KICK(prefix, channel, nick) (":" + (prefix) + " KICK " + (channel) + (nick) + "\n")
 #define RPL_KICKED(client, channel, kicked) (":" + (client) + " KICK " + (channel) + " " + (kicked) + "\n")
 
-//gone
-#define ERR_GONE(nick) ("QUIT :Gone to have lunch " + (nick) + " exiting from the network\n")
-
 //mode
-#define RPL_CREAMODE(channel) (":irc_server 324 " + (channel) + " +nrt" + "\r\n")
 #define ERR_UNKNOWNMODE(nick, channel, c) (":irc_server 472 "+ (nick) + " " + (channel) + " " + (c) + " :is unknown mode char to me\r\n")
 #define ERR_NEEDMODPARAMS(nick, channel, command) (":irc_server 461 " + (nick) + " " + (channel) + " " + (std::string(command)) + " :Not enough parameters\n")
 #define RPL_CHANNELMODEIS(nick, channel, mode) (":irc_server 324 " + (nick) + " " + (channel) + " " + (mode) + "\n")
 #define RPL_MODE(channel, nick, message) (":" + (nick) + " MODE " + (channel) + (message))
 #define RPL_OMODE(channel, nick, message, nick2) (":" + (nick) + " MODE " + (channel) + (message) + (nick2) + " \n")
 #define RPL_LMODE(channel, nick, message, number) (":" + (nick) + " MODE " + (channel) + (message) + (number) + "\n")
-
-//#define ERR_NOSUCHNICK
-//#define ERR_KEYSET
-//#define RPL_BANLIST
-//#define RPL_ENDOFBANLIST
-
-//#define ERR_USERSDONTMATCH
-//#define RPL_UMODEIS
-//#define ERR_UMODEUNKNOWNFLAG
 
 //who
 #define RPL_WHOREPLY(who) (":irc_server 352 " + (who) + "\n")
@@ -66,7 +52,6 @@
 #define RPL_TOPIC(client, channel, topic) (":irc_server 332 " + (client) + " " + (channel) + " :" + (topic) + "\n")
 #define RPL_TOPICWHOTIME(client, channel, nick, setat) (":irc_server 333 " + (client) + " " + (channel) + " " + (nick) + " " + (setat) + "\n")
 #define RPL_CHANGETOPIC(client, channel, topic) (":" + (client) + " TOPIC " + (channel) + " " + (topic) + "\n")
-#define RPL_CREATIONTOPIC(client, channel, topic) (":" + (client) + " TOPIC " + (channel) + " " + (client) + " " + (topic) + "\n")
 
 //join
 #define RPL_JOIN(nick, channel) (":" + (nick) + " JOIN " + (channel) + "\n")

@@ -42,29 +42,24 @@ protected :
 	std::map<int , info_t>	_clients;
 public :
 	// Constructors & destructor
-	Client();
-	~Client();
-	//getter
-	std::map<int , info_t>	GetClients();
-	int						GetFd(std::string);
-	std::string				GetName(int fd_cli);
-	std::string				GetPrefix(int fd_cli);
-	std::string				GetUser(int fd_cli);
-	std::string				GetWho(int fd_cli, std::string channel);
-	bool					IsRegister(int fd_cli);
 	Client(const std::string& password);
+	~Client();
+	// Getter
+	int				GetFd(const std::string&);
+	std::string		GetName(int fd_cli);
+	std::string		GetPrefix(int fd_cli);
+	std::string		GetWho(int fd_cli, const std::string& channel);
+	bool			IsRegister(int fd_cli);
 	// Public methods
-	int CreateClient(int fd_cli, sockaddr_in pSockaddr);
-	int CommandClient(std::string buff, int fd_cli);
-	int register_nick(std::string buff, int fd_cli);
-	int register_user(std::string buff, int fd_cli);
-	int register_pass(std::string buff, int fd_cli);
+	void	CommandClient(const std::string& buff, int fd_cli);
+	int		CreateClient(int fd_cli, sockaddr_in pSockaddr);
+	int		Nick(const std::string& buff, int fd_cli);
+	int		User(const std::string& buff, int fd_cli);
+	int		Pass(const std::string& buff, int fd_cli);
 	//quit handle
 	void	Remove(int fd_cli);
 	//send msg
-	void	send_all_serv(std::string msg);
-	int		send_private(std::string buff, int fd_cli);
-	int		send_cli_msg(std::string nick, std::string msg, int fd_sender);
+	void	SendServMessage(const std::string& msg);
 };
 
-	void	send_error(int fd, std::string error);
+	void	SendMessage(int fd, const std::string& error);

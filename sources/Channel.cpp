@@ -10,7 +10,7 @@ Channel::Channel(Client *cli) : _client(cli){
 //init bot quiz
 	std::ifstream file("Questions_Answers.txt");
 	if (!file.is_open()) {
-		std::cout << "Error: Bad Permissions On File." << std::endl;
+		std::cout << "Server: Error: Can't open Questions_Answers.txt." << std::endl;
 		return;
 	}
 	for (std::string line; getline(file, line);) {
@@ -26,39 +26,33 @@ Channel::Channel(Client *cli) : _client(cli){
 			_quiz[date] = value;
 		}
 		else
-			std::cerr << "Error: bad input => " << line << "|" << value  << std::endl;
+			std::cerr << "Server: Error: bad input => " << line << "|" << value  << std::endl;
 	}
 	file.close();
 }
 
-Channel::~Channel(void) {
-//	std::cout << "Channel default destructor called!" << std::endl;
-}
-
 // getters
-bool Channel::get_rights(std::string name, std::string channel, int fd_cli) {
-//	std::cout << "GET_RIGHTS_NAME :"  << name << std::endl;
-//	std::cout << " :"  << channel << std::endl;
-	if (_all_chan.end() == _all_chan.find(channel))
-		return (send_error(fd_cli, ERR_NOSUCHCHANNEL(channel)), false);
+bool Channel::CheckRights(const std::string& name, const std::string& chan, int fd_cli) {
+	if (_all_chan.end() == _all_chan.find(chan))
+		return (SendMessage(fd_cli, ERR_NOSUCHCHANNEL(chan)), false);
 	for (chan_t it = _channel.begin(); it != _channel.end(); ++it) {
-		if (it->first == channel) {
+		if (it->first == chan) {
 			user_t i = it->second.begin();
 			while (i != it->second.end() && i->first != name)
 				i++;
 			if (i == it->second.end())
-				return (send_error(fd_cli, ERR_NOTONCHANNEL(channel)), false);
+				return (SendMessage(fd_cli, ERR_NOTONCHANNEL(chan)), false);
 			if (i->second)
 				return true;
-			return (send_error(fd_cli, ERR_CHANOPRIVSNEEDED(_client->GetName(fd_cli), channel)), false);
+			return (SendMessage(fd_cli, ERR_CHANOPRIVSNEEDED(_client->GetName(fd_cli), chan)), false);
 		}
 	}
 	return false;
 }
 
 // Public methods
-bool	Channel::Canal_Operators(std::string buff, int fd_cli) {
-	int	(Channel::*fptr[])(std::string, int ) = {&Channel::Kick, &Channel::Invite, \
+bool	Channel::Canal_Operators(const std::string& buff, int fd_cli) {
+	int	(Channel::*fptr[])(const std::string &, int ) = {&Channel::Kick, &Channel::Invite, \
 		&Channel::Topic, &Channel::Mode, &Channel::Join, &Channel::Quit, &Channel::Privmsg, &Channel::Who};
 	static std::string commands[] = {"KICK", "INVITE", "TOPIC", "MODE", "JOIN", "QUIT", "PRIVMSG", "WHO"};
 	for (size_t i = 0; i < 8; ++i) {
@@ -72,9 +66,9 @@ bool	Channel::Canal_Operators(std::string buff, int fd_cli) {
 				if (arg.find('\r') != std::string::npos) // if we aree on Hexchat
 					arg = arg.substr(0, arg.size() - 1);
 				if (!_client->IsRegister(fd_cli))
-					return (send_error(fd_cli, ERR_NOTREGISTRED), 404);
+					return (SendMessage(fd_cli, ERR_NOTREGISTRED), 404);
 				(this->*fptr[i])(arg, fd_cli);
-				if (i == 5)
+				if (i == 5) // if the command quit was executed we want to return true so the server destroy the client
 					return true;
 				return false;
 			}

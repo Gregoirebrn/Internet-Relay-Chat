@@ -21,29 +21,24 @@
 //global variable
 bool	g_signal = true;
 
-
-//class Channel;
-
 class Server {
 protected:
-	uint16_t				_port;
-	std::string				_password;
-	int						_socketfd;
-	struct sockaddr_in		_addr;
-	std::vector<pollfd>		_pollfds;
-	nfds_t					_nfds;
-	Client					_cli;
 	Channel					_chan;
+	Client					_cli;
+	std::vector<pollfd>		_pollfds;
+	struct sockaddr_in		_addr;
+	std::string				_password;
+	nfds_t					_nfds;
+	uint16_t				_port;
+	int						_socketfd;
 public :
 	// Constructors & destructor
-	Server(char *port, std::string pw);
+	Server(char *port, const std::string &pw);
 	~Server();
 	// Public methods
 	int				CreatSocket();
-	void			messag_handle(std::vector<pollfd>::iterator &it);
-	int				signal_handler();
-	static void		handler(int sig);
-	void			suppr(int fd);
-	};
-
-int signal_handler();
+	void			LoopServer();
+	void			MessageHandler(std::vector<pollfd>::iterator &it);
+	int				SignalHandler();
+	static void		Handler(int sig);
+};

@@ -126,3 +126,18 @@ https://stackoverflow.com/questions/10606101/automatically-add-all-submodules-to
 https://script.quakenet.org/wiki/Category:Raws
 
 https://gnome.pages.gitlab.gnome.org/gnome-browser-integration/extension-12.html
+
+	// Fast checkin
+	if (buff == "ff\r") {
+		Pass("pass", fd_cli);
+		Nick("defni", fd_cli);
+		User("defus 0 * :noreal", fd_cli);
+		return (3);
+	}
+	if (buff == "fff\r") {
+		Pass("pass", fd_cli);
+		Nick("fn", fd_cli);
+		User("fu 0 * :norh", fd_cli);
+		return (3);
+	}
+	//End Fast Check

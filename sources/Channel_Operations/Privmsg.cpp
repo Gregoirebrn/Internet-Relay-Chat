@@ -4,29 +4,29 @@
 
 #include "Channel.hpp"
 
-void	Channel::send_chan_msg(std::string channel, std::string msg) {
+void	Channel::send_chan_msg(const std::string& channel, const std::string& msg) {
 	for (user_t it = _channel[channel].begin(); it != _channel[channel].end(); ++it) {
 //		std::cout << "SEND_CHAN_MSG TO :" << _client->GetFd(it->first) << std::endl;
 		if ("bot" == it->first)
 			continue;
-		send_error(_client->GetFd(it->first), msg);
+		SendMessage(_client->GetFd(it->first), msg);
 	}
 }
 
-void	Channel::send_msg_to_chan(std::string channel, std::string msg, int to_not_send) {
+void	Channel::send_msg_to_chan(const std::string& channel, const std::string& msg, int to_not_send) {
 	for (user_t it = _channel[channel].begin(); it != _channel[channel].end(); ++it) {
 //		std::cout << "SEND_CHAN_MSG TO :" << _client->GetFd(it->first) << std::endl;
 		if ("bot" == it->first)
 			continue;
 		if (to_not_send != _client->GetFd(it->first))
-			send_error(_client->GetFd(it->first), msg);
+			SendMessage(_client->GetFd(it->first), msg);
 	}
 }
 
-int	Channel::Privmsg(std::string buff, int fd_cli) {
+int	Channel::Privmsg(const std::string& buff, int fd_cli) {
 	//trim message
 	if (std::string::npos == buff.find(':'))
-		return (send_error(fd_cli, ERR_NOTEXTTOSEND(_client->GetName(fd_cli))), 412);
+		return (SendMessage(fd_cli, ERR_NOTEXTTOSEND(_client->GetName(fd_cli))), 412);
 	std::string msg = buff.substr(buff.find(':'), buff.size());
 	if (std::string::npos != msg.find('\r'))
 		msg = msg.substr(0, (msg.size() -1));
@@ -34,7 +34,7 @@ int	Channel::Privmsg(std::string buff, int fd_cli) {
 	std::string receiver = buff.substr(0 , buff.find(' '));
 	if (receiver[0] == '#') {
 		if (_channel.find(receiver) == _channel.end())
-			send_error(fd_cli, ERR_NOSUCHCHANNEL(receiver));
+			SendMessage(fd_cli, ERR_NOSUCHCHANNEL(receiver));
 		std::string base_msg = msg;
 		msg = ":" + _client->GetPrefix(fd_cli) + " PRIVMSG " + receiver + " " + msg + "\r\n";
 		send_msg_to_chan(receiver, msg, fd_cli);
@@ -46,7 +46,7 @@ int	Channel::Privmsg(std::string buff, int fd_cli) {
 	//send to client
 	msg = msg.substr(1, msg.size());
 	if (!_client->GetFd(receiver))
-		send_error(fd_cli, ERR_NOSUCHNICK(_client->GetName(fd_cli), receiver));
-	send_error(_client->GetFd(receiver), RPL_PRIVMSG(_client->GetPrefix(fd_cli), receiver, msg));
+		SendMessage(fd_cli, ERR_NOSUCHNICK(_client->GetName(fd_cli), receiver));
+	SendMessage(_client->GetFd(receiver), RPL_PRIVMSG(_client->GetPrefix(fd_cli), receiver, msg));
 	return (0);
 }
