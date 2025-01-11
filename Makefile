@@ -39,7 +39,7 @@ CFLAGS		:=	c++ -Wall -Wextra -Werror -std=c++98 -g3
 BIN			:=	ircserv
 
 # NOT WORKING the commands doesn't output the logs
-RUN			=	$(shell ./ircserv 8080 pass)
+#RUN			=	$(shell ./ircserv 8080 pass)
 
 ########################################################################################################################
 #                                                        RULES                                                         #
@@ -48,11 +48,14 @@ RUN			=	$(shell ./ircserv 8080 pass)
 all			:	msg_compil $(BIN)
 				@echo "Success !"
 
-run			:	all
-				echo $(RUN)
+#run			:	all msg_exec
+				#echo $(RUN)
+
+#msg_exec	:
+#				@echo "Executing ..."
 
 msg_compil	:
-				@echo "Making..."
+				@echo "Making ..."
 
 $(BIN)		:	$(OBJS_D) $(OBJS)
 				@$(CFLAGS) -o $(BIN) $(OBJS)
