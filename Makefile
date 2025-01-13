@@ -21,41 +21,32 @@ SRCS		:=	Server.cpp			\
 				$(CM)Pass.cpp		\
 				$(CM)User.cpp		\
 
-
 SRCS_D		:=	sources/
 
 OBJS_D		:=	objs/
 
 OBJS		=	$(SRCS:%.cpp=$(OBJS_D)%.o)
 
-HEAD		:=	Server.hpp		\
-				Client.hpp		\
-				Channel.hpp		\
+HEAD		:=	Server.hpp				\
+				Client.hpp				\
+				Channel.hpp				\
+				LimitedModernRfc.hpp	\
 
 HEAD_D		:=	includes/
 
-CFLAGS		:=	c++ -Wall -Wextra -Werror -std=c++98 -g3
+CFLAGS		:=	c++ -Wall -Wextra -Werror -std=c++98
 
 BIN			:=	ircserv
-
-# NOT WORKING the commands doesn't output the logs
-#RUN			=	$(shell ./ircserv 8080 pass)
 
 ########################################################################################################################
 #                                                        RULES                                                         #
 ########################################################################################################################
 
 all			:	msg_compil $(BIN)
-				@echo "Success !"
-
-#run			:	all msg_exec
-				#echo $(RUN)
-
-#msg_exec	:
-#				@echo "Executing ..."
+				@echo "Makefile: Success !"
 
 msg_compil	:
-				@echo "Making ..."
+				@echo "Makefile: Making ..."
 
 $(BIN)		:	$(OBJS_D) $(OBJS)
 				@$(CFLAGS) -o $(BIN) $(OBJS)
@@ -71,9 +62,11 @@ $(OBJS_D)	:
 
 clean		:
 				@$(RM) -r $(OBJS) $(OBJS_D)
+				@echo "Makefile: Removed objs directory."
 
 fclean		:	clean
 				@$(RM) $(BIN)
+				@echo "Makefile: Removed binary."
 
 re			:	fclean all
 

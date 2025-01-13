@@ -1,9 +1,11 @@
 //
 // Created by grebrune on 11/27/24.
 //
+
 #pragma once
 
 #define ERR_UNKNOWNCOMMAND(client, command) (":irc_server 421 " + (client) + " " + (command) + " :Unknown command\n")
+
 //pass
 #define ERR_NEEDMOREPARAMS(command) (":irc_server 461 " + (std::string(command)) + " :Not enough parameters\n")
 #define ERR_ALREADYREGISTRED ":irc_server 462 :You may not reregister\n"
