@@ -94,7 +94,7 @@ int	Channel::Join(const std::string& buff, int fd_cli) {
 	std::vector<std::string> channel_v;
 	std::vector<std::string> key_v;
 
-	if (buff.find('0') != std::string::npos)
+	if (buff.find('0') != std::string::npos && buff.size() == 1)
 		return (LeaveAllChannel(fd_cli), 404);
 	if (buff.size() == 0)
 		return (SendMessage(fd_cli, ERR_NEEDMOREPARAMS("JOIN")), 462);//missing params
