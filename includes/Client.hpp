@@ -16,7 +16,7 @@
 # include <arpa/inet.h>
 
 //RFC
-# include "rfc_1459.hpp"
+# include "LimitedModernRfc.hpp"
 
 class Server;
 
@@ -51,14 +51,14 @@ public :
 	std::string		GetWho(int fd_cli, const std::string& channel);
 	bool			IsRegister(int fd_cli);
 	// Public methods
-	void	CommandClient(const std::string& buff, int fd_cli);
+	bool	CommandClient(const std::string& buff, int fd_cli);
 	int		CreateClient(int fd_cli, sockaddr_in pSockaddr);
 	int		Nick(const std::string& buff, int fd_cli);
 	int		User(const std::string& buff, int fd_cli);
 	int		Pass(const std::string& buff, int fd_cli);
-	//quit handle
+	// Quit handle
 	void	Remove(int fd_cli);
-	//send msg
+	// Send msg
 	void	SendServMessage(const std::string& msg);
 };
 

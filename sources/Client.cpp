@@ -57,7 +57,7 @@ int Client::CreateClient(int fd_cli, sockaddr_in addr_srv) {
 	return 0;
 }
 
-void Client::CommandClient(const std::string& buff, int fd_cli)
+bool Client::CommandClient(const std::string& buff, int fd_cli)
 {
 	static int (Client::*fptr[4])(const std::string&, int fd_cli) = {&Client::Nick, \
 	&Client::User, &Client::Pass};
@@ -68,19 +68,20 @@ void Client::CommandClient(const std::string& buff, int fd_cli)
 			if (!buff.compare(0, tab_com[i].size(), tab_com[i])) {
 				if (std::string::npos == buff.find(' ')) { //send nothing to the command so she throw the apropriate error
 					(this->*fptr[i])("", fd_cli);
-					return ;
+					return true ;
 				}
 				std::string arg = buff.substr((buff.find(' ') + 1), buff.size());
 				if (arg.find('\r') != std::string::npos) // if we are on Hexchat
 					arg = arg.substr(0, arg.size() - 1);
 				(this->*fptr[i])(arg, fd_cli);
-				return ;
+				return true ;
 			}
 		}
 	}
 	catch (const std::exception& ex) {
 		std::cout << "Client: Error:" << ex.what() << std::endl;
 	}
+	return false;
 }
 
 void	Client::Remove(int fd_cli) {

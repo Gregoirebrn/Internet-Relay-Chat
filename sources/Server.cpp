@@ -69,7 +69,8 @@ void	Server::MessageHandler(std::vector<pollfd>::iterator &it) {
 		std::istringstream message;
 		message.str(buff);
 		for (std::string line; std::getline(message, line, '\n');) {
-			_cli.CommandClient(line, it->fd); //user nick pass
+			if (_cli.CommandClient(line, it->fd)) //user nick pass
+				continue;
 			if (_chan.Canal_Operators(line, it->fd)) { //join mode kick topic invite
 				_pollfds.erase(it);
 				_nfds--;

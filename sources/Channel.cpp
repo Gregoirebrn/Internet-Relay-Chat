@@ -77,6 +77,7 @@ bool	Channel::Canal_Operators(const std::string& buff, int fd_cli) {
 			std::cout << "Channel: " << exe.what() << std::endl;
 		}
 	}
+	Unknown(buff, fd_cli);
 	return (false);
 }
 
@@ -121,5 +122,14 @@ void	Channel::RecMessage(const std::string &channel, std::string &msg, int fd) {
 		std::string good_answer_msg = _client->GetName(fd) + " has found the answer !\n";
 		SendQuestion(channel, good_answer_msg);
 		FoundNextQuestion(channel);
+	}
+}
+
+void	Channel::Unknown(const std::string& buff, int fd_cli) {
+	static std::string commands[] = {"CAP", "AUTHENTICATE", "PING", "PONG", "OPER", "ERROR", "NAMES", "MODT", \
+	"VERSION", "ADMIN", "CONNECT", "LUSERS", "TIME", "STATS", "HELP", "INFO", "NOTICE"};
+	for (int i = 0; i < 17; ++i) {
+		if (!buff.compare(0, commands[i].size(), commands[i]))
+			return (SendMessage(fd_cli, ERR_UNKNOWNCOMMAND(_client->GetPrefix(fd_cli), commands[i])), (void)0);
 	}
 }

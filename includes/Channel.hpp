@@ -7,11 +7,10 @@
 #include <iostream>
 #include <vector>
 #include <bits/stdc++.h>
-#include <iostream>
 #include <sstream>
 #include <string>
-#include <ctime>
 #include <algorithm>
+#include <ctime>
 #include <cstdlib>
 //internal libs
 # include "Client.hpp"
@@ -58,8 +57,9 @@ public :
 	bool	Top_Right(const std::string& name, const std::string& channel, int fd_cli);
 	int		CheckModeChannel(vec_t key_it, vec_t chan_it, int fd_cli);
 	//Public methods
-	void		CreateChannel(std::string channel, int fd_cli);
-	bool		Canal_Operators(const std::string& buff, int fd_cli);
+	void	CreateChannel(std::string channel, int fd_cli);
+	bool	Canal_Operators(const std::string& buff, int fd_cli);
+	void	Unknown(const std::string& buff, int fd_cli);
 	//Channel Operators
 	int		Invite(const std::string& buff, int fd_cli);
 	int		Join(const std::string& buff, int fd_cli);
