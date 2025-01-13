@@ -120,6 +120,8 @@ std::string Channel::GetMode(const std::string& chan) {
 		mode += "t";
 	if (_all_chan[chan].max_user != 0)
 		mode += "l";
+	if (mode == "+")
+		mode = "No modes are set";
 	return (mode);
 }
 
@@ -127,7 +129,9 @@ int	Channel::Mode(const std::string& buff, int fd_cli) {
 	// For the creation of a channel
 	std::string channel = buff;
 	if (std::string::npos != buff.find('\n'))
-		std::string channel = buff.substr(0, (buff.size() -1));
+		channel = buff.substr(0, (buff.size() -1));
+	if (std::string::npos != buff.find(' '))
+		channel = buff.substr(0, (buff.size() -1));
 	if (_channel.find(channel) != _channel.end())
 		return (SendMessage(fd_cli, RPL_CHANNELMODEIS(_client->GetName(fd_cli), channel, GetMode(channel))), 404);
 	// Trim

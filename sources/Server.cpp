@@ -3,6 +3,7 @@
 //
 
 #include "Server.hpp"
+#include <algorithm>
 
 // Constructors & destructor
 Server::Server(char *port, const std::string &pw) : _chan(&_cli), _cli(pw), _pollfds(), _addr(), _socketfd() {
@@ -57,11 +58,12 @@ void	Server::MessageHandler(std::vector<pollfd>::iterator &it) {
 	char buff[512 + 1];
 	bzero(buff, 513);
 	ssize_t ret = recv(it->fd, buff, n, MSG_DONTWAIT);
+	std::cout << "Receiv :" << buff << std::endl;
 	if (!ret) { // client gone suppress it
-		_pollfds.erase(it);
-		_nfds--;
 		_chan.Quit("", it->fd);
 		_cli.Remove(it->fd);
+		_pollfds.erase(it);
+		_nfds--;
 	}
 	else if (ret < 0) // error occured
 		std::cerr << "Server: Error: Recv failed: " << strerror(errno) << std::endl;
