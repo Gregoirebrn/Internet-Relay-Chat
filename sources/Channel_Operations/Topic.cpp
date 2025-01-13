@@ -52,8 +52,8 @@ int Channel::Topic(const std::string& buff, int fd_cli) {
 	_all_chan[channel].set_of_topic = _client->GetName(fd_cli);
 	if (_all_chan[channel].topic.empty()) {
 		_all_chan[channel].topic = topic;
-		return (send_chan_msg(channel, RPL_CHANGETOPIC(_client->GetName(fd_cli), channel, topic)), 0);
+		return (SendChannel(channel, RPL_CHANGETOPIC(_client->GetName(fd_cli), channel, topic)), 0);
 	}
 	_all_chan[channel].topic = topic;
-	return (send_chan_msg(channel, RPL_CHANGETOPIC(_client->GetName(fd_cli), channel, topic)), 0);
+	return (SendChannel(channel, RPL_CHANGETOPIC(_client->GetName(fd_cli), channel, topic)), 0);
 }

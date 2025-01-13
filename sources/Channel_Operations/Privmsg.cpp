@@ -4,7 +4,7 @@
 
 #include "Channel.hpp"
 
-void	Channel::send_chan_msg(const std::string& channel, const std::string& msg) {
+void	Channel::SendChannel(const std::string& channel, const std::string& msg) {
 	for (user_t it = _channel[channel].begin(); it != _channel[channel].end(); ++it) {
 //		std::cout << "SEND_CHAN_MSG TO :" << _client->GetFd(it->first) << std::endl;
 		if ("bot" == it->first)

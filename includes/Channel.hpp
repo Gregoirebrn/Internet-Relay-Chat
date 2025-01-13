@@ -60,6 +60,7 @@ public :
 	void	CreateChannel(std::string channel, int fd_cli);
 	bool	Canal_Operators(const std::string& buff, int fd_cli);
 	void	Unknown(const std::string& buff, int fd_cli);
+	void	LeaveAllChannel(int fd_cli);
 	//Channel Operators
 	int		Invite(const std::string& buff, int fd_cli);
 	int		Join(const std::string& buff, int fd_cli);
@@ -70,11 +71,10 @@ public :
 	int		Topic(const std::string& buff, int fd_cli);
 	int		Who(const std::string& buff, int fd_cli);
 	//Sends
-	void	send_chan_msg(const std::string& channel, const std::string& msg);
+	void	SendChannel(const std::string& channel, const std::string& msg);
 	void	send_msg_to_chan(const std::string& channel, const std::string& msg, int to_not_send);
 	void	send_rpl_name(const std::string& channel, int fd_cli);
 	void	send_rpl_topic(const std::string& channel, const std::string& topic, int fd_cli);
-	//Utils
 	//Mode flags
 	int			mode_i(int fd_cli, bool s, std::vector<std::string> v, size_t *j, all_chan_t itc);
 	int			mode_k(int fd_cli, bool s, std::vector<std::string> v, size_t *j, all_chan_t itc);

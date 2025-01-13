@@ -9,7 +9,7 @@ int	Channel::Quit(const std::string& buff, int fd_cli) {
 	std::string nick = _client->GetName(fd_cli);
 	for (chan_t it = _channel.begin(); it != _channel.end() ; ++it) {
 		if (it->first.find(nick)) {
-			send_chan_msg(it->first, RPL_PART(_client->GetPrefix(fd_cli), it->first, ":Disconnected"));
+			SendChannel(it->first, RPL_PART(_client->GetPrefix(fd_cli), it->first, ":Disconnected"));
 			_channel[it->first].erase(nick);
 			_all_chan[it->first].in_user--;
 			if (_all_chan[it->first].in_user == 0) {

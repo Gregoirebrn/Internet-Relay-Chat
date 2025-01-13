@@ -72,9 +72,7 @@ int Channel::CheckModeChannel(vec_t key_it, vec_t chan_it, int fd_cli) {
 		if (_all_chan[*chan_it].invite_list.end() ==
 			std::find(_all_chan[*chan_it].invite_list.begin(), _all_chan[*chan_it].invite_list.end(), _client->GetName(fd_cli)))
 			return (SendMessage(fd_cli, ERR_INVITEONLYCHAN(_client->GetName(fd_cli), *chan_it)), 473);
-		if (_all_chan[*chan_it].invite_list.end() !=
-			std::remove(_all_chan[*chan_it].invite_list.begin(), _all_chan[*chan_it].invite_list.end(),
-						_client->GetName(fd_cli))) {
+		if (_all_chan[*chan_it].invite_list.end() != std::remove(_all_chan[*chan_it].invite_list.begin(), _all_chan[*chan_it].invite_list.end(), _client->GetName(fd_cli))) {
 			std::cout << "Server: Error: Crash from std::remove, cleared invite list." << std::endl;
 			_all_chan[*chan_it].invite_list.clear();
 		}
@@ -82,10 +80,22 @@ int Channel::CheckModeChannel(vec_t key_it, vec_t chan_it, int fd_cli) {
 	return (0);
 }
 
+void	Channel::LeaveAllChannel(int fd_cli) {
+	std::string nick = _client->GetName(fd_cli);
+	for (chan_t it = _channel.begin(); it != _channel.end(); ++it) {
+		if (_channel[it->first].find(nick) != _channel[it->first].end()) {
+			SendChannel(it->first, RPL_PART(_client->GetPrefix(fd_cli), it->first, ":Disconnected"));
+			_channel[it->first].erase(nick);
+		}
+	}
+}
+
 int	Channel::Join(const std::string& buff, int fd_cli) {
 	std::vector<std::string> channel_v;
 	std::vector<std::string> key_v;
 
+	if (buff.find('0') != std::string::npos)
+		return (LeaveAllChannel(fd_cli), 404);
 	if (buff.size() == 0)
 		return (SendMessage(fd_cli, ERR_NEEDMOREPARAMS("JOIN")), 462);//missing params
 	JoinArgs(buff, channel_v, key_v); // trim the buff in a vector of channels and keys
@@ -101,7 +111,7 @@ int	Channel::Join(const std::string& buff, int fd_cli) {
 		//Sends Information of the joined channel
 		_channel[*it][_client->GetName(fd_cli)] = false;
 		_all_chan[*it].in_user++;
-		send_chan_msg(*it, RPL_JOIN(_client->GetPrefix(fd_cli), *it));
+		SendChannel(*it, RPL_JOIN(_client->GetPrefix(fd_cli), *it));
 		send_rpl_topic(*it, _all_chan[*it].topic, fd_cli);
 		send_rpl_name(*it, fd_cli);
 	}

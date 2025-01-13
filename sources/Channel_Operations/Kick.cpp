@@ -20,13 +20,13 @@ int Channel::Kick(const std::string& buff, int fd_cli)
 		return (404);
 	if (nick == "bot") {
 		_last_question.erase(channel);
-		send_chan_msg(channel, RPL_KICKED(_client->GetName(fd_cli), channel, nick));
+		SendChannel(channel, RPL_KICKED(_client->GetName(fd_cli), channel, nick));
 		return (90);
 	}
 	user_t found = _channel[channel].find(nick);//search the nickname in the database of the channel
 	if (_channel[channel].end() == found)
 		return (SendMessage(fd_cli, ERR_USERNOTINCHANNEL(_client->GetName(fd_cli), channel, nick)), 441);// we didn't find him
-	send_chan_msg(channel, RPL_KICKED(_client->GetName(fd_cli), channel, nick));
+	SendChannel(channel, RPL_KICKED(_client->GetName(fd_cli), channel, nick));
 	_channel[channel].erase(nick);//we did find him
 	_all_chan[channel].in_user--;
 	if (_all_chan[channel].in_user == 0) {

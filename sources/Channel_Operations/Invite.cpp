@@ -28,7 +28,7 @@ int Channel::Invite(const std::string& buff, int fd_cli) {
 		if (_last_question.find(channel) != _last_question.end())
 			return (SendMessage(fd_cli, ERR_USERONCHANNEL(_client->GetName(fd_cli), nick_target, channel)), 443); //already on channel
 		SendMessage(fd_cli, RPL_INVITING(_client->GetPrefix(fd_cli), nick_target, channel)); //added to channel and welcome
-		send_chan_msg(channel, RPL_JOIN(nick_target, channel));
+		SendChannel(channel, RPL_JOIN(nick_target, channel));
 		_last_question[channel] = "";
 		FoundNextQuestion(channel);
 		return (0);

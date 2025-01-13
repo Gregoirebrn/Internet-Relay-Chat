@@ -83,7 +83,7 @@ bool	Channel::Canal_Operators(const std::string& buff, int fd_cli) {
 
 void	Channel::SendQuestion(const std::string &channel, const std::string &question) {
 	std::string msg = ":bot PRIVMSG " + channel + " " + question + "\n";
-	send_chan_msg(channel, msg);
+	SendChannel(channel, msg);
 }
 
 void	Channel::FoundNextQuestion(const std::string &channel) {

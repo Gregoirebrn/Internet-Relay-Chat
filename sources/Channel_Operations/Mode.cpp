@@ -11,11 +11,11 @@ int Channel::mode_i(int fd_cli, bool s, std::vector<std::string> v, size_t *j, a
 
 	if (s) {
 		itc->second.i_bool = true;
-		return (send_chan_msg(v[0], RPL_MODE(v[0], _client->GetName(fd_cli), " +i\n")), 0);
+		return (SendChannel(v[0], RPL_MODE(v[0], _client->GetName(fd_cli), " +i\n")), 0);
 	}
 	else {
 		itc->second.i_bool = false;
-		return (send_chan_msg(v[0], RPL_MODE(v[0], _client->GetName(fd_cli), " -i\n")), 0);
+		return (SendChannel(v[0], RPL_MODE(v[0], _client->GetName(fd_cli), " -i\n")), 0);
 	}
 }
 
@@ -26,11 +26,11 @@ int Channel::mode_k(int fd_cli, bool s, std::vector<std::string> v, size_t *j, a
 	{
 		itc->second.chan_key = v[*j];
 		(*j)++;
-		return (send_chan_msg(v[0], RPL_LMODE(v[0], _client->GetName(fd_cli), " +k ", itc->second.chan_key)), 0);
+		return (SendChannel(v[0], RPL_LMODE(v[0], _client->GetName(fd_cli), " +k ", itc->second.chan_key)), 0);
 	}
 	else {
 		itc->second.chan_key = "";
-		return (send_chan_msg(v[0], RPL_MODE(v[0], _client->GetName(fd_cli), " -k\n")), 0);
+		return (SendChannel(v[0], RPL_MODE(v[0], _client->GetName(fd_cli), " -k\n")), 0);
 	}
 }
 
@@ -40,11 +40,11 @@ int Channel::mode_t(int fd_cli, bool s, std::vector<std::string> v, size_t *j, a
 	(void)fd_cli;
 	if (s) {
 		itc->second.t_bool = true;
-		return (send_chan_msg(v[0], RPL_MODE(v[0], _client->GetName(fd_cli), " +t\n")), 0);
+		return (SendChannel(v[0], RPL_MODE(v[0], _client->GetName(fd_cli), " +t\n")), 0);
 	}
 	else {
 		itc->second.t_bool = false;
-		return (send_chan_msg(v[0], RPL_MODE(v[0], _client->GetName(fd_cli), " -t\n")), 0);
+		return (SendChannel(v[0], RPL_MODE(v[0], _client->GetName(fd_cli), " -t\n")), 0);
 	}
 }
 
@@ -57,11 +57,11 @@ int Channel::mode_o(int fd_cli, bool s, std::vector<std::string> v, size_t *j, a
 		return (SendMessage(fd_cli, ERR_USERNOTINCHANNEL(_client->GetName(fd_cli), v[0], v[*j])), 441); // TRY TO CONFIRM IF v[1]
 	if (s) {
 		it->second = true;
-		return (send_chan_msg(v[0], RPL_OMODE(v[0], _client->GetName(fd_cli), " +o ", v[*j])), 0);
+		return (SendChannel(v[0], RPL_OMODE(v[0], _client->GetName(fd_cli), " +o ", v[*j])), 0);
 	}
 	else {
 		it->second = false;
-		return (send_chan_msg(v[0], RPL_OMODE(v[0], _client->GetName(fd_cli), " -o ", v[*j])), 0);
+		return (SendChannel(v[0], RPL_OMODE(v[0], _client->GetName(fd_cli), " -o ", v[*j])), 0);
 	}
 }
 
@@ -74,11 +74,11 @@ int Channel::mode_l(int fd_cli, bool s, std::vector<std::string> v, size_t *j, a
 		std::istringstream	iss(v[*j]);
 		iss >> itc->second.max_user;
 		(*j)++;
-		return (send_chan_msg(v[0], RPL_LMODE(v[0], _client->GetName(fd_cli), " +l ", iss.str())), 0);
+		return (SendChannel(v[0], RPL_LMODE(v[0], _client->GetName(fd_cli), " +l ", iss.str())), 0);
 	}
 	else {
 		itc->second.max_user = 0;
-		return (send_chan_msg(v[0], RPL_MODE(v[0], _client->GetName(fd_cli), " -l\n")), 0);
+		return (SendChannel(v[0], RPL_MODE(v[0], _client->GetName(fd_cli), " -l\n")), 0);
 	}
 }
 
