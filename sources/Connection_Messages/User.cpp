@@ -9,8 +9,8 @@ int Client::User(const std::string& buff, int fd_cli) {
 		return (SendMessage(fd_cli, ERR_PWNOTCHECK), 808);
 	if (buff.size() < 4)
 		return (SendMessage(fd_cli, ERR_NEEDMOREPARAMS("USER")), 461);
-	if (!_clients[fd_cli]._username.empty())
-		return(SendMessage(fd_cli, ERR_ALREADYREGISTRED), 462);
+	if (_clients[fd_cli]._pw_verified && !_clients[fd_cli]._username.empty())
+			return (SendMessage(fd_cli, ERR_ALREADYREGISTRED(_clients[fd_cli]._username)), 462);
 	try {
 		if (std::string::npos == buff.find(' '))
 			return (SendMessage(fd_cli, ERR_NEEDMOREPARAMS("USER")), 461);

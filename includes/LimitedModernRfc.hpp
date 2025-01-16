@@ -8,8 +8,8 @@
 
 //pass
 #define ERR_NEEDMOREPARAMS(command) (":irc_server 461 " + (std::string(command)) + " :Not enough parameters\n")
-#define ERR_ALREADYREGISTRED ":irc_server 462 :You may not reregister\n"
-#define ERR_NOTREGISTRED ":irc_server 808 :You must send PASS before any SERVER command\n"
+#define ERR_ALREADYREGISTRED(target) ":irc_server 462 " + (target) + ":You may not reregister\n"
+#define ERR_NOTREGISTRED(target) ":irc_server 451 " + (target) + " :Register first.\n"
 #define ERR_PWNOTCHECK ":irc_server 808 :You must send PASS before any command\n"
 #define ERR_PASSWDMISMATCH ":irc_server 464 :Password incorrect\n"
 #define RPL_WELCOME(client, nick) (":irc_server 001 " + (client) + " :Welcome to the Irection Server, " + (nick) + " \n" )

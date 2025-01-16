@@ -66,7 +66,7 @@ bool	Channel::Canal_Operators(const std::string& buff, int fd_cli) {
 				if (arg.find('\r') != std::string::npos) // if we aree on Hexchat
 					arg = arg.substr(0, arg.size() - 1);
 				if (!_client->IsRegister(fd_cli))
-					return (SendMessage(fd_cli, ERR_NOTREGISTRED), 404);
+					return (SendMessage(fd_cli, ERR_NOTREGISTRED(std::string ("target"))), 404);
 				(this->*fptr[i])(arg, fd_cli);
 				if (i == 5) // if the command quit was executed we want to return true so the server destroy the client
 					return true;

@@ -58,7 +58,6 @@ void	Server::MessageHandler(std::vector<pollfd>::iterator &it) {
 	char buff[512 + 1];
 	bzero(buff, 513);
 	ssize_t ret = recv(it->fd, buff, n, MSG_DONTWAIT);
-	std::cout << "Receiv :" << buff << std::endl;
 	if (!ret) { // client gone suppress it
 		_chan.Quit("", it->fd);
 		_cli.Remove(it->fd);
