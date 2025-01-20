@@ -86,6 +86,7 @@ bool Client::CommandClient(const std::string& buff, int fd_cli)
 
 void	Client::Remove(int fd_cli) {
 	_clients.erase(fd_cli);
+	close(fd_cli);
 }
 
 // error Handler
