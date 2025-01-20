@@ -35,6 +35,8 @@ int	Channel::Privmsg(const std::string& buff, int fd_cli) {
 	if (receiver[0] == '#') {
 		if (_channel.find(receiver) == _channel.end())
 			SendMessage(fd_cli, ERR_NOSUCHCHANNEL(receiver));
+		if (_channel[receiver].find(_client->GetName(fd_cli)) == _channel[receiver].end())
+			return (SendMessage(fd_cli, ERR_NOTONCHANNEL(receiver)), 442);
 		std::string base_msg = msg;
 		msg = ":" + _client->GetPrefix(fd_cli) + " PRIVMSG " + receiver + " " + msg + "\r\n";
 		send_msg_to_chan(receiver, msg, fd_cli);
